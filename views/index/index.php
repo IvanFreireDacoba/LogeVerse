@@ -31,9 +31,6 @@
         <br>
         <input type="button" value="Entrar"/>
     </form>
-    <br>
-    <br>
-    <img src="https://www.esimagenes.com/cimagen/feliz-cumpleanos-dennis.gif" alt="Feliz cumpleaños Dennis">
 </body>
 
 </html>
