@@ -1,80 +1,107 @@
 class chatGlobal extends HTMLElement{
     constructor() {
         super();
-
+        /*Por defecto el chat aparece con un estilo oculto
+        Lo controlo desde aquí ya que el css externo solo afecta al contenido del shadow,
+        además, no quiero tener que añadir NADA más, ni siquiera un estilo, para controlar
+        el chat, TODO debe generarse de manera automática tan solo con cargar el script
+        */ 
+        this.style = "position: fixed; right: -195px; top: 12dvh;"
+        //Le pongo un id para localizarlo fácilmente
         this.setAttribute("id", "chatGlobal-customElement");
+        //Usamos el shadow
         this.shadow = this.attachShadow({ mode: "open" });
-
+        //establecemos una hoja de estilos externa
         this.link = document.createElement("link");
         this.link.setAttribute("rel", "stylesheet");
         this.link.setAttribute("href", "./styles/chatCustom.css");
-
-        this.base = document.createElement("section");
+        //La base será un divisor que contenga el resto de elementos
+        this.base = document.createElement("div");
+        this.base.setAttribute("id", "chat-base")
+        //Sección para el chat, en ella se verán los mensajes y el input
+        let section = document.createElement("section");
+        section.setAttribute("id", "seccionInChat");
+        //Zonas de la sección:
+        //Contiene todo el "chat"
         let chat = document.createElement("div");
+        chat.setAttribute("id", "chat-cge");
+        //Datos del chat (mensajes)
         let datos = document.createElement("div");
+        datos.setAttribute("id", "datosChat");
+        //Input y botón para poder enviar los mensajes
         let input = document.createElement("input");
+        input.setAttribute("id", "input-cge");
         let boton = document.createElement("button");
-
+        boton.setAttribute("id", "inputButton-cge");
+        //Estructura de cada zona
+        //En el divisor de datos se gestionan el envío de datos
+        datos.appendChild(input);
+        datos.appendChild(boton);
+        //La seccion del chat estará compuesta por el chat (mesnajes) y el sistema de envío (datos)
+        section.appendChild(chat);
+        section.appendChild(datos);
+        //Añadir el botón de control, con él podremos establecer si el chat está visible o no
+        //Un contenedor para todo el botón
+        let botonControlador = document.createElement("div");
+        botonControlador.setAttribute("id", "chatButtonContainer");
+        botonControlador.textContent = "Chat";
+        //Un área sobre el que se moverá el botón, esta cambiará de color
+        let chatButtonArea = document.createElement("div");
+        chatButtonArea.classList.add("chatButtonArea");
+        //El botón en sí
+        let chatControllButton = document.createElement("div");
+        chatControllButton.textContent = "OFF";
+        chatControllButton.classList.add("chatControllButton");
+        //Los anidamos ordenadamente 
+        botonControlador.appendChild(chatButtonArea);
+        chatButtonArea.appendChild(chatControllButton);
+        /*
+                    LISTENERS
+        */
+        //Función para enviar un mensaje al chat después de evaluarlo
         boton.addEventListener("click", async () => {
-            //requestDnDInfo(input.value);
             if (input.value) {
-                this.enviarMensaje(await this.evaluarMensaje(input.value));
+                //Funciones para enviar un mensaje y evaluarlo usando APIs si es necesario
+                this.enviarMensaje(await this.evaluarMensaje(input.value.trim()));
             }
         })
-
+        //Al pulsar "Enter" en el input, se imita al evento anterior (Enviamos el mns)
         input.addEventListener("keypress", (e) => {
             if (e.key == "Enter") {
                 boton.dispatchEvent(new Event("click"));
             }
         })
-
-        datos.setAttribute("id", "datosChat");
-        datos.appendChild(input);
-        datos.appendChild(boton);
-
-        chat.setAttribute("id", "chat-cge");
-        input.setAttribute("id", "input-cge");
-        boton.setAttribute("id", "inputButton-cge");
-
-        this.base.appendChild(chat);
-        this.base.appendChild(datos);
+        //Listener del botón para mostrar/ocultar el chat (se puede pulsar en cualquier sitio del área)
+        chatButtonArea.addEventListener("click", () => {
+            switch (chatControllButton.innerHTML.trim()) {
+                case "ON": {
+                    document.getElementById("chatGlobal-customElement").style = /*css*/ `
+                        position: fixed; top: 12dvh; animation: cge-ocultar 1.5s 1 forwards;
+                    `;
+                    chatControllButton.innerHTML = "OFF";
+                    botonControlador.classList.add("chatOFF");
+                    botonControlador.classList.remove("chatON");
+                    break;
+                }
+                case "OFF": {
+                    document.getElementById("chatGlobal-customElement").style = /*css*/ `
+                        position: fixed; top: 12dvh; animation: cge-mostrar 1.5s 1 forwards;
+                    `;
+                    chatControllButton.innerHTML = "ON";
+                    botonControlador.classList.add("chatON");
+                    botonControlador.classList.remove("chatOFF");
+                    break;
+                }
+            }
+        })
+        //Preparar la base (el sistema de chat más el boton para mostrarlo/ocultarlo)
+        this.base.appendChild(botonControlador);
+        this.base.appendChild(section);
     }
 
     connectedCallback() {
-        this.shadow.innerHTML = `
-        <style>
-            section {
-                display: flex;
-                flex-direction: column;
-                align-content: end;
-                width: min-content;
-                aspect-ratio: 1 / 3;
-                border: 1px black solid;
-                bottom: 0;
-
-                & > #chat-cge {
-                    flex-grow: 1;
-                    height: 100%;
-                    min-height: 0;
-                    align-content: end;
-                    overflow: hidden;
-                    overflow-y: auto;
-                }
-                
-                & > #datosChat{
-                    display: flex;
-                    bottom: 0px;
-                    
-                    & > #inputButton-cge {
-                        background-color: green;
-                    }
-                }
-            }
-        </style>
-        `;
-
-        this.shadow.appendChild(this.base);
         this.shadow.appendChild(this.link);
+        this.shadow.appendChild(this.base);
     }
 
     //FUNCIONES DEL CHAT
@@ -136,13 +163,14 @@ class chatGlobal extends HTMLElement{
             let chat = document.getElementById("chatGlobal-customElement").shadow.querySelector("#chat-cge");
             chat.innerHTML += "<br>" + mns;
             let input = document.getElementById("chatGlobal-customElement").shadow.querySelector("#input-cge");
+            chat.scrollTop = chat.scrollHeight;
             input.value = "";
             input.focus();
         }
     }
 }
 
-//Cargar el chat
+//Cargar el chat ¡OJO! No funciona si el script se carga con "defer"!
 addEventListener("DOMContentLoaded", () => {
     if(document.body){
         console.log("Chat Cargado");
