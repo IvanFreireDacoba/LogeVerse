@@ -1,13 +1,13 @@
 //LOS DEBUGS SE PODRÁN CONTROLAR DESDE UNA COOKIE PARA ADMINISTRADORES, POR DEFECTO ESTARÁN DESACTIVADOS
 
-class chatGlobal extends HTMLElement{
+class chatGlobal extends HTMLElement {
     constructor() {
         super();
         /*Por defecto el chat aparece con un estilo oculto
         Lo controlo desde aquí ya que el css externo solo afecta al contenido del shadow,
         además, no quiero tener que añadir NADA más, ni siquiera un estilo, para controlar
         el chat, TODO debe generarse de manera automática tan solo con cargar el script
-        */ 
+        */
         this.style = "position: fixed; right: -195px; top: 12dvh;"
         //Le pongo un id para localizarlo fácilmente
         this.setAttribute("id", "chatGlobal-customElement");
@@ -64,8 +64,9 @@ class chatGlobal extends HTMLElement{
         boton.addEventListener("click", async () => {
             //Si hay un mensaje en el input, lo enviamos
             if (input.value) {
-                //Deshabilitamos el input para evitar enviar mensajes duplicados
+                //Deshabilitamos el input y el boton para evitar enviar mensajes duplicados
                 input.setAttribute("disabled", "");
+                boton.setAttribute("disabled", "");
                 //Funciones para enviar un mensaje y evaluarlo usando APIs si es necesario
                 this.enviarMensaje(await this.evaluarMensaje(input.value));
             }
@@ -135,7 +136,7 @@ class chatGlobal extends HTMLElement{
             Creo una función para ejecutar comandos y devolver el mensaje
             esto me permite añadir más comandos en el futuro sin tener que modificar
             el código de evaluarMensaje, además de un control mejor de los comandos
-            */ 
+            */
             return await ejecutarComando(cmd, data);
         } else {
             //Si no es un comando, se envía tal cual
@@ -147,8 +148,9 @@ class chatGlobal extends HTMLElement{
     //Enviar un mensaje "mns", no puede estar vacío o ser un conjunto de espacios
     enviarMensaje(mns) {
         let input = document.getElementById("chatGlobal-customElement").shadow.querySelector("#input-cge");
+        let boton = document.getElementById("chatGlobal-customElement").shadow.querySelector("#inputButton-cge");
         //Si el mensaje no está vacío, lo enviamos
-        if(mns.trim()){
+        if (mns.trim()) {
             let chat = document.getElementById("chatGlobal-customElement").shadow.querySelector("#chat-cge");
             chat.innerHTML += "<br>" + mns;
             chat.scrollTop = chat.scrollHeight;
@@ -157,8 +159,8 @@ class chatGlobal extends HTMLElement{
             al chat global, sino que se muestra en el input para que el usuario pueda verlo.
             Es decir, NO quedará registrado en el chat y SOLO el usuario podría verlo hasta
             que recargue la página, entonces desaparecerá.
-            */ 
-            if(!String(mns).startsWith("<p class='error'")){
+            */
+            if (!String(mns).startsWith("<p class='error'")) {
                 //Función para enviar un mensaje al chat-global => NO SE IMPLEMENTA AÚN (WebSockets)
                 //mensajeChatGlobal(mns);
                 //Mensaje por consola para saber se ha enviado el mensaje al chat global -> DEBUG
@@ -167,6 +169,7 @@ class chatGlobal extends HTMLElement{
         }
         //Volvemos a habilitar el input (deshabilitado desde el Listener del botón)
         input.removeAttribute("disabled");
+        boton.removeAttribute("disabled");
         input.value = "";
         input.focus();
     }
@@ -179,7 +182,7 @@ class chatGlobal extends HTMLElement{
     que añadir la etiqueta <chat-global> en el HTML manualmente.
 */
 addEventListener("DOMContentLoaded", () => {
-    if(document.body){
+    if (document.body) {
         //Mensaje por consola para saber que el chat se ha cargado -> DEBUG
         console.log("Chat Cargado");
         document.body.appendChild(document.createElement("chat-global"));
@@ -198,7 +201,7 @@ async function buscar(url, query) {
         El código siguiente se ha tomado de la documentación de la API de DnD5e
         https://5e-bits.github.io/docs/api
     */
-   //Se añade una isntancia myHeaders de la clase Headers para indicar que se espera un JSON mediante GET
+    //Se añade una isntancia myHeaders de la clase Headers para indicar que se espera un JSON mediante GET
     const myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
     const requestOptions = {
@@ -273,46 +276,64 @@ async function ejecutarComando(cmd, data) {
             cmd = "";
             mns = "<p class='error'>Comando no reconocido.</p>";
         }
-        //Si el comando no está vacío y no es el de búsqueda de comandos, se busca la información
-        if(cmd.trim() && cmd != "comandos"){
-            mns = await buscar(cmd, data)
-                .then(async (response) => {
-                    //Traducir el nombre y la descripción de la raza si se encuentra información válida
-                    let name = await traducir(response.name);
-                    //Control para "malas traducciones" del nombre
-                    name = corregirTraduccion(name);
-                    let desc = await traducir(response.size_description);
-                    //Se devuelve el mensaje con la información formateada
-                    return `<p class="cmdInfo">
+    }
+
+    //Si el comando no está vacío y no es el de búsqueda de comandos, se busca la información
+    if (cmd.trim() != "" && cmd != "comandos") {
+        mns = await buscar(cmd, data)
+            .then(async (response) => {
+                //Traducir el nombre y la descripción de la raza si se encuentra información válida
+                let name = await traducir(response.name);
+                //Control para "malas traducciones" del nombre
+                name = corregirTraduccion(name);
+                //Control de los datos extra
+                let datosExtra;
+                switch (cmd) {
+                    case "races": {
+                        datosExtra = await traducir(response.size_description);
+                        break;
+                    }
+                    case "traits": {
+                        datosExtra = await traducir(response.desc);
+                        break;
+                    }
+                    case "classes": {
+                        datosExtra = "no implementado";
+                        break;
+                    }
+                    default: {
+                        errorInfo = "<p class='error'>Se ha producido un error desconocido.</p>";
+                    }
+                }
+                //Se devuelve el mensaje con la información formateada
+                return `<p class="cmdInfo">
                                 <a class="responseTitle">${name}</a>:
                                 <br>
-                                <a class="responseDatum">${desc}</a>
+                                <a class="responseDatum">${datosExtra}</a>
                             </p>`;
-                })
-                .catch(() => {
-                    //Si no se encuentra la información, se muestra un mensaje de error acorde al comando ejecutado
-                    let errorInfo = "<p class='error'>No se encontró";
-                    switch (cmd) {
-                        case "races": {
-                            errorInfo += " la raza.</p>";
-                            break;
-                        }
-                        case "traits": {
-                            errorInfo += " el rasgo.</p>";
-                            break;
-                        }
-                        case "classes": {
-                            errorInfo += " la clase.</p>";
-                            break;
-                        }
-                        default: {
-                            errorInfo = "<p class='error'>Se ha producido un error desconocido.</p>";
-                        }
+            })
+            .catch(() => {
+                //Si no se encuentra la información, se muestra un mensaje de error acorde al comando ejecutado
+                let errorInfo = "<p class='error'>No se encontró";
+                switch (cmd) {
+                    case "races": {
+                        errorInfo += " la raza.</p>";
+                        break;
                     }
-                    return errorInfo;
-                });
-        }
-        
+                    case "traits": {
+                        errorInfo += " el rasgo.</p>";
+                        break;
+                    }
+                    case "classes": {
+                        errorInfo += " la clase.</p>";
+                        break;
+                    }
+                    default: {
+                        errorInfo = "<p class='error'>Se ha producido un error desconocido.</p>";
+                    }
+                }
+                return errorInfo;
+            });
     }
     return mns;
 }
