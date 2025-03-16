@@ -9,6 +9,8 @@ class Personaje
 {
     private int $id;
     private string $nombre;
+    private string $historia;
+    private int $propietario;
     private float $experiencia;
     private Raza $raza;
     private Clase $clase;

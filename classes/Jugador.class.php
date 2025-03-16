@@ -6,7 +6,6 @@ class Jugador
 {
     private int $id;
     private string $nombre;
-    private array $personajes;
     private int $puntos;
 
     //=====================================CONSTRUCTOR=====================================
@@ -38,17 +37,6 @@ class Jugador
     public function setNombre(string $nombre): self
     {
         $this->nombre = $nombre;
-        return $this;
-    }
-
-    //GSPersonajes
-    public function getPersonajes(): array
-    {
-        return $this->personajes;
-    }
-    public function setPersonajes(array $personajes): self
-    {
-        $this->personajes = $personajes;
         return $this;
     }
 
