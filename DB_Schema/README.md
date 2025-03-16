@@ -1,5 +1,3 @@
-BaseDatos\_DnD.drawio.html 
-
 Base de Datos
 =============
 
