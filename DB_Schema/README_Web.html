@@ -1,37 +1,1261 @@
-<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=5,IE=9" ><![endif]-->
 <!DOCTYPE html>
 <html>
-<head>
-<title>BaseDatos_DnD.drawio.html</title>
-<meta charset="utf-8"/>
-<style>
-    #esquema {
-        width: 100%;
-        height: 70vh;
-        overflow: auto;
-        white-space: nowrap;
 
-        & img {
-            display: block;
-            max-width: none;
+<head>
+    <title>BaseDatos_DnD.drawio.html</title>
+    <meta charset="utf-8" />
+    <style>
+        .green {
+            background-color: greenyellow;
         }
-    }
-    
-</style>
+
+        .primaryKey {
+            background-color: lightpink;
+        }
+
+        .unique {
+            background-color: lightblue;
+        }
+
+        .propuesta {
+            background-color: lightcoral;
+            border: 1px solid #b85450;
+            width: 10px;
+            aspect-ratio: 1/1;
+            margin-right: 5px;
+        }
+
+        .nm_rel {
+            background-color: lightgreen;
+        }
+
+        .square {
+            width: 10px;
+            aspect-ratio: 1/1;
+            border: 1px solid black;
+            margin-right: 5px;
+        }
+
+        #esquemaImg {
+            width: 100%;
+            height: 60vh;
+            overflow: auto;
+            white-space: nowrap;
+
+            & img {
+                display: block;
+                max-width: none;
+            }
+        }
+
+        #leyenda {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+
+            & div {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
+        #indiceFunciones {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+
+            & ul {
+                display: block;
+            }
+        }
+
+        #listadoFunciones {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            column-gap: 10px;
+
+            & > div {
+                display: grid;
+                grid-template-columns: 0.5fr 1fr;
+                column-gap: 10%;
+                justify-content: center;
+                border: 1px solid black;
+                padding: 5%;
+            }
+        }
+
+        ul {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+        }
+
+        table {
+            text-align: center;
+            margin-bottom: 15px;
+            width: 100%;
+            border: 1px solid black;
+            border-collapse: collapse;
+
+            & th,
+            td {
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            function resetStatus() {
+                document.getElementById("esquema").hidden = true;
+                document.getElementById("tablas").hidden = true;
+                document.getElementById("funciones").hidden = true;
+                document.getElementById("esquemaButton").classList.remove("green");
+                document.getElementById("tablasButton").classList.remove("green");
+                document.getElementById("funcionesButton").classList.remove("green");
+            }
+
+            document.getElementById("esquemaButton").addEventListener("click", () => {
+                resetStatus();
+                document.getElementById("esquema").hidden = false;
+                document.getElementById("esquemaButton").classList.add("green");
+            });
+
+            document.getElementById("tablasButton").addEventListener("click", () => {
+                resetStatus();
+                document.getElementById("tablas").hidden = false;
+                document.getElementById("tablasButton").classList.add("green");
+            });
+
+            document.getElementById("funcionesButton").addEventListener("click", () => {
+                resetStatus();
+                document.getElementById("funciones").hidden = false;
+                document.getElementById("funcionesButton").classList.add("green");
+            });
+        });
+    </script>
 </head>
+
 <body>
     <h1>Base de Datos</h1>
     <hr>
-    <section>
+    <section id="intro">
         <p>Contiene esquemas y funciones.
-        <br>Es posible generar tanto la estructura de la base de datos como importar los datos pertinentes para su uso desde cero.
-        <br>Los esquemas aportan documentación sobre la estructura de la base de datos.
-        <br>La gestión de la base de datos se hace de manera local en un servicio MySQL.</p>
+            <br>Es posible generar tanto la estructura de la base de datos como importar los datos pertinentes para su
+            uso desde cero.
+            <br>Los esquemas aportan documentación sobre la estructura de la base de datos.
+            <br>La gestión de la base de datos se hace de manera local en un servicio MySQL.
+        </p>
+        <button id="esquemaButton" class="green" title="Información de las tablas">Info Estructura</button>
+        <button id="tablasButton" title="Información de las tablas">Info Tablas</button>
+        <button id="funcionesButton" title="Información de las funciones">Info Funciones</button>
     </section>
     <hr>
-    <h3>Esquema de la base de datos</h3>
-    <div id="esquema">
-        <img src="./BaseDatos_DnD.svg">
+    <div id="seccionesInfo">
+        <section id="esquema">
+            <h3>Esquema de la base de datos</h3>
+            <div id="leyenda">
+                <div>
+                    <div class="propuesta" title="Propuesta"></div>
+                    <p>Tablas clonadas*</p>
+                </div>
+                <div>
+                    <p><strong class="underline">PK</strong> : Clave Primaria</p>
+                </div>
+                <div>
+                    <p class="underline">Clave Unica</p>
+                </div>
+                <div>
+                    <p><strong>FK</strong> : Clave Foránea</p>
+                </div>
+            </div>
+            <p>*Conjunto de tablas clonadas (existe una igual llamada prop_&lt;nombre_tabla&gt;) con el fin de almacenar las propuestas</p>
+            <p><a href="BaseDatos_DnD.svg" target="_blank" title="Abrir el esquema en una nueva pestaña">Ver esquema</a></p>
+            <div id="esquemaImg">
+                <img src="./BaseDatos_DnD.svg">
+            </div>
+        </section>
+        
+        <section id="tablas" hidden>
+            <h3>Información de las tablas</h3>
+            <div id="leyenda">
+                <div>
+                    <div class="square primaryKey" title="Primary Key"></div>
+                    <p>Clave primaria</p>
+                </div>
+                <div>
+                    <div class="square unique" title="Unique Key"></div>
+                    <p>Clave única</p>
+                </div>
+                <div>
+                    <div class="square nm_rel" title="N:M"></div>
+                    <p>Relación N:M</p>
+                </div>
+                <div>
+                    <div class="square" title="propuesta">*</div>
+                    <p>Tabla Clon</p>
+                </div>
+            </div>
+            <h4>Índice</h4>
+            <ul id="indiceTablas">
+                <li><a href="#adminTabla">admin</a></li>
+                <li><a href="#armaTabla">arma</a></li>
+                <li><a href="#armaduraTabla">armadura</a></li>
+                <li><a href="#atributoTabla">atributo</a></li>
+                <li><a href="#atributo_personajeTabla">atributo_personaje</a></li>
+                <li><a href="#atributo_razaTabla">atributo_raza</a></li>
+                <li><a href="#baseTabla">base</a></li>
+                <li><a href="#base_eventoTabla">base_evento</a></li>
+                <li><a href="#claseTabla">clase</a></li>
+                <li><a href="#clase_habilidadTabla">clase_habilidad</a></li>
+                <li><a href="#consumibleTabla">consumible</a></li>
+                <li><a href="#efectoTabla">efecto</a></li>
+                <li><a href="#efecto_habilidadTabla">efecto_habilidad</a></li>
+                <li><a href="#efecto_objetoTabla">efecto_objeto</a></li>
+                <li><a href="#efecto_pasivaTabla">efecto_pasiva</a></li>
+                <li><a href="#eventoTabla">evento</a></li>
+                <li><a href="#habilidadTabla">habilidad</a></li>
+                <li><a href="#habilidad_personajeTabla">habilidad_personaje</a></li>
+                <li><a href="#idiomaTabla">idioma</a></li>
+                <li><a href="#idioma_razaTabla">idioma_raza</a></li>
+                <li><a href="#incursionTabla">incursion</a></li>
+                <li><a href="#incursion_personajeTabla">incursion_personaje</a></li>
+                <li><a href="#inventarioTabla">inventario</a></li>
+                <li><a href="#jugadorTabla">jugador</a></li>
+                <li><a href="#objetoTabla">objeto</a></li>
+                <li><a href="#paqueteTabla">paquete</a></li>
+                <li><a href="#pasivaTabla">pasiva</a></li>
+                <li><a href="#pasiva_razaTabla">pasiva_raza</a></li>
+                <li><a href="#personajeTabla">personaje</a></li>
+                <li><a href="#razaTabla">raza</a></li>
+            </ul>
+            <table id="adminTabla">
+                <caption>
+                    <h4>Tabla admin</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>(UNSIGNED) MEDIUMINT</td>
+                        <td>El dato debe ser del mismo tipo que el ID de <a href="#jugadorTabla">jugador</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="armaTabla">
+                <caption>
+                    <h4>Tabla arma*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>El dato debe ser del mismo tipo que el ID de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                    <tr>
+                        <td>material</td>
+                        <td>VARCHAR(50)</td>
+                        <td>50 caracteres son suficientes para definir el material</td>
+                    </tr>
+                    <tr>
+                        <td>modificador</td>
+                        <td>(UNSIGNED) TINYINT</td>
+                        <td>El modificador de daño no puede ser negativo, estará comprendido entre 1 y 999</td>
+                    </tr>
+                    <tr>
+                        <td>doble</td>
+                        <td>ENUM('true','false')</td>
+                        <td>Si son necesarias o no las dos manos para usar el arma</td>
+                    </tr>
+                    <tr>
+                        <td>combate</td>
+                        <td>ENUM('fisico','magico')</td>
+                        <td>Si el tipo de arma es física o mágica</td>
+                    </tr>
+                    <tr>
+                        <td>rango</td>
+                        <td>(UNSIGNED) TINYINT</td>
+                        <td>El rango del arma no puede ser negativo, estará comprendido entre 1 y 999</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="armaduraTabla">
+                <caption>
+                    <h4>Tabla armadura*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>El dato debe ser del mismo tipo que el ID de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                    <tr>
+                        <td>material</td>
+                        <td>VARCHAR(50)</td>
+                        <td>50 caracteres son suficientes para definir el material</td>
+                    </tr>
+                    <tr>
+                        <td>modificador</td>
+                        <td>(UNSIGNED) TINYINT</td>
+                        <td>El modificador de defensa no puede ser negativo, estará comprendido entre 1 y 999</td>
+                    </tr>
+                    <tr>
+                        <td>corporal</td>
+                        <td>ENUM('Cabeza','Cuerpo','Piernas','Pies','Manos','Dedos','Cola','Cuernos','Cara','Otro')</td>
+                        <td>La parte del cuerpo en la cual debe ir la armadura</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="atributoTabla">
+                <caption>
+                    <h4>Tabla atributo*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>(UNSIGNED) TINYINT</td>
+                        <td>La cantidad de atributos no superará los 256 en nigún momento, nos llega con un TINYINT</td>
+                    </tr>
+                    <tr>
+                        <td class="unique" title="Unique Key">nombre</td>
+                        <td>VARCHAR(15)</td>
+                        <td>15 caracteres son suficientes para definir el nombre del atributo</td>
+                    </tr>
+                    <tr>
+                        <td>descripcion</td>
+                        <td>TEXT</td>
+                        <td>Texto de tamaño variable para definir la descripción del atributo</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="atributo_personajeTabla">
+                <caption>
+                    <h4>Tabla atributo_personaje</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_atributo</td>
+                        <td>(UNSIGNED) TINYINT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#atributoTabla">atributo</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_personaje</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#personajeTabla">personaje</a></td>
+                    </tr>
+                    <tr>
+                        <td>cantidad</td>
+                        <td>(UNSIGNED) SMALLINT</td>
+                        <td>Cantidad máxima, entre 0 y 65535, más que suficiente</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="atributo_razaTabla">
+                <caption>
+                    <h4>Tabla atributo_raza*</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_atributo</td>
+                        <td>(UNSIGNED) TINYINT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#atributoTabla">atributo</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_raza</td>
+                        <td>(UNSIGNED) TINYINT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#razaTabla">raza</a></td>
+                    </tr>
+                    <tr>
+                        <td>cantidad</td>
+                        <td>(UNSIGNED) SMALLINT</td>
+                        <td>Cantidad máxima, entre 0 y 65535, más que suficiente</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="baseTabla">
+                <caption>
+                    <h4>Tabla base*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                    <tr>
+                        <td>basico</td>
+                        <td>ENUM('true','false')</td>
+                        <td>Define si es un objeto básico (true) o no (false)</td>
+                    </tr>
+                    <tr>
+                        <td>uso</td>
+                        <td>TEXT</td>
+                        <td>Permite describir para qué sirve el objeto</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="base_eventoTabla">
+                <caption>
+                    <h4>Tabla base_evento*</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_objeto</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_evento</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#eventoTabla">evento</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="claseTabla">
+                <caption>
+                    <h4>Tabla clase*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>(UNSIGNED) TINYINT</td>
+                        <td>Permite la existencia de un total de 255 clases (muchas más de las necesarias)</td>
+                    </tr>
+                    <tr>
+                        <td class="unique" title="Unique Key">nombre</td>
+                        <td>VARCHAR(50)</td>
+                        <td>50 caracteres para definir el nombre de la raza (semirrazas más largas)</td>
+                    </tr>
+                    <tr>
+                        <td>descripcion</td>
+                        <td>TEXT</td>
+                        <td>Texto variable para poder establecer una descripción</td>
+                    </tr>
+                    <tr>
+                        <td>puntos_golpe</td>
+                        <td>(UNSIGNED) TINYINT</td>
+                        <td>Puntos de golpe básicos de la raza (hasta 255)</td>
+                    </tr>
+                    <tr>
+                        <td>equipo_inicial</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="clase_habilidadTabla">
+                <caption>
+                    <h4>Tabla clase_habilidad*</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_clase</td>
+                        <td>(UNSIGNED) TINYINT</td>
+                        <td>El tipo de dato debe coincidir con <a href="#claseTabla">clase</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_habilidad</td>
+                        <td>(UNSIGNED) SMALLINT</td>
+                        <td>El tipo de dato debe coincidir con <a href="#habilidadTabla">habilidad</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="consumibleTabla">
+                <caption>
+                    <h4>Tabla consumible*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>El dato debe ser del mismo tipo que el ID de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                    <tr>
+                        <td>usos</td>
+                        <td>(UNSIGNED) SMALLINT</td>
+                        <td>El número de usos con cobertura extra, entre 0 y 65535</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="efectoTabla">
+                <caption>
+                    <h4>Tabla efecto*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>Permite crear una basta cantidad de efectos +4 mil millones</td>
+                    </tr>
+                    <tr>
+                        <td class="unique" title="Unique Key">nombre</td>
+                        <td>VARCHAR(50)</td>
+                        <td>50 caracteres para definir el nombre del efecto</td>
+                    </tr>
+                    <tr>
+                        <td>cantidad</td>
+                        <td>(UNSIGNED) MEDIUMINT</td>
+                        <td>La cantidad (magnitud) del efecto con cobertura extra, entre 0 y 16777215</td>
+                    </tr>
+                    <tr>
+                        <td>duracion</td>
+                        <td>TINYINT</td>
+                        <td>La duración en turnos del efecto, siendo 0 un efecto instantáneo y -1 uno permanente.
+                            Cobertura hasta 125 turnos.</td>
+                    </tr>
+                    <tr>
+                        <td>tipo</td>
+                        <td>ENUM('damage','status','debuf','buff','other','none')</td>
+                        <td>El tipo de efecto: daño, estado, debuf, bufo u otros. (controla el tratamiento del dato)
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="efecto_habilidadTabla">
+                <caption>
+                    <h4>Tabla efecto_habilidad*</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_efecto</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#efectoTabla">efecto</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_habilidad</td>
+                        <td>(UNSIGNED) SMALLINT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#habilidadTabla">habilidad</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="efecto_objetoTabla">
+                <caption>
+                    <h4>Tabla efecto_objeto*</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_efecto</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#efectoTabla">efecto</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_objeto</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="efecto_pasivaTabla">
+                <caption>
+                    <h4>Tabla efecto_pasiva*</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_efecto</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#efectoTabla">efecto</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_pasiva</td>
+                        <td>(UNSIGNED) MEDIUM INT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#pasivaTabla">pasiva</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="eventoTabla">
+                <caption>
+                    <h4>Tabla evento*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>La cantidad de eventos puede ser bastante grande, +4 mil millones lo cubrirá con creeces.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="unique" title="Unique Key">nombre</td>
+                        <td>VARCHAR(100)</td>
+                        <td>100 caracteres para establecer el nombre del evento</td>
+                    </tr>
+                    <tr>
+                        <td>descripcion</td>
+                        <td>TEXT</td>
+                        <td>Texto variable para describir el evento</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="habilidadTabla">
+                <caption>
+                    <h4>Tabla habilidad*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>(UNSIGNED) SMALLINT</td>
+                        <td>Se pueden registrar una gran cantidad de habilidades, entre 0 y 65535</td>
+                    </tr>
+                    <tr>
+                        <td class="unique" title="Unique Key">nombre</td>
+                        <td>VARCHAR(50)</td>
+                        <td>50 caracteres para establecer el nombre de la habilidad</td>
+                    </tr>
+                    <tr>
+                        <td>descripcion</td>
+                        <td>TEXT</td>
+                        <td>Texto variable para describir la habilidad</td>
+                    </tr>
+                    <tr>
+                        <td>tipo</td>
+                        <td>ENUM('fisico','magico','estado','campo','aux','otro')</td>
+                        <td>Opción para definir el tipo de la habilidad</td>
+                    </tr>
+                    <tr>
+                        <td>coste</td>
+                        <td>(UNSIGNED) SMALLINT</td>
+                        <td>Energía/Maná que cuesta usar la habilidad</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="habilidad_personajeTabla">
+                <caption>
+                    <h4>Tabla habilidad_personaje</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_personaje</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#personajeTabla">personaje</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_habilidad</td>
+                        <td>(UNSIGNED) SMALLINT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#habilidadTabla">habilidad</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="idiomaTabla">
+                <caption>
+                    <h4>Tabla idioma*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>(UNSIGNED) SMALLINT</td>
+                        <td>Se pueden registrar más de 65 mil idiomas (muchos más de lo necesarios).</td>
+                    </tr>
+                    <tr>
+                        <td class="unique" title="Unique Key">nombre</td>
+                        <td>VARCHAR(20)</td>
+                        <td>20 caracteres para establecer el nombre del idioma</td>
+                    </tr>
+                    <tr>
+                        <td>descripcion</td>
+                        <td>VARCHAR(500)</td>
+                        <td>500 caracteres para describir el idioma</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="idioma_razaTabla">
+                <caption>
+                    <h4>Tabla idioma_raza*</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_raza</td>
+                        <td>(UNSIGNED) TINYINT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#razaTabla">raza</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_idioma</td>
+                        <td>(UNSIGNED) SMALLINT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#idiomaTabla">idioma</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="incursionTabla">
+                <caption>
+                    <h4>Tabla incursion</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>Se realizará una gran cantidad de incursiones ("partidas")</td>
+                    </tr>
+                    <tr>
+                        <td class="unique" title="Unique Key">nombre</td>
+                        <td>VARCHAR(100)</td>
+                        <td>100 caracteres para establecer el nombre de la incursion</td>
+                    </tr>
+                    <tr>
+                        <td>historia</td>
+                        <td>MEDIUMTEXT</td>
+                        <td>Texto de tamaño variable (+16 millones de caracteres) para redactar la incursión</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="incursion_personajeTabla">
+                <caption>
+                    <h4>Tabla incursion_personaje</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_incursion</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#incursionTabla">incursion</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_personaje</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#personajeTabla">personaje</a></td>
+                    </tr>
+                    <tr>
+                        <td>sobrevive</td>
+                        <td>ENUM('true', 'false')</td>
+                        <td>Si el personaje ha sobrevivido o no a la incursión</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="inventarioTabla">
+                <caption>
+                    <h4>Tabla inventario</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_personaje</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#personajeTabla">personaje</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_objeto</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                    <tr>
+                        <td>cantidad</td>
+                        <td>MEDIUMINT</td>
+                        <td>Cantidad de dicho objeto que posee el personaje (valores negativos para NO consumibles)</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="jugadorTabla">
+                <caption>
+                    <h4>Tabla jugador</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>(UNSIGNED) MEDIUMINT</td>
+                        <td>Se pueden registrar más de 16 millones de jugadores</a></td>
+                    </tr>
+                    <tr>
+                        <td class="unique" title="Unique Key">nombre</td>
+                        <td>VARCHAR(50)</td>
+                        <td>50 caracteres para definir el nombre del jugador</td>
+                    </tr>
+                    <tr>
+                        <td>correo</td>
+                        <td>VARCHAR(75)</td>
+                        <td>75 caracteres para definir el correo del jugador</td>
+                    </tr>
+                    <tr>
+                        <td>hash</td>
+                        <td>CHAR(60)</td>
+                        <td>60 caracteres para almacenar el hash, CHAR -> tamaño fijo</td>
+                    </tr>
+                    <tr>
+                        <td>puntos</td>
+                        <td>(UNSIGNED) MEDIUMINT</td>
+                        <td>Cantidad de puntos que ha conseguido el jugador</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="objetoTabla">
+                <caption>
+                    <h4>Tabla objeto*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>Se pueden registrar más de 4 mil millones de objetos</td>
+                    </tr>
+                    <tr>
+                        <td class="unique" title="Unique Key">nombre</td>
+                        <td>VARCHAR(75)</td>
+                        <td>75 caracteres para definir el nombre del objeto</td>
+                    </tr>
+                    <tr>
+                        <td>tipo</td>
+                        <td>ENUM('arma','armadura','consumible','paquete','base')</td>
+                        <td>Para definir el tipo de objeto dentro de una serie de valores controlados</td>
+                    </tr>
+                    <tr>
+                        <td>descripcion</td>
+                        <td>MEDIUMTEXT</td>
+                        <td>Texto variable para describir el objeto</td>
+                    </tr>
+                    <tr>
+                        <td>precio</td>
+                        <td>(UNSIGNED) DECIMAL(9,4)</td>
+                        <td>El precio del objeto en la tienda</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="paqueteTabla">
+                <caption>
+                    <h4>Tabla paquete*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                    <tr>
+                        <td>obj1</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                    <tr>
+                        <td>obj2</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                    <tr>
+                        <td>ambos</td>
+                        <td>ENUM('true','false')</td>
+                        <td>Si se deben otorgar ambos objetos del paquete o no</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="pasivaTabla">
+                <caption>
+                    <h4>Tabla pasiva*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>(UNSIGNED) MEDIUMINT</td>
+                        <td>Permite la existencia de hasta 16 millones de pasivas</td>
+                    </tr>
+                    <tr>
+                        <td class="unique" title="Unique Key">nombre</td>
+                        <td>VARCHAR(50)</td>
+                        <td>50 caracteres para definir el nombre de la pasiva</td>
+                    </tr>
+                    <tr>
+                        <td>descripcion</td>
+                        <td>MEDIUMTEXT</td>
+                        <td>Texto de tamaño variable para describir la pasiva</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="pasiva_razaTabla">
+                <caption>
+                    <h4>Tabla pasiva_raza*</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_raza</td>
+                        <td>(UNSIGNED) TINYINT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#razaTabla">raza</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_pasiva</td>
+                        <td>(UNSIGNED) MEDIUMINT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#pasivaTabla">pasiva</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="personajeTabla">
+                <caption>
+                    <h4>Tabla personaje</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>Identificador único del personaje</td>
+                    </tr>
+                    <tr>
+                        <td>propietario</td>
+                        <td>(UNSIGNED) MEDIUMINT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#jugadorTabla">jugador</a></td>
+                    </tr>
+                    <tr>
+                        <td>raza</td>
+                        <td>(UNSIGNED) TINYINT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#razaTabla">raza</a></td>
+                    </tr>
+                    <tr>
+                        <td>clase</td>
+                        <td>(UNSIGNED) TINYINT</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#claseTabla">clase</a></td>
+                    </tr>
+                    <tr>
+                        <td>nombre</td>
+                        <td>VARCHAR(50)</td>
+                        <td>50 caracteres para definir el nombre del personaje</td>
+                    </tr>
+                    <tr>
+                        <td>historia</td>
+                        <td>MEDIUMTEXT</td>
+                        <td>Texto de tamaño variable para describir la historia del personaje</td>
+                    </tr>
+                    <tr>
+                        <td>experiencia</td>
+                        <td>(UNSIGNED) INT</td>
+                        <td>Experiencia acumulada por el personaje</td>
+                    </tr>
+                    <tr>
+                        <td>dinero</td>
+                        <td>(UNSIGNED) DECIMAL(20,6)</td>
+                        <td>Cantidad de dinero que posee el personaje</td>
+                    </tr>
+                    <tr>
+                        <td>puntos_habilidad</td>
+                        <td>(UNSIGNED) SMALLINT</td>
+                        <td>Puntos de habilidad disponibles para el personaje</td>
+                    </tr>
+                    <tr>
+                        <td>vivo</td>
+                        <td>ENUM('true','false')</td>
+                        <td>Indica si el personaje está vivo o no</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="razaTabla">
+                <caption>
+                    <h4>Tabla raza*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>(UNSIGNED) TINYINT</td>
+                        <td>Hasta 256 razas posibles para almacenar</td>
+                    </tr>
+                    <tr>
+                        <td class="unique" title="Unique Key">nombre</td>
+                        <td>VARCHAR(30)</td>
+                        <td>30 caracteres para definir el nombre de la raza</td>
+                    </tr>
+                    <tr>
+                        <td>caracteristicas</td>
+                        <td>TEXT</td>
+                        <td>Texto de tamaño variable para describir las características de la raza</td>
+                    </tr>
+                    <tr>
+                        <td>historia</td>
+                        <td>MEDIUMTEXT</td>
+                        <td>Texto de tamaño variable para describir la historia de la raza</td>
+                    </tr>
+                    <tr>
+                        <td>velocidad</td>
+                        <td>(UNSIGNED) TINYINT</td>
+                        <td>Velocidad de la raza, entre 0 y 255</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        <section id="funciones" hidden>
+            <h3>Información de las funciones</h3>
+            <h4>Índice</h4>
+            <section id="indiceFunciones">
+                <ul id="funcionesCrear">
+                    <li><a href="#crearArma">crearArma()</a></li>
+                    <li><a href="#crearArmadura">crearArmadura()</a></li>
+                    <li><a href="#crearConsumible">crearConsumible()</a></li>
+                    <li><a href="#crearObjeto">crearObjeto()</a></li>
+                    <li><a href="#crearObjetoBase">crearObjetoBase()</a></li>
+                    <li><a href="#crearPaquete">crearPaquete()</a></li>
+                </ul>
+                <ul id="funcionesProponer">
+                    <li><a href="#proponerArma">proponerArma()</a></li>
+                    <li><a href="#proponerArmadura">proponerArmadura()</a></li>
+                    <li><a href="#proponerConsumible">proponerConsumible()</a></li>
+                    <li><a href="#proponerObjeto">proponerObjeto()</a></li>
+                    <li><a href="#proponerObjetoBase">proponerObjetoBase()</a></li>
+                    <li><a href="#proponerPaquete">proponerPaquete()</a></li>
+                </ul>
+                <ul id="funcionesAceptar">
+                    <li><a href="#aceptarArma">aceptarArma()</a></li>
+                    <li><a href="#aceptarArmadura">aceptarArmadura()</a></li>
+                    <li><a href="#aceptarConsumible">aceptarConsumible()</a></li>
+                    <li><a href="#aceptarObjeto">aceptarObjeto()</a></li>
+                    <li><a href="#aceptarObjetoBase">aceptarObjetoBase()</a></li>
+                    <li><a href="#aceptarPaquete">aceptarPaquete()</a></li>
+                </ul>
+            </section>
+            <section id="listadoFunciones">
+                <div id="crearArma">
+                    <div>
+                        <h5>Crear Arma</h5>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nombre</td>
+                                    <td>VARCHAR(50)</td>
+                                </tr>
+                                <tr>
+                                    <td>tipo</td>
+                                    <td>ENUM('arma','armadura',<br>'consumible','paquete','base')</td>
+                                </tr>
+                                <tr>
+                                    <td>descripcion</td>
+                                    <td>LONGTEXT</td>
+                                </tr>
+                                <tr>
+                                    <td>precio</td>
+                                    <td>DECIMAL(9,4)</td>
+                                </tr>
+                                <tr>
+                                    <td>material</td>
+                                    <td>VARCHAR(50)</td>
+                                </tr>
+                                <tr>
+                                    <td>modificador</td>
+                                    <td>TINYINT(3)</td>
+                                </tr>
+                                <tr>
+                                    <td>doble</td>
+                                    <td>ENUM('true', 'false')</td>
+                                </tr>
+                                <tr>
+                                    <td>combate</td>
+                                    <td>ENUM('fisico', 'magico')</td>
+                                </tr>
+                                <tr>
+                                    <td>rango</td>
+                                    <td>TINYINT(3)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <img src="./diagrams/crearArma.svg" alt="Diagrama de flujo: crearArma()">
+                </div>
+                <div id="crearArmadura">
+                    <h5>Crear Armadura</h5>
+                </div>
+            </section>
+        </section>
     </div>
 </body>
+
 </html>
