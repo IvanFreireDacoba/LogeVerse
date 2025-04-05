@@ -104,7 +104,7 @@
         #indiceTablas {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: repeat(8, auto);
+            grid-template-rows: repeat(9, auto);
             grid-auto-flow: column;
         }
 
@@ -138,7 +138,7 @@
 
             #indiceTablas {
                 grid-template-columns: 1fr 1fr;
-                grid-template-rows: repeat(16, auto);
+                grid-template-rows: repeat(18, auto);
             }
         }
 
@@ -264,8 +264,11 @@
                 <li><a href="#habilidad_personajeTabla">habilidad_personaje</a></li>
                 <li><a href="#idiomaTabla">idioma</a></li>
                 <li><a href="#idioma_razaTabla">idioma_raza</a></li>
+                <li><a href="#imagen_claseTabla">imagen_clase</a></li>
+                <li><a href="#imagen_objetoTabla">imagen_objeto</a></li>
                 <li><a href="#imagen_perfilTabla">imagen_perfil</a></li>
-                <li><a href="#imagen_personajeTablaTabla">imagen_personajeTabla</a></li>
+                <li><a href="#imagen_personajeTabla">imagen_personajeTabla</a></li>
+                <li><a href="#imagen_razaTabla">imagen_razaTabla</a></li>
                 <li><a href="#incursionTabla">incursion</a></li>
                 <li><a href="#incursion_personajeTabla">incursion_personaje</a></li>
                 <li><a href="#inventarioTabla">inventario</a></li>
@@ -860,6 +863,54 @@
                     </tr>
                 </tbody>
             </table>
+            <table id="imagen_claseTabla">
+                <caption>
+                    <h4>Tabla imagen_clase*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_clase</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#claseTabla">clase</a></td>
+                    </tr>
+                    <tr>
+                        <td>img_data</td>
+                        <td>LONGBLOB</td>
+                        <td>Tipo de dato utilizado para almacenar la información de una imagen</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="imagen_objetoTabla">
+                <caption>
+                    <h4>Tabla imagen_objeto*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_objeto</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                    <tr>
+                        <td>img_data</td>
+                        <td>LONGBLOB</td>
+                        <td>Tipo de dato utilizado para almacenar la información de una imagen</td>
+                    </tr>
+                </tbody>
+            </table>
             <table id="imagen_perfilTabla">
                 <caption>
                     <h4>Tabla imagen_perfil</h4>
@@ -900,6 +951,30 @@
                         <td class="primaryKey" title="Primary Key">id_personaje</td>
                         <td>INT(10) UNSIGNED</td>
                         <td>El tipo de dato debe coincidir con el id de <a href="#personajeTabla">personaje</a></td>
+                    </tr>
+                    <tr>
+                        <td>img_data</td>
+                        <td>LONGBLOB</td>
+                        <td>Tipo de dato utilizado para almacenar la información de una imagen</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="imagen_razaTabla">
+                <caption>
+                    <h4>Tabla imagen_raza*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_raza</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#razaTabla">raza</a></td>
                     </tr>
                     <tr>
                         <td>img_data</td>
@@ -1265,7 +1340,8 @@
             </table>
         </section>
         <section id="Procedimientos" hidden>
-            <h3>Información de las Procedimientos</h3>
+            <h3>Información de los Procedimientos</h3>
+            <p>Todo procedimiento requiere de una variable de entrada en la que almacenar su salida.</p>
             <h4>Índice</h4>
             <section id="indiceProcedimientos">
                 <ul id="ProcedimientosAceptar_g1">
@@ -1375,76 +1451,203 @@
                                 alt="Diagrama de flujo: aceptarArmadura()"></a>
                     </details>
                 </div>
-                <div class="procedure">
+                <div class="procedure" id="aceptarAtributo">
                     <div>
-                        <h3></h3>
+                        <h3>Aceptar Atributo</h3>
+                        <p class="complejidad">Complejidad Ciclomática: <a>3</a></p>
                         <hr>
-                        <table></table>
-                    </div>
-                        <details>
-                        <summary>Ver diagrama de flujo</summary>
+                        <table>
+                            <caption>Datos de entrada "aceptarAtributo()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>atributoID</td>
+                                    <td>TINYINT(3) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Permite aceptar un atributo y migrarlo de la tabla de <strong>prop_atributo</strong> a
+                            <strong>atributo</strong>
+                        </p>
                         <br>
-                        <a title=""><img src="" alt=""></a>
-                    </details>
-                </div>
-                <div class="procedure">
-                    <div>
-                        <h3></h3>
-                        <hr>
-                        <table></table>
-                    </div>
-                    <details>
-                        <summary>Ver diagrama de flujo</summary>
-                        <br>
-                        <a title=""><img src="" alt=""></a>
-                    </details>
-                </div>
-                <div class="procedure">
-                    <div>
-                        <h3></h3>
-                        <hr>
-                        <table></table>
+                        <p>Devuelve el ID del atributo creado:<br><strong class="returnType">TINYINT(3) UNSIGNED</strong>
+                        </p>
                     </div>
                     <details>
                         <summary>Ver diagrama de flujo</summary>
                         <br>
-                        <a title=""><img src="" alt=""></a>
+                        <a title="Diagrama de flujo: aceptarAtributo()"><img src="./diagrams/aceptarAtributo.svg"
+                                alt="Diagrama de flujo: aceptarAtributo()"></a>
                     </details>
                 </div>
-                <div class="procedure">
+                <div class="procedure" id="aceptarClase">
                     <div>
-                        <h3></h3>
+                        <h3>Aceptar Clase</h3>
+                        <p class="complejidad">Complejidad Ciclomática: <a>3</a></p>
                         <hr>
-                        <table></table>
+                        <table>
+                            <caption>Datos de entrada "aceptarClase()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>claseID</td>
+                                    <td>TINYINT(3) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Permite aceptar una clase y migrarla de la tabla de <strong>prop_clase</strong> a
+                            <strong>clase</strong>
+                        </p>
+                        <p>Gestiona las habilidades e imagen asociadas a dicha clase</p>
+                        <br>
+                        <p>Devuelve el ID de la clase creada:<br><strong class="returnType">TINYINT(3) UNSIGNED</strong>
+                        </p>
                     </div>
                     <details>
                         <summary>Ver diagrama de flujo</summary>
                         <br>
-                        <a title=""><img src="" alt=""></a>
+                        <a title="Diagrama de flujo: aceptarClase()"><img src="./diagrams/aceptarClase.svg"
+                                alt="Diagrama de flujo: aceptarClase()"></a>
                     </details>
                 </div>
-                <div class="procedure">
+                <div class="procedure" id="aceptarConsumible">
                     <div>
-                        <h3></h3>
+                        <h3>Aceptar Consumible</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 3</p>
                         <hr>
-                        <table></table>
+                        <table>
+                            <caption>Datos de entrada "aceptarConsumible()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>consumibleID</td>
+                                    <td>INT(10) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Migra un objeto de la tabla de consumibles propuestos "prop_consumible" a la tabla "consumible"</p>
+                        <p>También gestiona el objeto asociado a la consumible (clase abstracta)</p>
+                        <br>
+                        <p>Devuelve el ID del consumible migrado:<br><strong class="returnType">INT(10) UNSIGNED</strong>
+                        </p>
                     </div>
                     <details>
                         <summary>Ver diagrama de flujo</summary>
                         <br>
-                        <a title=""><img src="" alt=""></a>
+                        <a title="Diagrama de flujo: aceptarConsumible()"><img src="./diagrams/aceptarConsumible.svg"
+                            alt="Diagrama de flujo: aceptarConsumible()"></a>
                     </details>
                 </div>
-                <div class="procedure">
+                <div class="procedure" id="aceptarEfecto">
                     <div>
-                        <h3></h3>
+                        <h3>Aceptar Efecto</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 3</p>
                         <hr>
-                        <table></table>
+                        <table>
+                            <caption>Datos de entrada "aceptarEfecto()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>efectoID</td>
+                                    <td>INT(10) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Migra un efecto de la tabla de efectos propuestos "prop_efecto" a la tabla "efecto"</p>
+                        <br>
+                        <p>Devuelve el ID del efecto migrado:<br><strong class="returnType">INT(10) UNSIGNED</strong>
+                        </p>
                     </div>
                     <details>
                         <summary>Ver diagrama de flujo</summary>
                         <br>
-                        <a title=""><img src="" alt=""></a>
+                        <a title="Diagrama de flujo: aceptarEfecto()"><img src="./diagrams/aceptarEfecto.svg"
+                            alt="Diagrama de flujo: aceptarEfecto()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="aceptarEvento">
+                    <div>
+                        <h3>Aceptar Evento</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 3</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "aceptarEvento()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>eventoID</td>
+                                    <td>INT(10) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Migra un evento de la tabla de eventos propuestos "prop_evento" a la tabla "evento"</p>
+                        <br>
+                        <p>Devuelve el ID del evento migrado:<br><strong class="returnType">INT(10) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                        <a title="Diagrama de flujo: aceptarEvento()"><img src="./diagrams/aceptarEvento.svg"
+                            alt="Diagrama de flujo: aceptarEvento()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="aceptarHabilidad">
+                    <div>
+                        <h3>Aceptar Habilidad</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 3</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "aceptarHabilidad()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>habilidadID</td>
+                                    <td>INT(10) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Migra una habilidad de la tabla de habilidades propuestas "prop_habilidad" a la tabla "habilidad"</p>
+                        <p>Gestiona los efectos asociados a dicha habilidad</p>
+                        <br>
+                        <p>Devuelve el ID de la habilidad migrada:<br><strong class="returnType">INT(10) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                        <a title="Diagrama de flujo: aceptarHabilidad()"><img src="./diagrams/aceptarHabilidad.svg"
+                            alt="Diagrama de flujo: aceptarHabilidad()"></a>
                     </details>
                 </div>
                 <div class="procedure" id="aceptarObjeto">
@@ -1479,64 +1682,138 @@
                             alt="Diagrama de flujo: aceptarObjeto()"></a>
                     </details>
                 </div>
-                <div class="procedure">
+                <div class="procedure" id="aceptarObjetoBase">
                     <div>
-                        <h3></h3>
+                        <h3>Aceptar Base (Objeto)</h3>
                         <hr>
-                        <table></table>
+                        <p class="complejidad">Complejidad Ciclomática: 3</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "aceptarObjetoBase()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>objetoID</td>
+                                    <td>INT(10) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Migra un objeto de la tabla de objetos base propuestos "prop_base" a la tabla "base"</p>
+                        <p>También gestiona el objeto asociado al base (clase abstracta)</p>
+                        <br>
+                        <p>Devuelve el ID del objeto base migrado:<br><strong class="returnType">INT(10) UNSIGNED</strong>
+                        </p>
                     </div>
                     <details>
                         <summary>Ver diagrama de flujo</summary>
                         <br>
-                        <a title=""><img src="" alt=""></a>
+                        <a title="Diagrama de flujo: aceptarObjetoBase()"><img src="./diagrams/aceptarObjetoBase.svg"
+                            alt="Diagrama de flujo: aceptarObjetoBase()"></a>
                     </details>
                 </div>
-                <div class="procedure">
+                <div class="procedure" id="aceptarPaquete">
                     <div>
-                        <h3></h3>
+                        <h3>Aceptar Paquete</h3>
                         <hr>
-                        <table></table>
+                        <p class="complejidad">Complejidad Ciclomática: 5</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "aceptarPaquete()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>objetoID</td>
+                                    <td>INT(10) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Migra un objeto de la tabla de paquetes propuestos "prop_paquete" a la tabla "paquetes"</p>
+                        <p>También gestiona el objeto asociado al paquete (clase abstracta)</p>
+                        <br>
+                        <p>Devuelve el ID del paquete migrado:<br><strong class="returnType">INT(10) UNSIGNED</strong>
+                        </p>
                     </div>
                     <details>
                         <summary>Ver diagrama de flujo</summary>
                         <br>
-                        <a title=""><img src="" alt=""></a>
+                        <a title="Diagrama de flujo: aceptarPaquete()"><img src="./diagrams/aceptarPaquete.svg"
+                            alt="Diagrama de flujo: aceptarPaquete()"></a>
                     </details>
                 </div>
-                <div class="procedure">
+                <div class="procedure" id="aceptarPasiva">
                     <div>
-                        <h3></h3>
+                        <h3>Aceptar Pasiva</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 3</p>
                         <hr>
-                        <table></table>
+                        <table>
+                            <caption>Datos de entrada "aceptarPasiva()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>pasivaID</td>
+                                    <td>INT(10) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Migra una pasiva de la tabla de pasivas propuestas "prop_pasiva" a la tabla "pasiva"</p>
+                        <p>Gestiona los efectos asociados a dicha pasiva</p>
+                        <br>
+                        <p>Devuelve el ID de la pasiva migrada:<br><strong class="returnType">INT(10) UNSIGNED</strong>
+                        </p>
                     </div>
                     <details>
                         <summary>Ver diagrama de flujo</summary>
                         <br>
-                        <a title=""><img src="" alt=""></a>
+                        <a title="Diagrama de flujo: aceptarPasiva()"><img src="./diagrams/aceptarPasiva.svg"
+                            alt="Diagrama de flujo: aceptarPasiva()"></a>
                     </details>
                 </div>
-                <div class="procedure">
+                <div class="procedure" id="aceptarRaza">
                     <div>
-                        <h3></h3>
+                        <h3>Aceptar Raza</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 3</p>
                         <hr>
-                        <table></table>
+                        <table>
+                            <caption>Datos de entrada "aceptarRaza()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>razaID</td>
+                                    <td>TINYINT(3) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Migra una raza de la tabla de razas propuestas "prop_raza" a la tabla "raza"</p>
+                        <p>Gestiona los idiomas, atributos, pasivas e imagenes asociados a dicha raza</p>
+                        <br>
+                        <p>Devuelve el ID de la raza migrada:<br><strong class="returnType">TINYINT(3) UNSIGNED</strong>
+                        </p>
                     </div>
                     <details>
                         <summary>Ver diagrama de flujo</summary>
                         <br>
-                        <a title=""><img src="" alt=""></a>
-                    </details>
-                </div>
-                <div class="procedure">
-                    <div>
-                        <h3></h3>
-                        <hr>
-                        <table></table>
-                    </div>
-                    <details>
-                        <summary>Ver diagrama de flujo</summary>
-                        <br>
-                        <a title=""><img src="" alt=""></a>
+                        <a title="Diagrama de flujo: aceptarRaza()"><img src="./diagrams/aceptarRaza.svg"
+                            alt="Diagrama de flujo: aceptarRaza()"></a>
                     </details>
                 </div>
                 <div class="procedure" id="crearArma">
