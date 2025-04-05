@@ -1,0 +1,2512 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>BaseDatos_DnD.drawio.html</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .green {
+            background-color: greenyellow;
+        }
+
+        .primaryKey {
+            background-color: lightpink;
+        }
+
+        .unique {
+            background-color: lightblue;
+        }
+
+        .propuesta {
+            background-color: lightcoral;
+            border: 1px solid #b85450;
+            width: 10px;
+            aspect-ratio: 1/1;
+            margin-right: 5px;
+        }
+
+        .nm_rel {
+            background-color: lightgreen;
+        }
+
+        .square {
+            width: 10px;
+            aspect-ratio: 1/1;
+            border: 1px solid black;
+            margin-right: 5px;
+        }
+
+        #esquemaImg {
+            width: 100%;
+            height: 60vh;
+            overflow: auto;
+            white-space: nowrap;
+
+            & img {
+                display: block;
+                max-width: none;
+            }
+        }
+
+        #leyenda {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+
+            & div {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
+        #indiceProcedimientos {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+
+            & ul {
+                display: block;
+            }
+        }
+
+        #listadoProcedimientos {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            column-gap: 10px;
+            row-gap: 10px;
+
+            @media (max-width: 600px) {
+            .contenedor {
+                display: flex;
+                flex-direction: column;
+            }
+            }
+
+
+            &>div {
+                border: 1px solid black;
+                padding: 5%;
+                align-items: center;
+                justify-content: center;
+
+                &>details>a {
+                    text-align: center;
+
+                    &>img{
+                         width: 100%;
+                        height: auto;
+                        object-fit: contain;
+                    }
+                }
+            }
+        }
+
+        #indiceTablas {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(9, auto);
+            grid-auto-flow: column;
+        }
+
+        table {
+            text-align: center;
+            margin-bottom: 15px;
+            width: 100%;
+            border: 1px solid black;
+            border-collapse: collapse;
+
+            & th,
+            td {
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+        }
+
+        .returnType {
+            color: rgb(0, 75, 0);
+        }
+
+        .auxiliar {
+            color: red;
+            font-size: 0.5em;
+        }
+
+        @media (max-width: 650px){
+            #indiceProcedimientos {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            #indiceTablas {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: repeat(18, auto);
+            }
+        }
+
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            function resetStatus() {
+                document.getElementById("esquema").hidden = true;
+                document.getElementById("tablas").hidden = true;
+                document.getElementById("Procedimientos").hidden = true;
+                document.getElementById("esquemaButton").classList.remove("green");
+                document.getElementById("tablasButton").classList.remove("green");
+                document.getElementById("ProcedimientosButton").classList.remove("green");
+            }
+
+            document.getElementById("esquemaButton").addEventListener("click", () => {
+                resetStatus();
+                document.getElementById("esquema").hidden = false;
+                document.getElementById("esquemaButton").classList.add("green");
+            });
+
+            document.getElementById("tablasButton").addEventListener("click", () => {
+                resetStatus();
+                document.getElementById("tablas").hidden = false;
+                document.getElementById("tablasButton").classList.add("green");
+            });
+
+            document.getElementById("ProcedimientosButton").addEventListener("click", () => {
+                resetStatus();
+                document.getElementById("Procedimientos").hidden = false;
+                document.getElementById("ProcedimientosButton").classList.add("green");
+            });
+            
+            document.removeEventListener("DOMContentLoaded");
+        });
+
+        
+    </script>
+</head>
+
+<body>
+    <h1>Base de Datos</h1>
+    <hr>
+    <section id="intro">
+        <p>Contiene esquemas y Procedimientos.
+            <br>Es posible generar tanto la estructura de la base de datos como importar los datos pertinentes para su
+            uso desde cero.
+            <br>Los esquemas aportan documentación sobre la estructura de la base de datos.
+            <br>La gestión de la base de datos se hace de manera local en un servicio MySQL.
+        </p>
+        <nav>
+            <button id="esquemaButton" class="green" title="Información de las tablas">Info Estructura</button>
+            <button id="tablasButton" title="Información de las tablas">Info Tablas</button>
+            <button id="ProcedimientosButton" title="Información de las Procedimientos">Info Procedimientos</button>
+        </nav>
+    </section>
+    <hr>
+    <div id="seccionesInfo">
+        <section id="esquema">
+            <h3>Esquema de la base de datos</h3>
+            <div id="leyenda">
+                <div>
+                    <div class="propuesta" title="Propuesta"></div>
+                    <p>Tablas clonadas*</p>
+                </div>
+                <div>
+                    <p><strong class="underline">PK</strong> : Clave Primaria</p>
+                </div>
+                <div>
+                    <p class="underline">Clave Unica</p>
+                </div>
+                <div>
+                    <p><strong>FK</strong> : Clave Foránea</p>
+                </div>
+            </div>
+            <p>*Conjunto de tablas clonadas (existe una igual llamada prop_&lt;nombre_tabla&gt;) con el fin de almacenar
+                las propuestas</p>
+            <p><a href="BaseDatos_DnD.svg" target="_blank" title="Abrir el esquema en una nueva pestaña">Ver esquema</a>
+            </p>
+            <div id="esquemaImg">
+                <img src="./BaseDatos_DnD.svg">
+            </div>
+        </section>
+        <section id="tablas" hidden>
+            <h3>Información de las tablas</h3>
+            <div id="leyenda">
+                <div>
+                    <div class="square primaryKey" title="Primary Key"></div>
+                    <p>Clave primaria</p>
+                </div>
+                <div>
+                    <div class="square unique" title="Unique Key"></div>
+                    <p>Clave única</p>
+                </div>
+                <div>
+                    <div class="square nm_rel" title="N:M"></div>
+                    <p>Relación N:M</p>
+                </div>
+                <div>
+                    <div class="square" title="propuesta">*</div>
+                    <p>Tabla Clon</p>
+                </div>
+            </div>
+            <h4>Índice</h4>
+            <ul class="index" id="indiceTablas">
+                <li><a href="#adminTabla">admin</a></li>
+                <li><a href="#armaTabla">arma</a></li>
+                <li><a href="#armaduraTabla">armadura</a></li>
+                <li><a href="#atributoTabla">atributo</a></li>
+                <li><a href="#atributo_personajeTabla">atributo_personaje</a></li>
+                <li><a href="#atributo_razaTabla">atributo_raza</a></li>
+                <li><a href="#baseTabla">base</a></li>
+                <li><a href="#base_eventoTabla">base_evento</a></li>
+                <li><a href="#claseTabla">clase</a></li>
+                <li><a href="#clase_habilidadTabla">clase_habilidad</a></li>
+                <li><a href="#consumibleTabla">consumible</a></li>
+                <li><a href="#efectoTabla">efecto</a></li>
+                <li><a href="#efecto_habilidadTabla">efecto_habilidad</a></li>
+                <li><a href="#efecto_objetoTabla">efecto_objeto</a></li>
+                <li><a href="#efecto_pasivaTabla">efecto_pasiva</a></li>
+                <li><a href="#eventoTabla">evento</a></li>
+                <li><a href="#habilidadTabla">habilidad</a></li>
+                <li><a href="#habilidad_personajeTabla">habilidad_personaje</a></li>
+                <li><a href="#idiomaTabla">idioma</a></li>
+                <li><a href="#idioma_razaTabla">idioma_raza</a></li>
+                <li><a href="#imagen_claseTabla">imagen_clase</a></li>
+                <li><a href="#imagen_objetoTabla">imagen_objeto</a></li>
+                <li><a href="#imagen_perfilTabla">imagen_perfil</a></li>
+                <li><a href="#imagen_personajeTabla">imagen_personajeTabla</a></li>
+                <li><a href="#imagen_razaTabla">imagen_razaTabla</a></li>
+                <li><a href="#incursionTabla">incursion</a></li>
+                <li><a href="#incursion_personajeTabla">incursion_personaje</a></li>
+                <li><a href="#inventarioTabla">inventario</a></li>
+                <li><a href="#jugadorTabla">jugador</a></li>
+                <li><a href="#objetoTabla">objeto</a></li>
+                <li><a href="#paqueteTabla">paquete</a></li>
+                <li><a href="#pasivaTabla">pasiva</a></li>
+                <li><a href="#pasiva_razaTabla">pasiva_raza</a></li>
+                <li><a href="#personajeTabla">personaje</a></li>
+                <li><a href="#razaTabla">raza</a></li>
+            </ul>
+            <table id="adminTabla">
+                <caption>
+                    <h4>Tabla admin</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>MEDIUMINT(5) UNSIGNED</td>
+                        <td>El dato debe ser del mismo tipo que el ID de <a href="#jugadorTabla">jugador</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="armaTabla">
+                <caption>
+                    <h4>Tabla arma*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>El dato debe ser del mismo tipo que el ID de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                    <tr>
+                        <td>material</td>
+                        <td>VARCHAR(50)</td>
+                        <td>50 caracteres son suficientes para definir el material</td>
+                    </tr>
+                    <tr>
+                        <td>modificador</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>El modificador de daño no puede ser negativo, estará comprendido entre 1 y 255</td>
+                    </tr>
+                    <tr>
+                        <td>doble</td>
+                        <td>TINYINT(1) UNSIGNED</td>
+                        <td>Si son necesarias o no las dos manos para usar el arma</td>
+                    </tr>
+                    <tr>
+                        <td>combate</td>
+                        <td>ENUM('fisico', 'magico')</td>
+                        <td>Si el tipo de arma es física o mágica</td>
+                    </tr>
+                    <tr>
+                        <td>rango</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>El rango del arma no puede ser negativo, estará comprendido entre 1 y 255</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="armaduraTabla">
+                <caption>
+                    <h4>Tabla armadura*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>El dato debe ser del mismo tipo que el ID de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                    <tr>
+                        <td>material</td>
+                        <td>VARCHAR(50)</td>
+                        <td>50 caracteres son suficientes para definir el material</td>
+                    </tr>
+                    <tr>
+                        <td>modificador</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>El modificador de defensa no puede ser negativo, estará comprendido entre 1 y 255</td>
+                    </tr>
+                    <tr>
+                        <td>corporal</td>
+                        <td>ENUM('Cabeza', 'Cuerpo', 'Piernas', 'Pies', 'Manos', 'Dedos', 'Cola', 'Cuernos', 'Cara', 'Otro')</td>
+                        <td>La parte del cuerpo en la cual debe ir la armadura</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="atributoTabla">
+                <caption>
+                    <h4>Tabla atributo*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>La cantidad de atributos no superará los 255 en nigún momento, nos llega con un TINYINT</td>
+                    </tr>
+                    <tr>
+                        <td class="unique" title="Unique Key">nombre</td>
+                        <td>VARCHAR(15)</td>
+                        <td>15 caracteres son suficientes para definir el nombre del atributo</td>
+                    </tr>
+                    <tr>
+                        <td>descripcion</td>
+                        <td>TEXT</td>
+                        <td>Texto de tamaño variable para definir la descripción del atributo</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="atributo_personajeTabla">
+                <caption>
+                    <h4>Tabla atributo_personaje</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_atributo</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#atributoTabla">atributo</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_personaje</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#personajeTabla">personaje</a></td>
+                    </tr>
+                    <tr>
+                        <td>cantidad</td>
+                        <td>SMALLINT(5) UNSIGNED</td>
+                        <td>Cantidad máxima, entre 1 y 65535, más que suficiente</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="atributo_razaTabla">
+                <caption>
+                    <h4>Tabla atributo_raza*</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_atributo</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#atributoTabla">atributo</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_raza</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#razaTabla">raza</a></td>
+                    </tr>
+                    <tr>
+                        <td>cantidad</td>
+                        <td>SMALLINT(5) UNSIGNED</td>
+                        <td>Cantidad máxima, entre 1 y 65535, más que suficiente</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="baseTabla">
+                <caption>
+                    <h4>Tabla base*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                    <tr>
+                        <td>basico</td>
+                        <td>TINYINT(1) UNSIGNED</td>
+                        <td>Define si es un objeto básico o no</td>
+                    </tr>
+                    <tr>
+                        <td>uso</td>
+                        <td>TEXT</td>
+                        <td>Permite describir para qué sirve el objeto</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="base_eventoTabla">
+                <caption>
+                    <h4>Tabla base_evento*</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_objeto</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_evento</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#eventoTabla">evento</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="claseTabla">
+                <caption>
+                    <h4>Tabla clase*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>TINYINT(5) UNSIGNED</td>
+                        <td>Permite la existencia de un total de 255 clases (muchas más de las necesarias)</td>
+                    </tr>
+                    <tr>
+                        <td class="unique" title="Unique Key">nombre</td>
+                        <td>VARCHAR(50)</td>
+                        <td>50 caracteres para definir el nombre de la raza (semirrazas más largas)</td>
+                    </tr>
+                    <tr>
+                        <td>descripcion</td>
+                        <td>TEXT</td>
+                        <td>Texto variable para poder establecer una descripción</td>
+                    </tr>
+                    <tr>
+                        <td>puntos_golpe</td>
+                        <td>TINYINT(5) UNSIGNED</td>
+                        <td>Puntos de golpe básicos de la raza (hasta 255)</td>
+                    </tr>
+                    <tr>
+                        <td>equipo_inicial</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="clase_habilidadTabla">
+                <caption>
+                    <h4>Tabla clase_habilidad*</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_clase</td>
+                        <td>TINYINT(5) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con <a href="#claseTabla">clase</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_habilidad</td>
+                        <td>SMALLINT(5) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con <a href="#habilidadTabla">habilidad</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="consumibleTabla">
+                <caption>
+                    <h4>Tabla consumible*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>El dato debe ser del mismo tipo que el ID de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                    <tr>
+                        <td>usos</td>
+                        <td>SMALLINT(5) UNSIGNED</td>
+                        <td>El número de usos con cobertura extra, entre 1 y 65535</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="efectoTabla">
+                <caption>
+                    <h4>Tabla efecto*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>Permite crear una basta cantidad de efectos +4 mil millones</td>
+                    </tr>
+                    <tr>
+                        <td class="unique" title="Unique Key">nombre</td>
+                        <td>VARCHAR(50)</td>
+                        <td>50 caracteres para definir el nombre del efecto</td>
+                    </tr>
+                    <tr>
+                        <td>cantidad</td>
+                        <td>MEDIUMINT(8) UNSIGNED</td>
+                        <td>La cantidad (magnitud) del efecto con cobertura extra, entre 1 y 16777215</td>
+                    </tr>
+                    <tr>
+                        <td>duracion</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>La duración en turnos del efecto, siendo 0 un efecto instantáneo y -1 uno permanente.
+                            Cobertura hasta 125 turnos.</td>
+                    </tr>
+                    <tr>
+                        <td>tipo</td>
+                        <td>ENUM('damage', ' status', 'debuf', 'buff', 'other', 'none')</td>
+                        <td>El tipo de efecto: daño, estado, debuf, bufo u otros. (controla el tratamiento del dato)
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="efecto_habilidadTabla">
+                <caption>
+                    <h4>Tabla efecto_habilidad*</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_efecto</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#efectoTabla">efecto</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_habilidad</td>
+                        <td>SMALLINT(5) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#habilidadTabla">habilidad</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="efecto_objetoTabla">
+                <caption>
+                    <h4>Tabla efecto_objeto*</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_efecto</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#efectoTabla">efecto</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_objeto</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="efecto_pasivaTabla">
+                <caption>
+                    <h4>Tabla efecto_pasiva*</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_efecto</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#efectoTabla">efecto</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_pasiva</td>
+                        <td>MEDIUMINT(8) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#pasivaTabla">pasiva</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="eventoTabla">
+                <caption>
+                    <h4>Tabla evento*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>La cantidad de eventos puede ser bastante grande, +4 mil millones lo cubrirá con creeces.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="unique" title="Unique Key">nombre</td>
+                        <td>VARCHAR(100)</td>
+                        <td>100 caracteres para establecer el nombre del evento</td>
+                    </tr>
+                    <tr>
+                        <td>descripcion</td>
+                        <td>TEXT</td>
+                        <td>Texto variable para describir el evento</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="habilidadTabla">
+                <caption>
+                    <h4>Tabla habilidad*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>SMALLINT(5) UNSIGNED</td>
+                        <td>Se pueden registrar una gran cantidad de habilidades, entre 1 y 65535</td>
+                    </tr>
+                    <tr>
+                        <td class="unique" title="Unique Key">nombre</td>
+                        <td>VARCHAR(50)</td>
+                        <td>50 caracteres para establecer el nombre de la habilidad</td>
+                    </tr>
+                    <tr>
+                        <td>descripcion</td>
+                        <td>TEXT</td>
+                        <td>Texto variable para describir la habilidad</td>
+                    </tr>
+                    <tr>
+                        <td>tipo</td>
+                        <td>ENUM('fisico', 'magico', 'estado', 'campo', 'aux', 'otro')</td>
+                        <td>Opción para definir el tipo de la habilidad</td>
+                    </tr>
+                    <tr>
+                        <td>coste</td>
+                        <td>SMALLINT(5) UNSIGNED</td>
+                        <td>Energía/Maná que cuesta usar la habilidad</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="habilidad_personajeTabla">
+                <caption>
+                    <h4>Tabla habilidad_personaje</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_personaje</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#personajeTabla">personaje</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_habilidad</td>
+                        <td>SMALLINT(5) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#habilidadTabla">habilidad</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="idiomaTabla">
+                <caption>
+                    <h4>Tabla idioma*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>SMALLINT(5) UNSIGNED</td>
+                        <td>Se pueden registrar más de 65 mil idiomas (muchos más de lo necesarios).</td>
+                    </tr>
+                    <tr>
+                        <td class="unique" title="Unique Key">nombre</td>
+                        <td>VARCHAR(20)</td>
+                        <td>20 caracteres para establecer el nombre del idioma</td>
+                    </tr>
+                    <tr>
+                        <td>descripcion</td>
+                        <td>VARCHAR(500)</td>
+                        <td>500 caracteres para describir el idioma</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="idioma_razaTabla">
+                <caption>
+                    <h4>Tabla idioma_raza*</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_raza</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#razaTabla">raza</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_idioma</td>
+                        <td>SMALL(5) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#idiomaTabla">idioma</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="imagen_claseTabla">
+                <caption>
+                    <h4>Tabla imagen_clase*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_clase</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#claseTabla">clase</a></td>
+                    </tr>
+                    <tr>
+                        <td>img_data</td>
+                        <td>LONGBLOB</td>
+                        <td>Tipo de dato utilizado para almacenar la información de una imagen</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="imagen_objetoTabla">
+                <caption>
+                    <h4>Tabla imagen_objeto*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_objeto</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                    <tr>
+                        <td>img_data</td>
+                        <td>LONGBLOB</td>
+                        <td>Tipo de dato utilizado para almacenar la información de una imagen</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="imagen_perfilTabla">
+                <caption>
+                    <h4>Tabla imagen_perfil</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_jugador</td>
+                        <td>MEDIUMINT(8) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#jugadorTabla">jugador</a></td>
+                    </tr>
+                    <tr>
+                        <td>img_data</td>
+                        <td>LONGBLOB</td>
+                        <td>Tipo de dato utilizado para almacenar la información de una imagen</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="imagen_personajeTabla">
+                <caption>
+                    <h4>Tabla imagen_personaje</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_personaje</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#personajeTabla">personaje</a></td>
+                    </tr>
+                    <tr>
+                        <td>img_data</td>
+                        <td>LONGBLOB</td>
+                        <td>Tipo de dato utilizado para almacenar la información de una imagen</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="imagen_razaTabla">
+                <caption>
+                    <h4>Tabla imagen_raza*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_raza</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#razaTabla">raza</a></td>
+                    </tr>
+                    <tr>
+                        <td>img_data</td>
+                        <td>LONGBLOB</td>
+                        <td>Tipo de dato utilizado para almacenar la información de una imagen</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="incursionTabla">
+                <caption>
+                    <h4>Tabla incursion</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>Se realizará una gran cantidad de incursiones ("partidas")</td>
+                    </tr>
+                    <tr>
+                        <td class="unique" title="Unique Key">nombre</td>
+                        <td>VARCHAR(100)</td>
+                        <td>100 caracteres para establecer el nombre de la incursion</td>
+                    </tr>
+                    <tr>
+                        <td>historia</td>
+                        <td>MEDIUMTEXT</td>
+                        <td>Texto de tamaño variable (+16 millones de caracteres) para redactar la incursión</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="incursion_personajeTabla">
+                <caption>
+                    <h4>Tabla incursion_personaje</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_incursion</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#incursionTabla">incursion</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_personaje</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#personajeTabla">personaje</a></td>
+                    </tr>
+                    <tr>
+                        <td>sobrevive</td>
+                        <td>TINYINT(1) UNSIGNED</td>
+                        <td>Si el personaje ha sobrevivido o no a la incursión</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="inventarioTabla">
+                <caption>
+                    <h4>Tabla inventario</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_personaje</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#personajeTabla">personaje</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_objeto</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                    <tr>
+                        <td>cantidad</td>
+                        <td>MEDIUMINT(9)</td>
+                        <td>Cantidad de dicho objeto que posee el personaje (valores negativos para NO consumibles)</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="jugadorTabla">
+                <caption>
+                    <h4>Tabla jugador</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>MEDIUMINT(8) UNSIGNED</td>
+                        <td>Se pueden registrar más de 16 millones de jugadores</a></td>
+                    </tr>
+                    <tr>
+                        <td class="unique" title="Unique Key">nombre</td>
+                        <td>VARCHAR(50)</td>
+                        <td>50 caracteres para definir el nombre del jugador</td>
+                    </tr>
+                    <tr>
+                        <td>correo</td>
+                        <td>VARCHAR(75)</td>
+                        <td>75 caracteres para definir el correo del jugador</td>
+                    </tr>
+                    <tr>
+                        <td>hash</td>
+                        <td>CHAR(60)</td>
+                        <td>60 caracteres para almacenar el hash, CHAR -> tamaño fijo</td>
+                    </tr>
+                    <tr>
+                        <td>puntos</td>
+                        <td>MEDIUMINT(8) UNSIGNED</td>
+                        <td>Cantidad de puntos que ha conseguido el jugador</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="objetoTabla">
+                <caption>
+                    <h4>Tabla objeto*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>Se pueden registrar más de 4 mil millones de objetos</td>
+                    </tr>
+                    <tr>
+                        <td class="unique" title="Unique Key">nombre</td>
+                        <td>VARCHAR(75)</td>
+                        <td>75 caracteres para definir el nombre del objeto</td>
+                    </tr>
+                    <tr>
+                        <td>tipo</td>
+                        <td>ENUM('arma', 'armadura', 'consumible', 'paquete', 'base')</td>
+                        <td>Para definir el tipo de objeto dentro de una serie de valores controlados</td>
+                    </tr>
+                    <tr>
+                        <td>descripcion</td>
+                        <td>MEDIUMTEXT</td>
+                        <td>Texto variable para describir el objeto</td>
+                    </tr>
+                    <tr>
+                        <td>precio</td>
+                        <td>(UNSIGNED) DECIMAL(9,4)</td>
+                        <td>El precio del objeto en la tienda</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="paqueteTabla">
+                <caption>
+                    <h4>Tabla paquete*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                    <tr>
+                        <td>obj1</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                    <tr>
+                        <td>obj2</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                    <tr>
+                        <td>ambos</td>
+                        <td>TINYINT(1) UNSIGNED</td>
+                        <td>Si se deben otorgar ambos objetos del paquete o no</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="pasivaTabla">
+                <caption>
+                    <h4>Tabla pasiva*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>MEDIUMINT(8) UNSIGNED</td>
+                        <td>Permite la existencia de hasta 16 millones de pasivas</td>
+                    </tr>
+                    <tr>
+                        <td class="unique" title="Unique Key">nombre</td>
+                        <td>VARCHAR(50)</td>
+                        <td>50 caracteres para definir el nombre de la pasiva</td>
+                    </tr>
+                    <tr>
+                        <td>descripcion</td>
+                        <td>MEDIUMTEXT</td>
+                        <td>Texto de tamaño variable para describir la pasiva</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table title="N:M" id="pasiva_razaTabla">
+                <caption>
+                    <h4>Tabla pasiva_raza*</h4>
+                </caption>
+                <thead>
+                    <tr class="nm_rel">
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_raza</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#razaTabla">raza</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_pasiva</td>
+                        <td>MEDIUM(8) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#pasivaTabla">pasiva</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="personajeTabla">
+                <caption>
+                    <h4>Tabla personaje</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>Identificador único del personaje</td>
+                    </tr>
+                    <tr>
+                        <td>propietario</td>
+                        <td>MEDIUMINT(9) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#jugadorTabla">jugador</a></td>
+                    </tr>
+                    <tr>
+                        <td>raza</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#razaTabla">raza</a></td>
+                    </tr>
+                    <tr>
+                        <td>clase</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#claseTabla">clase</a></td>
+                    </tr>
+                    <tr>
+                        <td>nombre</td>
+                        <td>VARCHAR(50)</td>
+                        <td>50 caracteres para definir el nombre del personaje</td>
+                    </tr>
+                    <tr>
+                        <td>historia</td>
+                        <td>MEDIUMTEXT</td>
+                        <td>Texto de tamaño variable para describir la historia del personaje</td>
+                    </tr>
+                    <tr>
+                        <td>experiencia</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>Experiencia acumulada por el personaje</td>
+                    </tr>
+                    <tr>
+                        <td>dinero</td>
+                        <td>DECIMAL(20,6) UNSIGNED</td>
+                        <td>Cantidad de dinero que posee el personaje</td>
+                    </tr>
+                    <tr>
+                        <td>puntos_habilidad</td>
+                        <td>SMALLINT(5) UNSIGNED</td>
+                        <td>Puntos de habilidad disponibles para el personaje</td>
+                    </tr>
+                    <tr>
+                        <td>vivo</td>
+                        <td>TINYINT(1) UNSIGNED</td>
+                        <td>Indica si el personaje está vivo o no</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="razaTabla">
+                <caption>
+                    <h4>Tabla raza*</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>Hasta 255 razas posibles para almacenar</td>
+                    </tr>
+                    <tr>
+                        <td class="unique" title="Unique Key">nombre</td>
+                        <td>VARCHAR(30)</td>
+                        <td>30 caracteres para definir el nombre de la raza</td>
+                    </tr>
+                    <tr>
+                        <td>caracteristicas</td>
+                        <td>TEXT</td>
+                        <td>Texto de tamaño variable para describir las características de la raza</td>
+                    </tr>
+                    <tr>
+                        <td>historia</td>
+                        <td>MEDIUMTEXT</td>
+                        <td>Texto de tamaño variable para describir la historia de la raza</td>
+                    </tr>
+                    <tr>
+                        <td>velocidad</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>Velocidad de la raza, entre 1 y 255</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        <section id="Procedimientos" hidden>
+            <h3>Información de los Procedimientos</h3>
+            <p>Todo procedimiento requiere de una variable de entrada en la que almacenar su salida.</p>
+            <h4>Índice</h4>
+            <section id="indiceProcedimientos">
+                <ul id="ProcedimientosAceptar_g1">
+                    <li><a href="#aceptarArma">aceptarArma()</a></li>
+                    <li><a href="#aceptarArmadura">aceptarArmadura()</a></li>
+                    <li><a href="#aceptarAtributo">aceptarAtributo()</a></li>
+                    <li><a href="#aceptarClase">aceptarClase()</a></li>
+                    <li><a href="#aceptarConsumible">aceptarConsumible()</a></li>
+                    <li><a href="#aceptarEfecto">aceptarEfecto()</a></li>
+                </ul>
+                <ul id="ProcedimientosAceptar_g2">
+                    <li><a href="#aceptarEvento">aceptarEvento()</a></li>
+                    <li><a href="#aceptarHabilidad">aceptarHabilidad()</a></li>
+                    <li><a href="#aceptarObjeto">aceptarObjeto()</a></li>
+                    <li><a href="#aceptarObjetoBase">aceptarObjetoBase()</a></li>
+                    <li><a href="#aceptarPaquete">aceptarPaquete()</a></li>
+                    <li><a href="#aceptarPasiva">aceptarPasiva()</a></li>
+                    <li><a href="#aceptarRaza">aceptarRaza()</a></li>
+                </ul>
+                <ul id="ProcedimientosCrear">
+                    <li><a href="#crearArma">crearArma()</a></li>
+                    <li><a href="#crearArmadura">crearArmadura()</a></li>
+                    <li><a href="#crearConsumible">crearConsumible()</a></li>
+                    <li><a href="#crearObjeto">crearObjeto()</a></li>
+                    <li><a href="#crearObjetoBase">crearObjetoBase()</a></li>
+                    <li><a href="#crearPaquete">crearPaquete()</a></li>
+                </ul>
+                <ul id="ProcedimientosProponer">
+                    <li><a href="#proponerArma">proponerArma()</a></li>
+                    <li><a href="#proponerArmadura">proponerArmadura()</a></li>
+                    <li><a href="#proponerConsumible">proponerConsumible()</a></li>
+                    <li><a href="#proponerObjeto">proponerObjeto()</a></li>
+                    <li><a href="#proponerObjetoBase">proponerObjetoBase()</a></li>
+                    <li><a href="#proponerPaquete">proponerPaquete()</a></li>
+                    <li><a href="#proponerClase">proponerClase()</a></li>
+                    <li><a href="#proponerRaza">proponerRaza()</a></li>
+                </ul>
+            </section>
+            <section id="listadoProcedimientos">
+                <div class="procedure" id="aceptarArma">
+                    <div>
+                        <h3>Aceptar Arma</h3>
+                        <p class="complejidad">Complejidad Ciclomática: <a>3</a></p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "aceptarArma()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>armaID</td>
+                                    <td>INT(10) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Permite aceptar un arma y migrarla de la tabla de <strong>prop_arma</strong> a
+                            <strong>arma</strong>
+                        </p>
+                        <p>También gestiona el objeto asociado al arma (clase abstracta)</p>
+                        <br>
+                        <p>Devuelve el ID del arma creada:<br><strong class="returnType">INT(10) UNSIGNED</strong></p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                        <a title="Diagrama de flujo: aceptarArma()"><img src="./diagrams/aceptarArma.svg"
+                            alt="Diagrama de flujo: aceptarArma()"></a>
+                    </details>
+                    
+                </div>
+                <div class="procedure" id="aceptarArmadura">
+                    <div>
+                        <h3>Aceptar Armadura</h3>
+                        <p class="complejidad">Complejidad Ciclomática: <a>3</a></p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "aceptarArmadura()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>armaduraID</td>
+                                    <td>INT(10) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Permite aceptar una armadura y migrarla de la tabla de <strong>prop_armadura</strong> a
+                            <strong>armadura</strong>
+                        </p>
+                        <p>También gestiona el objeto asociado a la armadura (clase abstracta)</p>
+                        <br>
+                        <p>Devuelve el ID de la armadura creada:<br><strong class="returnType">INT(10) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                        <a title="Diagrama de flujo: aceptarArmadura()"><img src="./diagrams/aceptarArmadura.svg"
+                                alt="Diagrama de flujo: aceptarArmadura()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="aceptarAtributo">
+                    <div>
+                        <h3>Aceptar Atributo</h3>
+                        <p class="complejidad">Complejidad Ciclomática: <a>3</a></p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "aceptarAtributo()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>atributoID</td>
+                                    <td>TINYINT(3) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Permite aceptar un atributo y migrarlo de la tabla de <strong>prop_atributo</strong> a
+                            <strong>atributo</strong>
+                        </p>
+                        <br>
+                        <p>Devuelve el ID del atributo creado:<br><strong class="returnType">TINYINT(3) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                        <a title="Diagrama de flujo: aceptarAtributo()"><img src="./diagrams/aceptarAtributo.svg"
+                                alt="Diagrama de flujo: aceptarAtributo()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="aceptarClase">
+                    <div>
+                        <h3>Aceptar Clase</h3>
+                        <p class="complejidad">Complejidad Ciclomática: <a>3</a></p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "aceptarClase()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>claseID</td>
+                                    <td>TINYINT(3) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Permite aceptar una clase y migrarla de la tabla de <strong>prop_clase</strong> a
+                            <strong>clase</strong>
+                        </p>
+                        <p>Gestiona las habilidades e imagen asociadas a dicha clase</p>
+                        <br>
+                        <p>Devuelve el ID de la clase creada:<br><strong class="returnType">TINYINT(3) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                        <a title="Diagrama de flujo: aceptarClase()"><img src="./diagrams/aceptarClase.svg"
+                                alt="Diagrama de flujo: aceptarClase()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="aceptarConsumible">
+                    <div>
+                        <h3>Aceptar Consumible</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 3</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "aceptarConsumible()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>consumibleID</td>
+                                    <td>INT(10) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Migra un objeto de la tabla de consumibles propuestos "prop_consumible" a la tabla "consumible"</p>
+                        <p>También gestiona el objeto asociado a la consumible (clase abstracta)</p>
+                        <br>
+                        <p>Devuelve el ID del consumible migrado:<br><strong class="returnType">INT(10) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                        <a title="Diagrama de flujo: aceptarConsumible()"><img src="./diagrams/aceptarConsumible.svg"
+                            alt="Diagrama de flujo: aceptarConsumible()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="aceptarEfecto">
+                    <div>
+                        <h3>Aceptar Efecto</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 3</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "aceptarEfecto()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>efectoID</td>
+                                    <td>INT(10) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Migra un efecto de la tabla de efectos propuestos "prop_efecto" a la tabla "efecto"</p>
+                        <br>
+                        <p>Devuelve el ID del efecto migrado:<br><strong class="returnType">INT(10) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                        <a title="Diagrama de flujo: aceptarEfecto()"><img src="./diagrams/aceptarEfecto.svg"
+                            alt="Diagrama de flujo: aceptarEfecto()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="aceptarEvento">
+                    <div>
+                        <h3>Aceptar Evento</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 3</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "aceptarEvento()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>eventoID</td>
+                                    <td>INT(10) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Migra un evento de la tabla de eventos propuestos "prop_evento" a la tabla "evento"</p>
+                        <br>
+                        <p>Devuelve el ID del evento migrado:<br><strong class="returnType">INT(10) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                        <a title="Diagrama de flujo: aceptarEvento()"><img src="./diagrams/aceptarEvento.svg"
+                            alt="Diagrama de flujo: aceptarEvento()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="aceptarHabilidad">
+                    <div>
+                        <h3>Aceptar Habilidad</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 3</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "aceptarHabilidad()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>habilidadID</td>
+                                    <td>INT(10) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Migra una habilidad de la tabla de habilidades propuestas "prop_habilidad" a la tabla "habilidad"</p>
+                        <p>Gestiona los efectos asociados a dicha habilidad</p>
+                        <br>
+                        <p>Devuelve el ID de la habilidad migrada:<br><strong class="returnType">INT(10) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                        <a title="Diagrama de flujo: aceptarHabilidad()"><img src="./diagrams/aceptarHabilidad.svg"
+                            alt="Diagrama de flujo: aceptarHabilidad()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="aceptarObjeto">
+                    <div>
+                        <h3>Aceptar Objeto <a class="auxiliar">PROCEDIMIENTO AUXILIAR</a></h3>
+                        <p class="complejidad">Complejidad Ciclomática: 3</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "aceptarObjeto()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>objetoID</td>
+                                    <td>INT(10) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Migra un objeto de la tabla de objetos propuestos "prop_objeto" a la tabla "objeto"</p>
+                        <br>
+                        <p>Devuelve el ID del objeto migrado:<br><strong class="returnType">INT(10) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                    <a title="Diagrama de flujo: aceptarObjeto()"><img src="./diagrams/aceptarObjeto.svg"
+                            alt="Diagrama de flujo: aceptarObjeto()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="aceptarObjetoBase">
+                    <div>
+                        <h3>Aceptar Base (Objeto)</h3>
+                        <hr>
+                        <p class="complejidad">Complejidad Ciclomática: 3</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "aceptarObjetoBase()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>objetoID</td>
+                                    <td>INT(10) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Migra un objeto de la tabla de objetos base propuestos "prop_base" a la tabla "base"</p>
+                        <p>También gestiona el objeto asociado al base (clase abstracta)</p>
+                        <br>
+                        <p>Devuelve el ID del objeto base migrado:<br><strong class="returnType">INT(10) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                        <a title="Diagrama de flujo: aceptarObjetoBase()"><img src="./diagrams/aceptarObjetoBase.svg"
+                            alt="Diagrama de flujo: aceptarObjetoBase()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="aceptarPaquete">
+                    <div>
+                        <h3>Aceptar Paquete</h3>
+                        <hr>
+                        <p class="complejidad">Complejidad Ciclomática: 5</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "aceptarPaquete()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>objetoID</td>
+                                    <td>INT(10) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Migra un objeto de la tabla de paquetes propuestos "prop_paquete" a la tabla "paquetes"</p>
+                        <p>También gestiona el objeto asociado al paquete (clase abstracta)</p>
+                        <br>
+                        <p>Devuelve el ID del paquete migrado:<br><strong class="returnType">INT(10) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                        <a title="Diagrama de flujo: aceptarPaquete()"><img src="./diagrams/aceptarPaquete.svg"
+                            alt="Diagrama de flujo: aceptarPaquete()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="aceptarPasiva">
+                    <div>
+                        <h3>Aceptar Pasiva</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 3</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "aceptarPasiva()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>pasivaID</td>
+                                    <td>INT(10) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Migra una pasiva de la tabla de pasivas propuestas "prop_pasiva" a la tabla "pasiva"</p>
+                        <p>Gestiona los efectos asociados a dicha pasiva</p>
+                        <br>
+                        <p>Devuelve el ID de la pasiva migrada:<br><strong class="returnType">INT(10) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                        <a title="Diagrama de flujo: aceptarPasiva()"><img src="./diagrams/aceptarPasiva.svg"
+                            alt="Diagrama de flujo: aceptarPasiva()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="aceptarRaza">
+                    <div>
+                        <h3>Aceptar Raza</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 3</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "aceptarRaza()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>razaID</td>
+                                    <td>TINYINT(3) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Migra una raza de la tabla de razas propuestas "prop_raza" a la tabla "raza"</p>
+                        <p>Gestiona los idiomas, atributos, pasivas e imagenes asociados a dicha raza</p>
+                        <br>
+                        <p>Devuelve el ID de la raza migrada:<br><strong class="returnType">TINYINT(3) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                        <a title="Diagrama de flujo: aceptarRaza()"><img src="./diagrams/aceptarRaza.svg"
+                            alt="Diagrama de flujo: aceptarRaza()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="crearArma">
+                    <div>
+                        <h3>Crear Arma</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 2</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "crearArma()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nombre</td>
+                                    <td>VARCHAR(50)</td>
+                                </tr>
+                                <tr>
+                                    <td>descripcion</td>
+                                    <td>LONGTEXT</td>
+                                </tr>
+                                <tr>
+                                    <td>precio</td>
+                                    <td>DECIMAL(9,4)</td>
+                                </tr>
+                                <tr>
+                                    <td>material</td>
+                                    <td>VARCHAR(50)</td>
+                                </tr>
+                                <tr>
+                                    <td>modificador</td>
+                                    <td>TINYINT(3) UNSIGNED</td>
+                                </tr>
+                                <tr>
+                                    <td>doble</td>
+                                    <td>BOOLEAN</td>
+                                </tr>
+                                <tr>
+                                    <td>combate</td>
+                                    <td>ENUM('fisico', 'magico')</td>
+                                </tr>
+                                <tr>
+                                    <td>rango</td>
+                                    <td>TINYINT(3) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Permite crear un arma a partir de los parámetros de entrada</p>
+                        <br>
+                        <p>Devuelve el ID del arma creada:<br><strong class="returnType">INT(10) UNSIGNED</strong></p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                    <a title="Diagrama de flujo: crearArma()"><img src="./diagrams/crearArma.svg"
+                            alt="Diagrama de flujo: crearArma()"></a>
+                        </details>
+                </div>
+                <div class="procedure" id="crearArmadura">
+                    <div>
+                        <h3>Crear Armadura</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 2</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "crearArmadura()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nombre</td>
+                                    <td>VARCHAR(50)</td>
+                                </tr>
+                                <tr>
+                                    <td>descripcion</td>
+                                    <td>LONGTEXT</td>
+                                </tr>
+                                <tr>
+                                    <td>precio</td>
+                                    <td>DECIMAL(9,4)</td>
+                                </tr>
+                                <tr>
+                                    <td>material</td>
+                                    <td>VARCHAR(50)</td>
+                                </tr>
+                                <tr>
+                                    <td>modificador</td>
+                                    <td>TINYINT(3) UNSIGNED</td>
+                                </tr>
+                                <tr>
+                                    <td>corporal</td>
+                                    <td>ENUM('Cabeza', 'Cuerpo', 'Piernas',<br>'Pies', 'Manos', 'Dedos', 'Cola',<br>'Cuernos', 'Cara', 'Otro')
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Permite crear una armadura a partir de los parámetros de entrada</p>
+                        <br>
+                        <p>Devuelve el ID de la armadura creada:<br><strong class="returnType">INT(10) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                    <a title="Diagrama de flujo: crearArmadura()"><img src="./diagrams/crearArmadura.svg"
+                            alt="Diagrama de flujo: crearArmadura()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="crearConsumible">
+                    <div>
+                        <h3>Crear Consumible</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 2</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "crearConsumible()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nombre</td>
+                                    <td>VARCHAR(50)</td>
+                                </tr>
+                                <tr>
+                                    <td>descripcion</td>
+                                    <td>LONGTEXT</td>
+                                </tr>
+                                <tr>
+                                    <td>precio</td>
+                                    <td>DECIMAL(9,4)</td>
+                                </tr>
+                                <tr>
+                                    <td>usos</td>
+                                    <td>SMALLINT(5) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Permite crear un consumible a partir de los parámetros de entrada</p>
+                        <br>
+                        <p>Devuelve el ID del consumible creado:<br><strong class="returnType">INT(10) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                    <a title="Diagrama de flujo: crearConsumible()"><img src="./diagrams/crearConsumible.svg"
+                            alt="Diagrama de flujo: crearConsumible()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="crearObjeto">
+                    <div>
+                        <h3>Crear Objeto <a class="auxiliar">PROCEDIMIENTO AUXILIAR</a></h3>
+                        <p class="complejidad">Complejidad Ciclomática: 2</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "crearObjeto()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nombre</td>
+                                    <td>VARCHAR(50)</td>
+                                </tr>
+                                <tr>
+                                    <td>tipo</td>
+                                    <td>ENUM('arma', 'armadura',<br>'consumible', 'paquete', 'base')</td>
+                                </tr>
+                                <tr>
+                                    <td>descripcion</td>
+                                    <td>LONGTEXT</td>
+                                </tr>
+                                <tr>
+                                    <td>precio</td>
+                                    <td>DECIMAL(9,4)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Permite crear un objeto a partir de los parámetros de entrada</p>
+                        <br>
+                        <p>Devuelve el ID del objeto creado:<br><strong class="returnType">INT(10) UNSIGNED</strong></p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                    <a title="Diagrama de flujo: crearObjeto()"><img src="./diagrams/crearObjeto.svg"
+                            alt="Diagrama de flujo: crearObjeto()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="crearObjetoBase">
+                    <div>
+                        <h3>Crear Base (Objeto)</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 2</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de Entrada "crearObjetoBase()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nombre</td>
+                                    <td>VARCHAR(50)</td>
+                                </tr>
+                                <tr>
+                                    <td>descripcion</td>
+                                    <td>LONGTEXT</td>
+                                </tr>
+                                <tr>
+                                    <td>precio</td>
+                                    <td>DECIMAL(9,4)</td>
+                                </tr>
+                                <tr>
+                                    <td>basico</td>
+                                    <td>BOOLEAN</td>
+                                </tr>
+                                <tr>
+                                    <td>uso</td>
+                                    <td>TEXT</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Permite crear un objeto base a partir de los parámetros de entrada</p>
+                        <br>
+                        <p>Devuelve el ID del objeto base creado:<br><strong class="returnType">INT(10)
+                                UNSIGNED</strong></p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                    <a title="Diagrama de flujo: crearObjetoBase()"><img src="./diagrams/crearObjetoBase.svg"
+                            alt="Diagrama de flujo: crearObjetoBase()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="crearPaquete">
+                    <div>
+                        <h3>Crear Paquete</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 4</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "crearPaquete()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nombre</td>
+                                    <td>VARCHAR(50)</td>
+                                </tr>
+                                <tr>
+                                    <td>descripcion</td>
+                                    <td>LONGTEXT</td>
+                                </tr>
+                                <tr>
+                                    <td>precio</td>
+                                    <td>DECIMAL(9,4)</td>
+                                </tr>
+                                <tr>
+                                    <td>id_obj1</td>
+                                    <td>INT(10) UNSIGNED</td>
+                                </tr>
+                                <tr>
+                                    <td>id_obj2</td>
+                                    <td>INT(10) UNSIGNED</td>
+                                </tr>
+                                <tr>
+                                    <td>ambos</td>
+                                    <td>BOOLEAN</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Permite crear un paquete a partir de los parámetros de entrada</p>
+                        <p>Ambos objetos deben existir previamente para crear el paquete</p>
+                        <br>
+                        <p>Devuelve el ID del paquete creado:<br><strong class="returnType">INT(10) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                    <a title="Diagrama de flujo: crearPaquete()"><img src="./diagrams/crearPaquete.svg"
+                            alt="Diagrama de flujo: crearPaquete()"></a>
+                        </details>
+                </div>
+                <div class="procedure" id="proponerArma">
+                    <div>
+                        <h3>Proponer Arma</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 2</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "proponerArma()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nombre</td>
+                                    <td>VARCHAR(50)</td>
+                                </tr>
+                                <tr>
+                                    <td>descripcion</td>
+                                    <td>LONGTEXT</td>
+                                </tr>
+                                <tr>
+                                    <td>precio</td>
+                                    <td>DECIMAL(9,4)</td>
+                                </tr>
+                                <tr>
+                                    <td>material</td>
+                                    <td>VARCHAR(50)</td>
+                                </tr>
+                                <tr>
+                                    <td>modificador</td>
+                                    <td>TINYINT(3) UNSIGNED</td>
+                                </tr>
+                                <tr>
+                                    <td>doble</td>
+                                    <td>BOOLEAN</td>
+                                </tr>
+                                <tr>
+                                    <td>combate</td>
+                                    <td>ENUM('fisico', 'magico')</td>
+                                </tr>
+                                <tr>
+                                    <td>rango</td>
+                                    <td>TINYINT(3) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Permite crear una proposición de arma a partir de los parámetros de entrada</p>
+                        <br>
+                        <p>Devuelve el ID del arma creada:<br><strong class="returnType">INT(10) UNSIGNED</strong></p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                    <a title="Diagrama de flujo: proponerArma()"><img src="./diagrams/proponerArma.svg"
+                            alt="Diagrama de flujo: proponerArma()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="proponerArmadura">
+                    <div>
+                        <h3>Proponer Armadura</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 2</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "proponerArmadura()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nombre</td>
+                                    <td>VARCHAR(50)</td>
+                                </tr>
+                                <tr>
+                                    <td>descripcion</td>
+                                    <td>LONGTEXT</td>
+                                </tr>
+                                <tr>
+                                    <td>precio</td>
+                                    <td>DECIMAL(9,4)</td>
+                                </tr>
+                                <tr>
+                                    <td>material</td>
+                                    <td>VARCHAR(50)</td>
+                                </tr>
+                                <tr>
+                                    <td>modificador</td>
+                                    <td>TINYINT(3) UNSIGNED</td>
+                                </tr>
+                                <tr>
+                                    <td>corporal</td>
+                                    <td>ENUM('Cabeza', 'Cuerpo', 'Piernas',<br>'Pies', 'Manos', 'Dedos', 'Cola',<br>'Cuernos', 'Cara', 'Otro')
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Permite crear una proposición de armadura a partir de los parámetros de entrada</p>
+                        <br>
+                        <p>Devuelve el ID de la armadura creada:<br><strong class="returnType">INT(10) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                    <a title="Diagrama de flujo: proponerArmadura()"><img src="./diagrams/proponerArmadura.svg"
+                            alt="Diagrama de flujo: proponerArmadura()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="proponerConsumible">
+                    <div>
+                        <h3>Proponer Consumible</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 2</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "proponerConsumible()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nombre</td>
+                                    <td>VARCHAR(50)</td>
+                                </tr>
+                                <tr>
+                                    <td>descripcion</td>
+                                    <td>LONGTEXT</td>
+                                </tr>
+                                <tr>
+                                    <td>precio</td>
+                                    <td>DECIMAL(9,4)</td>
+                                </tr>
+                                <tr>
+                                    <td>usos</td>
+                                    <td>SMALLINT(5) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Permite crear una proposición de consumible a partir de los parámetros de entrada</p>
+                        <br>
+                        <p>Devuelve el ID del consumible creado:<br><strong class="returnType">INT(10) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                    <a title="Diagrama de flujo: proponerConsumible()"><img src="./diagrams/proponerConsumible.svg"
+                            alt="Diagrama de flujo: proponerConsumible()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="proponerObjeto">
+                    <div>
+                        <h3>Proponer Objeto <a class="auxiliar">PROCEDIMIENTO AUXILIAR</a></h3>
+                        <p class="complejidad">Complejidad Ciclomática: 2</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "proponerObjeto()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nombre</td>
+                                    <td>VARCHAR(50)</td>
+                                </tr>
+                                <tr>
+                                    <td>tipo</td>
+                                    <td>ENUM('arma', 'armadura',<br>'consumible', 'paquete', 'base')</td>
+                                </tr>
+                                <tr>
+                                    <td>descripcion</td>
+                                    <td>LONGTEXT</td>
+                                </tr>
+                                <tr>
+                                    <td>precio</td>
+                                    <td>DECIMAL(9,4)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Permite crear una propuesta de objeto a partir de los parámetros de entrada</p>
+                        <br>
+                        <p>Devuelve el ID del objeto creado:<br><strong class="returnType">INT(10) UNSIGNED</strong></p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                    <a title="Diagrama de flujo: proponerObjeto()"><img src="./diagrams/proponerObjeto.svg"
+                            alt="Diagrama de flujo: proponerObjeto()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="proponerObjetoBase">
+                    <div>
+                        <h3>Proponer Base (Objeto)</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 2</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de Entrada "proponerObjetoBase()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nombre</td>
+                                    <td>VARCHAR(50)</td>
+                                </tr>
+                                <tr>
+                                    <td>descripcion</td>
+                                    <td>LONGTEXT</td>
+                                </tr>
+                                <tr>
+                                    <td>precio</td>
+                                    <td>DECIMAL(9,4) UNSIGNED</td>
+                                </tr>
+                                <tr>
+                                    <td>basico</td>
+                                    <td>BOOLEAN</td>
+                                </tr>
+                                <tr>
+                                    <td>uso</td>
+                                    <td>TEXT</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Permite crear una proposición de objeto base a partir de los parámetros de entrada</p>
+                        <br>
+                        <p>Devuelve el ID del objeto base creado:<br><strong class="returnType">INT(10)
+                                UNSIGNED</strong></p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                    <a title="Diagrama de flujo: proponerObjetoBase()"><img src="./diagrams/proponerObjetoBase.svg"
+                            alt="Diagrama de flujo: proponerObjetoBase()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="proponerPaquete">
+                    <div>
+                        <h3>Proponer Paquete</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 4</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "proponerPaquete()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nombre</td>
+                                    <td>VARCHAR(50)</td>
+                                </tr>
+                                <tr>
+                                    <td>descripcion</td>
+                                    <td>LONGTEXT</td>
+                                </tr>
+                                <tr>
+                                    <td>precio</td>
+                                    <td>DECIMAL(9,4)</td>
+                                </tr>
+                                <tr>
+                                    <td>id_obj1</td>
+                                    <td>INT(10) UNSIGNED</td>
+                                </tr>
+                                <tr>
+                                    <td>id_obj2</td>
+                                    <td>INT(10) UNSIGNED</td>
+                                </tr>
+                                <tr>
+                                    <td>ambos</td>
+                                    <td>BOOLEAN</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Permite crear una proposición de paquete a partir de los parámetros de entrada</p>
+                        <p>Los objetos propuestos como parte del paquete deben existir previamente</p>
+                        <br>
+                        <p>Devuelve el ID del paquete creado:<br><strong class="returnType">INT(10) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                    <a title="Diagrama de flujo: proponerPaquete()"><img src="./diagrams/proponerPaquete.svg"
+                            alt="Diagrama de flujo: proponerPaquete()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="proponerClase">
+                    <div>
+                        <h3>Proponer Clase</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 2</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "proponerClase()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nombre</td>
+                                    <td>VARCHAR(50)</td>
+                                </tr>
+                                <tr>
+                                    <td>descripcion</td>
+                                    <td>TEXT</td>
+                                </tr>
+                                <tr>
+                                    <td>puntos_golpe</td>
+                                    <td>TINYINT(3) UNSIGNED</td>
+                                </tr>
+                                <tr>
+                                    <td>equipo_inicial</td>
+                                    <td>INT(10) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Permite crear una proposición de clase a partir de los parámetros de entrada</p>
+                        <br>
+                        <p>Devuelve el ID de la clase creada:<br><strong class="returnType">TINYINT(3) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                    <a title="Diagrama de flujo: proponerClase()"><img src="./diagrams/proponerClase.svg"
+                            alt="Diagrama de flujo: proponerClase()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="proponerRaza">
+                    <div>
+                        <h3>Proponer Raza</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 2</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "proponerRaza()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nombre</td>
+                                    <td>VARCHAR(30)</td>
+                                </tr>
+                                <tr>
+                                    <td>caracteristicas</td>
+                                    <td>TEXT</td>
+                                </tr>
+                                <tr>
+                                    <td>hsitoria</td>
+                                    <td>MEDIUMTEXT</td>
+                                </tr>
+                                <tr>
+                                    <td>velocidad</td>
+                                    <td>TINYINT(3) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Permite crear una proposición de raza a partir de los parámetros de entrada</p>
+                        <br>
+                        <p>Devuelve el ID de la raza creada:<br><strong class="returnType">TINYINT(3) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                    <a title="Diagrama de flujo: proponerRaza()"><img src="./diagrams/proponerRaza.svg"
+                            alt="Diagrama de flujo: proponerRaza()"></a>
+                    </details>
+                </div>
+            </section>
+        </section>
+    </div>
+</body>
+
+</html>
