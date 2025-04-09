@@ -2,23 +2,28 @@
 
 //Clase Objeto: contiene los atributos de un objeto (construido para la base de datos)
 
-abstract class Objeto {
-    private int $id; //id del objeto
-    private string $nombre; //nombre del objeto
-    private array $tipo; //tipo de objeto (arma, armadura, consumible, material, evento, paquete)
-    private string $descripcion; //descripción del objeto
-    private float $valor; //valor del objeto
+//Clase abstracta base para el resto de objetos
+abstract class Objeto
+{
+    private int $id;                //id del objeto
+    private string $nombre;         //nombre del objeto
+    private array $tipo;            //tipo de objeto (arma, armadura, consumible, material, evento, paquete)
+    private string $descripcion;    //descripción del objeto
+    private string $imagen;         //imagen del objeto (url o path)
+    private float $precio;          //precio del objeto
 
     //======================================FUNCIONES======================================
     //toDatabase devuelve los datos del objeto que irán a la tabla general
     // de objetos de la base de datos
-    public function toDatabase(){
+    public function toDatabase()
+    {
         return [
             'id' => $this->id,
             'nombre' => $this->nombre,
             'tipo' => $this->tipo,
             'descripcion' => $this->descripcion,
-            'valor' => $this->valor,
+            'imagen' => $this->imagen,
+            'precio' => $this->precio,
         ];
     }
 
@@ -69,19 +74,32 @@ abstract class Objeto {
         return $this;
     }
 
-    //GSValor
-    public function getValor(): float
+    //GSimagen
+    public function getImagen(): string
     {
-        return $this->valor;
+        return $this->imagen;
     }
-    public function setValor(float $valor): self
+
+    public function setImagen(string $imagen): self
     {
-        $this->valor = $valor;
+        $this->imagen = $imagen;
+        return $this;
+    }
+
+    //GSprecio
+    public function getprecio(): float
+    {
+        return $this->precio;
+    }
+    public function setprecio(float $precio): self
+    {
+        $this->precio = $precio;
         return $this;
     }
 }
 
-class Arma extends Objeto{
+class Arma extends Objeto
+{
     private int $modificador; //modificador de daño base del arma
     private int $material; //material del arma
     private string $tipo; //tipo de arma (cuerpo a cuerpo, a distancia, magicas)
@@ -89,7 +107,8 @@ class Arma extends Objeto{
     private array $atributos; //atributos del arma (daño, [atributo], regeneración)
 }
 
-class Armadura extends Objeto{
+class Armadura extends Objeto
+{
     private string $corporal; //parte del cuerpo que protege la armadura
     private int $modificador; //modificador de la armadura
     private int $material; //material de la armadura
@@ -97,18 +116,21 @@ class Armadura extends Objeto{
     private array $efecto; //efecto de la armadura sobre otros entes
 }
 
-class Consumible extends Objeto{
+class Consumible extends Objeto
+{
     private array $efecto; //efecto del consumible (curacion, vida_max, daño, armadura, [atributo], regeneración)
     private int $duracion; //duración del consumible en turnos
 }
 
 //Clase Evento: contiene objetos de evento(!basico) o que no pertenecen al resto de clases(basico)
-class Evento extends Objeto{
+class Evento extends Objeto
+{
     private bool $basico; //si es básico o no, si es básico se puede eliminar del inventario o vernderlo
     private string $uso; //uso del objeto
     private int $evento; //evento durante el cual se puede usar || evento que se activa al tener el objeto en el inventario
 }
 
-class Paquete extends Objeto{
+class Paquete extends Objeto
+{
     private array $objetos; //objetos que contiene el paquete
 }
