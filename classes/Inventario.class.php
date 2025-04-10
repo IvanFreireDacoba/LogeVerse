@@ -47,7 +47,7 @@ class Inventario
         $quantity = 0;
         if($this->searchItem($item, $index)) {
             $located = true;
-            $quantity = abs(getCantidad($index));
+            $quantity = abs($this->getCantidad($index));
             $quantity--;
             if($quantity === 0){
                 $this->removeItem($item);
@@ -81,7 +81,7 @@ class Inventario
     }
 
     //Obtener Cantidad de un item
-    public function getCantidad(int $index): array
+    public function getCantidad(int $index): int
     {
         return $this->objetos[$index][1];
     }

@@ -3,6 +3,10 @@
 //Clase Raza: contiene la información de una raza
 //Fuente: https://dnd5e.fandom.com/es/wiki/Razas
 
+require_once "Pasiva.class.php";
+require_once "Atributo.class.php";
+require_once "Idioma.class.php";
+
 final class Raza
 {
     private int $id;
@@ -10,19 +14,17 @@ final class Raza
     private string $descripcion;
     private string $historia;
     private array $atributos;
-    private array $habilidades;
     private int $velocidad;
     private array $pasivas;
     private array $idiomas;
 
-    public function __construct(int $id, string $raza, string $descripcion, string $historia, array $atributos, array $habilidades, int $velocidad, array $pasivas, array $idiomas)
+    public function __construct(int $id, string $raza, string $descripcion, string $historia, array $atributos, array $cantidades, int $velocidad, array $pasivas, array $idiomas)
     {
         $this->id = $id;
         $this->raza = $raza;
         $this->descripcion = $descripcion;
         $this->historia = $historia;
-        $this->atributos = $atributos;
-        $this->habilidades = $habilidades;
+        $this->setAtributos($atributos, $cantidades);
         $this->velocidad = $velocidad;
         $this->pasivas = $pasivas;
         $this->idiomas = $idiomas;
@@ -77,20 +79,11 @@ final class Raza
     {
         return $this->atributos;
     }
-    public function setAtributos(array $atributos): self
+    public function setAtributos(array $atributos, array $cantidades): self
     {
-        $this->atributos = $atributos;
-        return $this;
-    }
-
-    //GSHabilidades
-    public function getHabilidades(): array
-    {
-        return $this->habilidades;
-    }
-    public function setHabilidades(array $habilidades): self
-    {
-        $this->habilidades = $habilidades;
+        for ($i = 0; $i < count($atributos); $i++) {
+            $this->atributos = [$atributos[$i], $cantidades[$i]];
+        }
         return $this;
     }
 

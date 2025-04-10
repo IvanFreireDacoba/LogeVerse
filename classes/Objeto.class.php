@@ -15,7 +15,7 @@ abstract class Objeto
     //======================================FUNCIONES======================================
     //toDatabase devuelve los datos del objeto que irán a la tabla general
     // de objetos de la base de datos
-    public function toDatabase()
+    public function toDatabase(): array
     {
         return [
             'id' => $this->id,
