@@ -2,15 +2,10 @@
 
 //Clase Raza: contiene la información de una raza
 //Fuente: https://dnd5e.fandom.com/es/wiki/Razas
-
-require_once "Pasiva.class.php";
-require_once "Atributo.class.php";
-require_once "Idioma.class.php";
-
 final class Raza
 {
-    private int $id;
-    private string $raza;
+    use Identificable; //Trait para la identificación
+    private string $nombre;
     private string $descripcion;
     private string $historia;
     private array $atributos;
@@ -18,37 +13,28 @@ final class Raza
     private array $pasivas;
     private array $idiomas;
 
-    public function __construct(int $id, string $raza, string $descripcion, string $historia, array $atributos, array $cantidades, int $velocidad, array $pasivas, array $idiomas)
+    //=====================================CONSTRUCTOR=====================================
+    public function __construct(int $id, string $nombre, string $descripcion, string $historia, array $atributos, array $cantidades, int $velocidad, array $pasivas, array $idiomas)
     {
-        $this->id = $id;
-        $this->raza = $raza;
-        $this->descripcion = $descripcion;
-        $this->historia = $historia;
+        $this->setId($id);
+        $this->setNombre($nombre);
+        $this->setDescripcion($descripcion);
+        $this->setHistoria($historia);
         $this->setAtributos($atributos, $cantidades);
-        $this->velocidad = $velocidad;
-        $this->pasivas = $pasivas;
-        $this->idiomas = $idiomas;
+        $this->setVelocidad($velocidad);
+        $this->setPasivas($pasivas);
+        $this->setIdiomas($idiomas);
     }
 
-    //GSId
-    public function getId(): int
-    {
-        return $this->id;
-    }
-    public function setId(int $id): self
-    {
-        $this->id = $id;
-        return $this;
-    }
-
+    //=====================================GETTERS & SETTERS=====================================
     //GSRaza
-    public function getRaza(): string
+    public function getNombre(): string
     {
-        return $this->raza;
+        return $this->nombre;
     }
-    public function setRaza(string $raza): self
+    public function setNombre(string $nombre): self
     {
-        $this->raza = $raza;
+        $this->nombre = $nombre;
         return $this;
     }
 

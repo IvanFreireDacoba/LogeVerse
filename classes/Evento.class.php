@@ -1,8 +1,11 @@
 <?php
 
-class Idioma
-{
+//Clase Evento
+//Contiene los eventos que se pueden producir en el juego
+//y que pueden ser activados por el jugador o por el sistema
 
+class Evento
+{
     use Identificable; //Trait para la identificación
     private string $nombre;
     private string $descripcion;
@@ -12,7 +15,7 @@ class Idioma
     {
         $this->setId($id);
         $this->setNombre($nombre);
-        $this->setDescripcion($descripcion);
+        $this->setDescripcion($descripcion); 
     }
 
     //===================================GETTERS & SETTERS=================================
@@ -24,7 +27,7 @@ class Idioma
     public function setNombre(string $nombre): self
     {
         $this->nombre = $nombre;
-        return $this;
+        return $this;    
     }
 
     //GSDescripcion
@@ -35,7 +38,7 @@ class Idioma
     public function setDescripcion(string $descripcion): self
     {
         $this->descripcion = $descripcion;
-        return $this;
+        return $this;    
     }
 
 }

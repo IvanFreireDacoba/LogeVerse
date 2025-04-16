@@ -1,18 +1,17 @@
 <?php
 
-class Idioma
+class Incursion
 {
-
     use Identificable; //Trait para la identificación
     private string $nombre;
-    private string $descripcion;
+    private string $historia;
 
     //=====================================CONSTRUCTOR=====================================
-    public function __construct(int $id, string $nombre, string $descripcion)
+    public function __construct(int $id, string $nombre, string $historia)
     {
         $this->setId($id);
         $this->setNombre($nombre);
-        $this->setDescripcion($descripcion);
+        $this->setHistoria($historia);
     }
 
     //===================================GETTERS & SETTERS=================================
@@ -26,16 +25,15 @@ class Idioma
         $this->nombre = $nombre;
         return $this;
     }
-
-    //GSDescripcion
-    public function getDescripcion(): string
+    
+    //GSHistoria
+    public function getHistoria(): string
     {
-        return $this->descripcion;
+        return $this->historia;
     }
-    public function setDescripcion(string $descripcion): self
+    public function setHistoria(string $historia): self
     {
-        $this->descripcion = $descripcion;
+        $this->historia = $historia;
         return $this;
     }
-
 }
