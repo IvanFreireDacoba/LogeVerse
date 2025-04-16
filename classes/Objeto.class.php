@@ -490,26 +490,31 @@ class Paquete extends Objeto
     {
         //Array temporal para agrupar los objetos que se obtienen juntos (ambos === true)
         $tmp_array = [];
+        
+        //Se obtienen los objetos del paquete
+        $obj1 = $this->getObjeto1();
+        $obj2 = $this->getObjeto2();
 
         if ($this->getAmbos()) {
             //Si se obtienen ambos se añaden por separado
+            
 
             //Se añade el objeto1 siempre que no sea una agrupación
-            if ($this->getObjeto1()->getTipo() !== "agrupacion") {
-                $objetos[] = $this->getObjeto1();
+            if ($obj1->getTipo() !== "agrupacion") {
+                $objetos[] = $obj1;
                 //Si es una agrupación, DEBE ser un paquete
-            } elseif ($this->getObjeto1() instanceof Paquete) {
+            } elseif ($obj1 instanceof Paquete) {
                 //Por ello se desglosa en el array temporal, y este se
                 //añade al array de objetos
-                $this->getObjeto1()->desglosar($tmp_array);
+                $obj1->desglosar($tmp_array);
                 $objetos = array_merge($objetos, $tmp_array);
             }
 
             //Misma lógica para el objeto2
-            if ($this->getObjeto2()->getTipo() !== "agrupacion") {
-                $objetos[] = $this->getObjeto2();
-            } elseif ($this->getObjeto2() instanceof Paquete) {
-                $this->getObjeto2()->desglosar($tmp_array);
+            if ($obj2->getTipo() !== "agrupacion") {
+                $objetos[] = $obj2;
+            } elseif ($obj2 instanceof Paquete) {
+                $obj2->desglosar($tmp_array);
                 $objetos = array_merge($objetos, $tmp_array);
             }
 
@@ -520,12 +525,12 @@ class Paquete extends Objeto
 
             //Análisis del objeto1
             //Si no es una agrupación, se añade al array temporal
-            if ($this->getObjeto1()->getTipo() !== "agrupacion") {
-                $tmp_array[] = $this->getObjeto1();
+            if ($obj1->getTipo() !== "agrupacion") {
+                $tmp_array[] = $obj1;
                 //Si es una agrupación, DEBE ser un paquete
                 //por ello se desglosa en el array temporal
-            } elseif ($this->getObjeto1() instanceof Paquete) {
-                $this->getObjeto1()->desglosar($tmp_array);
+            } elseif ($obj1 instanceof Paquete) {
+                $obj1->desglosar($tmp_array);
             }
 
             //Guardamos los datos en el array de grupo
@@ -533,10 +538,10 @@ class Paquete extends Objeto
             $tmp_array = []; //Reiniciamos el array temporal para el siguiente objeto
 
             //Análisis del objeto2, igual que el objeto1
-            if ($this->getObjeto2()->getTipo() !== "agrupacion") {
-                $tmp_array[] = $this->getObjeto2();
-            } elseif ($this->getObjeto2() instanceof Paquete) {
-                $this->getObjeto2()->desglosar($tmp_array);
+            if ($obj2->getTipo() !== "agrupacion") {
+                $tmp_array[] = $obj2;
+            } elseif ($obj2 instanceof Paquete) {
+                $obj2->desglosar($tmp_array);
             }
 
             //Guardamos los datos en el array de grupo
