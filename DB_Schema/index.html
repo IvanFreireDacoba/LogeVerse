@@ -278,6 +278,7 @@
                 <li><a href="#pasivaTabla">pasiva</a></li>
                 <li><a href="#pasiva_razaTabla">pasiva_raza</a></li>
                 <li><a href="#personajeTabla">personaje</a></li>
+                <li><a href="#propuestasTabla">propuestas</a></li>
                 <li><a href="#razaTabla">raza</a></li>
             </ul>
             <table id="adminTabla">
@@ -531,7 +532,7 @@
                 <tbody>
                     <tr>
                         <td class="primaryKey" title="Primary Key">id</td>
-                        <td>TINYINT(5) UNSIGNED</td>
+                        <td>TINYINT(3) UNSIGNED</td>
                         <td>Permite la existencia de un total de 255 clases (muchas más de las necesarias)</td>
                     </tr>
                     <tr>
@@ -545,14 +546,44 @@
                         <td>Texto variable para poder establecer una descripción</td>
                     </tr>
                     <tr>
-                        <td>puntos_golpe</td>
-                        <td>TINYINT(5) UNSIGNED</td>
-                        <td>Puntos de golpe básicos de la raza (hasta 255)</td>
+                        <td>dado_golpe</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>Dado que lanza la clase para obtener el valor del golpe</td>
                     </tr>
                     <tr>
                         <td>equipo_inicial</td>
                         <td>INT(10) UNSIGNED</td>
                         <td>El tipo de dato debe coincidir con el id de <a href="#objetoTabla">objeto</a></td>
+                    </tr>
+                    <tr>
+                        <td>hp_atr</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#atributoTabla">atributo</a></td>
+                    </tr>
+                    <tr>
+                        <td>hp_mod</td>
+                        <td>TINYINT(2) UNSIGNED</td>
+                        <td>Modificador de la vida según la clase, entre 1 y 99</td>
+                    </tr>
+                    <tr>
+                        <td>def_atr</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#atributoTabla">atributo</a></td>
+                    </tr>
+                    <tr>
+                        <td>def_mod</td>
+                        <td>TINYINT(2) UNSIGNED</td>
+                        <td>Modificador de la defensa según la clase, entre 1 y 99</td>
+                    </tr>
+                    <tr>
+                        <td>golpe_atr</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#atributoTabla">atributo</a></td>
+                    </tr>
+                    <tr>
+                        <td>golpe_mod</td>
+                        <td>TINYINT(2) UNSIGNED</td>
+                        <td>Modificador del golpe según la clase, entre 1 y 99</td>
                     </tr>
                 </tbody>
             </table>
@@ -570,7 +601,7 @@
                 <tbody>
                     <tr>
                         <td class="primaryKey" title="Primary Key">id_clase</td>
-                        <td>TINYINT(5) UNSIGNED</td>
+                        <td>TINYINT(3) UNSIGNED</td>
                         <td>El tipo de dato debe coincidir con <a href="#claseTabla">clase</a></td>
                     </tr>
                     <tr>
@@ -625,6 +656,11 @@
                         <td class="unique" title="Unique Key">nombre</td>
                         <td>VARCHAR(50)</td>
                         <td>50 caracteres para definir el nombre del efecto</td>
+                    </tr>
+                    <tr>
+                        <td>descripción</td>
+                        <td>VARCHAR(250)</td>
+                        <td>250 caracteres para describir el efecto</td>
                     </tr>
                     <tr>
                         <td>cantidad</td>
@@ -1010,6 +1046,11 @@
                         <td>MEDIUMTEXT</td>
                         <td>Texto de tamaño variable (+16 millones de caracteres) para redactar la incursión</td>
                     </tr>
+                    <tr>
+                        <td>finalizada</td>
+                        <td>TINYINT(1) UNSIGNED</td>
+                        <td>Booleana que indica si la incursión ha finalizado</td>
+                    </tr>
                 </tbody>
             </table>
             <table title="N:M" id="incursion_personajeTabla">
@@ -1038,6 +1079,11 @@
                         <td>sobrevive</td>
                         <td>TINYINT(1) UNSIGNED</td>
                         <td>Si el personaje ha sobrevivido o no a la incursión</td>
+                    </tr>
+                    <tr>
+                        <td>salud</td>
+                        <td>INT(11) UNSIGNED</td>
+                        <td>Salud del personaje en el momento actual de la incursión</td>
                     </tr>
                 </tbody>
             </table>
@@ -1106,6 +1152,11 @@
                         <td>puntos</td>
                         <td>MEDIUMINT(8) UNSIGNED</td>
                         <td>Cantidad de puntos que ha conseguido el jugador</td>
+                    </tr>
+                    <tr>
+                        <td>notificaciones</td>
+                        <td>TINYINT(8) UNSIGNED</td>
+                        <td>Cantidad de notificaciones pendientes por ver</td>
                     </tr>
                 </tbody>
             </table>
@@ -1299,6 +1350,45 @@
                     </tr>
                 </tbody>
             </table>
+            <table id="propuestasTabla">
+                <caption>
+                    <h4>Tabla propuestas</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_jugador</td>
+                        <td>MEDIUMINT(8) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#jugadorTabla">jugador</a></td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id_prop</td>
+                        <td>INT(10) UNSIGNED</td>
+                        <td>Será el ID de las diferentes propuestas, como mínimo, debe ser tipo INT</td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">tipo</td>
+                        <td>ENUM('clase', 'raza', 'objeto',<br>'habilidad', 'efecto', 'pasiva', 'idioma', 'atributo')</td>
+                        <td>Tipo de elemento que ha propuesto el usuario</td>
+                    </tr>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">aceptado</td>
+                        <td>TINYINT(1) UNSIGNED</td>
+                        <td>Indica si la proposición ha sido aceptada o no</td>
+                    </tr>
+                    <tr>
+                        <td>fecha</td>
+                        <td>DATE</td>
+                        <td>Fecha en la que se realizó la propuesta</td>
+                    </tr>
+                </tbody>
+            </table>
             <table id="razaTabla">
                 <caption>
                     <h4>Tabla raza*</h4>
@@ -1368,6 +1458,7 @@
                     <li><a href="#crearObjeto">crearObjeto()</a></li>
                     <li><a href="#crearObjetoBase">crearObjetoBase()</a></li>
                     <li><a href="#crearPaquete">crearPaquete()</a></li>
+                    <li><a href="#crearPropuesta">crearPropuesta()</a></li>
                 </ul>
                 <ul id="ProcedimientosProponer">
                     <li><a href="#proponerArma">proponerArma()</a></li>
@@ -2116,6 +2207,46 @@
                             alt="Diagrama de flujo: crearPaquete()"></a>
                         </details>
                 </div>
+                <div class="procedure" id="crearPropuesta">
+                    <div>
+                        <h3>Crear Propuesta</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 2</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "crearPropuesta()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id_jugador</td>
+                                    <td>MEDIUMINT(8) UNSIGNED</td>
+                                </tr>
+                                <tr>
+                                    <td>id_prop</td>
+                                    <td>INT(10) UNSIGNED</td>
+                                </tr>
+                                <tr>
+                                    <td>tipo</td>
+                                    <td>ENUM('clase', 'raza', 'objeto',<br>'habilidad', 'efecto', 'pasiva', 'idioma', 'atributo')</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Registra una propuesta a partir de los parámetros de entrada</p>
+                        <br>
+                        <p>No devuelve nada
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                    <a title="Diagrama de flujo: crearPropuesta()"><img src="./diagrams/crearPropuesta.svg"
+                            alt="Diagrama de flujo: crearPropuesta()"></a>
+                        </details>
+                </div>
                 <div class="procedure" id="proponerArma">
                     <div>
                         <h3>Proponer Arma</h3>
@@ -2445,6 +2576,30 @@
                                 <tr>
                                     <td>equipo_inicial</td>
                                     <td>INT(10) UNSIGNED</td>
+                                </tr>
+                                <tr>
+                                    <td>hp_atr</td>
+                                    <td>TINYINT(3) UNSIGNED</td>
+                                </tr>
+                                <tr>
+                                    <td>hp_mod</td>
+                                    <td>TINYINT(2) UNSIGNED</td>
+                                </tr>
+                                <tr>
+                                    <td>def_atr</td>
+                                    <td>TINYINT(3) UNSIGNED</td>
+                                </tr>
+                                <tr>
+                                    <td>def_mod</td>
+                                    <td>TINYINT(2) UNSIGNED</td>
+                                </tr>
+                                <tr>
+                                    <td>golpe_atr</td>
+                                    <td>TINYINT(3) UNSIGNED</td>
+                                </tr>
+                                <tr>
+                                    <td>golpe_mod</td>
+                                    <td>TINYINT(2) UNSIGNED</td>
                                 </tr>
                             </tbody>
                         </table>
