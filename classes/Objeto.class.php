@@ -118,7 +118,7 @@ abstract class Objeto implements toDatabase
 
     public function setImagen(string $imagen): self
     {
-        $this->imagen = $imagen;
+        $this->imagen = $this->getFormattedImg($imagen);
         return $this;
     }
 
