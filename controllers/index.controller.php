@@ -1,4 +1,4 @@
 <?php
 
-    $title = 'DnD GM Login';
-    require "./views/index/index.php";
+    $title = 'LogeVerse';
+    require "views/index/index.php";
