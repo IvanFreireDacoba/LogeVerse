@@ -16,7 +16,7 @@ class Jugador
 
 
     //=====================================CONSTRUCTOR=====================================
-    public function __construct(int $id, string $nombre, string  $correo, int $puntos, int $notificaciones , array $personajes = [], $propuestas = [], string $imagen = null)
+    public function __construct(int $id, string $nombre, string  $correo, int $puntos, int $notificaciones , array $personajes = [], $propuestas = [], ?string $imagen = null)
     {
         $this->setId($id);
         $this->setNombre($nombre);
