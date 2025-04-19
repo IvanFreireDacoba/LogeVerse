@@ -5,6 +5,12 @@
 //Sin embargo, las propias clases podrían incluir las clases que necesitan
 //en su interior, pero no es recomendable por motivos de legibilidad y mantenimiento
 
+    //Trait para la identificación
+    include_once 'id.trait.php';
+
+    //Interfaz
+    include_once 'database.interface.php';
+
     //Clases independientes
     include_once 'Atributo.class.php';
     include_once 'Efecto.class.php';

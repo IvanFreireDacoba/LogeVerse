@@ -4,16 +4,16 @@
 <head>
     <?php
         //Incluir el head común (meta, title)
-        include 'views/shared/head.php';
+        include '../views/shared/head.php';
     ?>
-    <link rel="icon" href="./resources/shared/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" type="text/css" href="./views/index/styles/index.css">
+    <link rel="icon" href="../resources/shared/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="../views/index/styles/index.css">
 </head>
 
 <body>
     <?php
         //Incluir el header común (nav)
-        include 'views/shared/head.php';
+        include '../views/shared/head.php';
     ?>
     <h1>TFC - DnD_GM_WebManager</h1>
     <h2>Diseñado por: Iván Freire Dacoba</h2>
@@ -31,7 +31,7 @@
     <?php
         //Incluir el footer común (nav)
         /* añadir LogeVerse/ para la migración */
-        include 'views/shared/footer.html';
+        include '../views/shared/footer.html';
     ?>
 </body>
 

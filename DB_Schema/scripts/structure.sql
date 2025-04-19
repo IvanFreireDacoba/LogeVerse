@@ -365,7 +365,7 @@ CREATE TABLE IF NOT EXISTS `jugador` (
   `id` mediumint(8) unsigned NOT NULL DEFAULT 0,
   `nombre` varchar(50) NOT NULL,
   `correo` varchar(75) NOT NULL,
-  `hash` char(50) NOT NULL DEFAULT '',
+  `hash` char(60) NOT NULL DEFAULT '',
   `puntos` mediumint(8) unsigned NOT NULL DEFAULT 0,
   `notificaciones` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
