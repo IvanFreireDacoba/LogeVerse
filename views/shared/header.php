@@ -1,9 +1,17 @@
 <nav>
     <ul>
-        <li><a href="../../controllers/index.controller.php">Inicio</a></li>
+        <li><a href="index.controller.php">Inicio</a></li>
 
         <?php
-            if(isset($_session["username"])) {
+            //Botón de propuestas, visible solo si el usuario está logueado
+            if(isset($_session["usuario"])) {
+                echo '<li><a href="propuestas.controller.php">Propuestas</a></li>';
+            }
+        ?>
+
+        <?php
+            //Botón de inicio de sesión/registro/perfil
+            if(isset($_session["usuario"])) {
                 echo '<li><a href="profile.controller.php">' . $_session["username"] . '</a></li>';
             } else if(isset($title) && $title === "Login"){
                 echo '<li><a href="register.controller.php">Registrarse</a></li>';

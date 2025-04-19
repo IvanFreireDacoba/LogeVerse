@@ -1,6 +1,6 @@
 <?php
     //Iniciamos la sesión (siempre la mentenemos en cada página)
-    session_start();
+    $_SESSION ?? session_start();
 
     //Si el usuario tiene alguna alerta pendiente, la mostramos
     if(isset($_SESSION["alert"])){

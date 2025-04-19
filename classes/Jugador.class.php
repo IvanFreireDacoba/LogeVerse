@@ -108,7 +108,7 @@ class Jugador
     {
         return $this->img_data;
     }
-    public function setImgData(string $img_data): self
+    public function setImgData(?string $img_data): self
     {
         $this->img_data = $this->getFormattedImg($img_data);
         return $this;

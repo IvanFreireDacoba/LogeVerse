@@ -14,7 +14,7 @@
     include_once '../views/shared/header.php';
     ?>
     <main id="formulario_login">
-        <form action="../modules/login.module.php" method="POST" id="form_login" aria-labelledby="form_login_heading">
+        <form action="../modules/register.module.php" method="POST" id="form_login" aria-labelledby="form_login_heading">
             <h2 id="form_login_heading">Registar usuario</h2>
             <div>
                 <label for="username">Usuario</label>
