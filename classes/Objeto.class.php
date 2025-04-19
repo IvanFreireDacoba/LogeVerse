@@ -165,8 +165,8 @@ class Arma extends Objeto
         array $efectos,
         int $modificador,
         Objeto $material,
-        bool $doble = false,
         string $combate,
+        bool $doble = false,
     ) {
         parent::__construct($id, $nombre, $tipo, $descripcion, $imagen, $precio, $efectos);
         $this->setModificador($modificador);

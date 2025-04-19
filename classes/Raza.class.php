@@ -15,7 +15,7 @@ final class Raza implements toDatabase
     private string $imagen;
 
     //=====================================CONSTRUCTOR=====================================
-    public function __construct(int $id, string $nombre, string $descripcion, string $historia, array $atributos, array $cantidades, int $velocidad, array $pasivas = [], array $idiomas = [], string $imagen = null)
+    public function __construct(int $id, string $nombre, string $descripcion, string $historia, array $atributos, array $cantidades, int $velocidad, array $pasivas = [], array $idiomas = [], ?string $imagen = null)
     {
         $this->setId($id);
         $this->setNombre($nombre);
@@ -158,7 +158,7 @@ final class Raza implements toDatabase
     {
         return $this->imagen;
     }
-    public function setImagen(string $imagen = null): self
+    public function setImagen(?string $imagen = null): self
     {
         $this->imagen = $this->getFormattedImg($imagen);
         return $this;

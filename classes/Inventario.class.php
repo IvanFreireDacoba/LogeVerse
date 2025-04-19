@@ -42,7 +42,7 @@ class Inventario
     //Usar item
     //Los items de tipo consumible tienen su cantidad en valores negativos
     //por ello se debe gestionar el tratamiento de los mismos correctamente
-    public function useItem(Objeto $item, string &$output = null): bool
+    public function useItem(Objeto $item, ?string &$output = null): bool
     {
         $located = false;
         $index = -1;
