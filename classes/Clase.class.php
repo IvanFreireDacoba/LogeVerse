@@ -28,7 +28,7 @@ class Clase implements toDatabase
         string $def_mod,
         string $golpe_atr,
         string $golpe_mod,
-        string $imagen = null
+        ?string $imagen = null
     )
     {
         $this->setId($id);
@@ -166,7 +166,7 @@ class Clase implements toDatabase
     {
         return $this->imagen;
     }
-    public function setImagen(string $imagen = null): self
+    public function setImagen(?string $imagen = null): self
     {
         $this->imagen = $this->getFormattedImg($imagen);
         return $this;

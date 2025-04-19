@@ -29,7 +29,7 @@ class Personaje implements toDatabase
     private array $efectos;       //Efectos que sufre el personaje actualmente
 
     //=====================================CONSTRUCTOR=====================================
-    public function __construct(int $id, Jugador $propietario, Raza $raza, Clase $clase, string $nombre, string $historia, int $experiencia, float $dinero = 0, int $puntos_habilidad = 0, bool $estado = true, array $atributos, array $habilidades, Inventario $inventario, array $incursiones = [], string $imagen = null)
+    public function __construct(int $id, Jugador $propietario, Raza $raza, Clase $clase, string $nombre, string $historia, int $experiencia, float $dinero, int $puntos_habilidad, array $habilidades, Inventario $inventario, bool $estado = true, array $atributos, array $incursiones = [], ?string $imagen = null)
     {
         $this->setId($id);
         $this->setNombre($nombre);
@@ -346,7 +346,7 @@ class Personaje implements toDatabase
         }
         return $incursionActual;
     }
-    public function setOnIncursion(bool $on, Incursion $incursion = null, array $status = null): self
+    public function setOnIncursion(bool $on, ?Incursion $incursion = null, ?array $status = null): self
     {
         if($incursion == null){
             $incursion = new Incursion(0, "Ninguna", "No está realizando ninguna incursión");
