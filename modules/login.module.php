@@ -4,6 +4,7 @@
 
 //Carga de las clases para el módulo de login
 include_once '../classes/include_classes.php';
+include_once './functions.module.php';
 
 session_start();
 
@@ -32,21 +33,10 @@ try {
         //Si el jugador existe, se comprueba la contraseña
         if (password_verify($password, $data["hash"])) {
             //Si la contraseña es correcta, se guarda el jugador en la sesión
-            //Instanciar el objeto jugador
-            $jugador = new Jugador(
-                $data["id"],
-                $data["nombre"],
-                $data["correo"],
-                $data["puntos"],
-                $data["notificaciones"]
-            );
-
-            //Guardar el jugador en la sesión
-            $_SESSION["usuario"] = $jugador;
-
+            //Instanciar y refrescar el objeto jugado y guardarlo el usuario de la sesión.
+            $_SESSION["usuario"] = refrescarUsuario($pdo, $data["id"]);
             //Cerrar la conexión a la base de datos
             $pdo = null;
-
             //Ir al perfil del jugador
             header("Location: ../controllers/profile.controller.php");
             exit;

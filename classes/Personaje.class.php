@@ -6,7 +6,7 @@ class Personaje implements toDatabase
     use Identificable;            //Trait para la identificación de objetos
     private string $nombre;
     private string $historia;
-    private Jugador $propietario;
+    private int $propietario;
     private int $experiencia;     //Con la experiencia se calcula el nivel
     private Raza $raza;
     private Clase $clase;
@@ -29,7 +29,7 @@ class Personaje implements toDatabase
     private array $efectos;       //Efectos que sufre el personaje actualmente
 
     //=====================================CONSTRUCTOR=====================================
-    public function __construct(int $id, Jugador $propietario, Raza $raza, Clase $clase, string $nombre, string $historia, int $experiencia, float $dinero, int $puntos_habilidad, array $habilidades, Inventario $inventario, array $atributos, bool $estado = true, array $incursiones = [], ?string $imagen = null)
+    public function __construct(int $id, int $propietario, Raza $raza, Clase $clase, string $nombre, string $historia, int $experiencia, float $dinero, int $puntos_habilidad, array $habilidades, Inventario $inventario, array $atributos, bool $estado = true, array $incursiones = [], ?string $imagen = null)
     {
         $this->setId($id);
         $this->setNombre($nombre);
@@ -58,7 +58,7 @@ class Personaje implements toDatabase
     {
         return [
             'id' => $this->getId(),
-            'propietario' => $this->getPropietario()->getId(),
+            'propietario' => $this->getPropietario(),
             'raza' => $this->getRaza()->getId(),
             'clase' => $this->getClase()->getId(),
             'nombre' => $this->getNombre(),
@@ -228,11 +228,11 @@ class Personaje implements toDatabase
     }
 
     //GSPropietario
-    public function getPropietario(): Jugador
+    public function getPropietario(): int
     {
         return $this->propietario;
     }
-    public function setPropietario(Jugador $propietario): self
+    public function setPropietario(int $propietario): self
     {
         $this->propietario = $propietario;
         return $this;
