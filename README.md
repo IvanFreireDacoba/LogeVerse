@@ -10,3 +10,10 @@ Dungeons and Dragons Game Master Manager for Web
   <li class="pendiente">Gestor de experiencia y economía</li>
   <li class="pendiente">Gestor de raids</li>
 </ul>
+
+<p>
+  Actualmente -> Desplegar con Xampp, no necesita dependencias.
+  Descargar el repositorio y copiar en htdocs su contenido.
+  Es posible copiar el contenido en un directorio interno y acceder con
+  localhost/$lt;nombre_directorio>
+</p>
