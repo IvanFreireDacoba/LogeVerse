@@ -1,8 +1,8 @@
-# DnD_GM_WebManager
-<h3>Dungeons and Dragons Game Master Manager for Web</h3>
+# LogeVerse
+<h3>Dungeons and Dragons Game Master Manager like for Web</h3>
 <hr>
 
-<p>Diseño de una web con gestor de usuarios, personajes y raids para partidas de DnD.</p>
+<p>Diseño de una web con gestor de usuarios, personajes y raids para partidas de "DnD".</p>
 
 <h1>Despliegue de la aplicación</h1>
 <ul>
