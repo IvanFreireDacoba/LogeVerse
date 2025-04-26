@@ -18,7 +18,7 @@
         <code>docker start -ai LogeVerse sh /webupdate.sh</code>
       </li>
       <li>
-        <p><a styles="color:green;">UNA VEZ INSTALADO</a> Arrancar el contenedor:</p>
+        <p><a>UNA VEZ INSTALADO</a> Arrancar el contenedor:</p>
         <code>docker create --name LogeVerse -p 8080:80 logecraft/logeverse</code>
       </li>
     </ol>
@@ -30,10 +30,10 @@
       <p>Debemos tener previamente instalados los servicios pertinentes</p>
       <ul>
         <li>
-          <p>Servidor Web | Recomendado: <a styles="color:green;">Apache</a></p>
+          <p>Servidor Web | Recomendado: <a>Apache</a></p>
         </li>
         <li>
-          <p>Servidor <a styles="color:green;">MySQL</a></p>
+          <p>Servidor <a>MySQL</a></p>
         </li>
       </ul>
     </li>
@@ -43,7 +43,7 @@
     </li>
     <li>
       <p>Mover los archivos al directorio deseado [Desde raíz de servidor Web]</p>
-      <p styles="color:red;">NOTA: Los directorios raíz pueden depender de los programas elegidos y sus configuraciones.</p>
+      <p>NOTA: Los directorios raíz pueden depender de los programas elegidos y sus configuraciones.</p>
     </li>
     <li>
       <p>Arrancar los servidores pertinentes [Web + Base de Datos]</p>
@@ -51,7 +51,7 @@
     <li>
       <p>Viajar a localhost/&lt;web_dir>/DB_Schema/scripts/perform_database.php</p>
       <p>Esta dirección creará, estructurará y rellenará la base de datos.</p>
-      <p styles="color:red;">NOTA: Esto solo generará la base de datos LA PRIMERA VEZ que se accede.</p>
+      <p>NOTA: Esto solo generará la base de datos LA PRIMERA VEZ que se accede.</p>
     </li>
     <li>
       <p>Acceder a nuestro programa mediante la url localhost/&lt;web_dir></p>
@@ -60,71 +60,44 @@
 </ul>
 
 <h1>Utilidades</h1>
-<p>Pendiente : <a styles="color:red; height: 200px;
-                width: 200px;
-                border-radius: 50%;
-                text-align: center;"></a>
-    || Realizado: <a styles="color:green;"></a></p>
+<p>Pendiente : <a>🔴</a>
+    || Realizado: 🟢</p>
 <ul>
-  <li>Gestor de Personajes <a styles="color:red; height: 200px;
-                                      width: 200px;
-                                      border-radius: 50%;
-                                      text-align: center;"></a>
+  <li>
+    <p>Gestor de Personajes <a>🔴</a></p>
   </li>
-  <li>Gestor de experiencia y economía <a styles="color:red; height: 200px;
-                                      width: 200px;
-                                      border-radius: 50%;
-                                      text-align: center;"></a>
+  <li>
+    <p>Gestor de experiencia y economía <a>🔴</a></p>
  </li>
-  <li>Gestor de raids <a styles="color:red; height: 200px;
-                                      width: 200px;
-                                      border-radius: 50%;
-                                      text-align: center;"></a>
+  <li>
+    <p>Gestor de raids <a>🔴</a></p>
  </li>
-  <li>Propuesta de Razas <a styles="color:red; height: 200px;
-                                      width: 200px;
-                                      border-radius: 50%;
-                                      text-align: center;"></a>
+  <li>
+    <p>Propuesta de Razas <a>🔴</a></p>
  </li>
-  <li>Propuesta de Clases <a styles="color:red; height: 200px;
-                                      width: 200px;
-                                      border-radius: 50%;
-                                      text-align: center;"></a>
+  <li>
+    <p>Propuesta de Clases <a>🔴</a></p>
  </li>
-  <li>Propuesta de Efectos <a styles="color:red; height: 200px;
-                                      width: 200px;
-                                      border-radius: 50%;
-                                      text-align: center;"></a>
+  <li>
+    <p>Propuesta de Efectos <a>🔴</a></p>
  </li>
-  <li>Propuesta de Objetos <a styles="color:red; height: 200px;
-                                      width: 200px;
-                                      border-radius: 50%;
-                                      text-align: center;"></a>
+  <li>
+    <p>Propuesta de Objetos <a>🔴</a></p>
  </li>
-  <li>Propuesta de Idiomas <a styles="color:red; height: 200px;
-                                      width: 200px;
-                                      border-radius: 50%;
-                                      text-align: center;"></a>
+  <li>
+    <p>Propuesta de Idiomas <a>🔴</a></p>
  </li>
-  <li>Propuesta de Habilidades <a styles="color:red; height: 200px;
-                                      width: 200px;
-                                      border-radius: 50%;
-                                      text-align: center;"></a>
+  <li>
+    <p>Propuesta de Habilidades <a>🔴</a></p>
  </li>
-  <li>Propuesta de Atributos <a styles="color:red; height: 200px;
-                                      width: 200px;
-                                      border-radius: 50%;
-                                      text-align: center;"></a>
+  <li>
+    <p>Propuesta de Atributos <a>🔴</a></p>
  </li>
-  <li>Propuesta de Pasivas <a styles="color:red; height: 200px;
-                                      width: 200px;
-                                      border-radius: 50%;
-                                      text-align: center;"></a>
+  <li>
+    <p>Propuesta de Pasivas <a>🔴</a></p>
  </li>
-  <li>Propuesta de Eventos <a styles="color:red; height: 200px;
-                                      width: 200px;
-                                      border-radius: 50%;
-                                      text-align: center;"></a>
+  <li>
+    <p>Propuesta de Eventos <a>🔴</a></p>
  </li>
 </ul>
 
