@@ -100,10 +100,3 @@
     <p>Propuesta de Eventos <a>🔴</a></p>
  </li>
 </ul>
-
-<p>
-  Actualmente -> Desplegar con Xampp, no necesita dependencias.
-  Descargar el repositorio y copiar en htdocs su contenido.
-  Es posible copiar el contenido en un directorio interno y acceder con
-  localhost/$lt;nombre_directorio>
-</p>
