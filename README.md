@@ -18,16 +18,12 @@
         <code>docker create --name LogeVerse -p 8080:80 logecraft/logeverse</code>
       </li>
       <li>
-        <p>Detener el contenedor con el siguiente comando:</p>
-        <code>docker stop LogeVerse</code>
-      </li>
-      <li>
         <p>Actualizar la web dentro del contenedor:</p>
         <code>docker start -ai LogeVerse sh /webupdate.sh</code>
       </li>
       <li>
         <p>[Una vez realizado todo el proceso] Arrancar el contenedor con el siguiente comando:</p>
-        <code>docker create --name LogeVerse -p 8080:80 logecraft/logeverse</code>
+        <code>docker start LogeVerse</code>
       </li>
     </ol>
   </li>
