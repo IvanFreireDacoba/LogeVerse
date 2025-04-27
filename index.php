@@ -1,2 +1,2 @@
 <?php
-    require "./controllers/index.controller.php";
+    header("Location: ./controllers/index.controller.php");

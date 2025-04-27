@@ -1,6 +1,7 @@
 <?php
     //Iniciamos la sesión (siempre la mentenemos en cada página)
-    session_start();
+    include_once '../classes/include_classes.php';
+    $_SESSION ?? session_start();
 
     //Si el usuario tiene alguna alerta pendiente, la mostramos
     if(isset($_SESSION["alert"])){
