@@ -130,7 +130,7 @@ class Personaje implements toDatabase
         if (array_key_exists($atributo, $this->atributos)) {
             return $this->atributos[$atributo];
         } else {
-            throw new Exception("El atributo '$atributo' no existe en el personaje.");
+            throw new Exception("El atributo " . $atributo . " no existe en el personaje.");
         }
     }
 
