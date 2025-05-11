@@ -6,6 +6,10 @@ include_once "../classes/include_classes.php";
 
 function hydrateRaza(array $datos): Raza
 {
+    if(!isset($datos["imagen"])){
+        $datos["imagen"] = null;
+    }
+
     return new Raza(
         $datos["id"],
         $datos["nombre"],
@@ -22,6 +26,10 @@ function hydrateRaza(array $datos): Raza
 
 function hydrateClase(array $datos): Clase
 {
+    if(!isset($datos["imagen"])){
+        $datos["imagen"] = null;
+    }
+
     return new Clase(
         $datos["id"],
         $datos["nombre"],
@@ -39,6 +47,11 @@ function hydrateClase(array $datos): Clase
 }
 
 function hydrateJugador(array $datos): Jugador {
+
+    if(!isset($datos["img_data"])){
+        $datos["img_data"] = null;
+    }
+
     return new Jugador(
         $datos["id"],
         $datos["nombre"],
@@ -52,13 +65,18 @@ function hydrateJugador(array $datos): Jugador {
 }
 
 function hydratePersonaje(array $datos): Personaje {
+
+    if(!isset($datos["img_data"])){
+        $datos["img_data"] = null;
+    }
+    
     return new Personaje(
         $datos["id"],
         $datos["propietario"],
         $datos["raza"],
         $datos["clase"],
         $datos["nombre"],
-        $datos["hsitoria"],
+        $datos["historia"],
         $datos["experiencia"],
         $datos["dinero"],
         $datos["puntos_habilidad"],
@@ -66,7 +84,7 @@ function hydratePersonaje(array $datos): Personaje {
         $datos["inventario"],
         $datos["atributos"],
         $datos["estado"],
-        $datos["incrusiones"],
+        $datos["incursiones"],
         $datos["img_data"],
     );
 }

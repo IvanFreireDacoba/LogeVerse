@@ -2,6 +2,7 @@
 
 include_once "../classes/include_classes.php";
 include_once "./hydrators.module.php";
+include_once "./toDatabase.module.php";
 
 
 function refrescarUsuario(PDO $pdo, int $id_usuario): Jugador
@@ -35,7 +36,7 @@ function refrescarUsuario(PDO $pdo, int $id_usuario): Jugador
 
 function refrescarPersonaje(PDO $pdo, $id_personaje): Personaje
 {
-    $stmt = $pdo->prepare("SELECT * FROM personaje LEFT JOIN imagen_personaje ON personaje.id = imagen_personaje.id_personaje WHERE personaje.propietario = :id_personaje;");
+    $stmt = $pdo->prepare("SELECT * FROM personaje LEFT JOIN imagen_personaje ON personaje.id = imagen_personaje.id_personaje WHERE personaje.id = :id_personaje;");
     $stmt->bindParam(':id_personaje', $id_personaje, PDO::PARAM_INT);
     $stmt->execute();
     $data = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -46,7 +47,7 @@ function refrescarPersonaje(PDO $pdo, $id_personaje): Personaje
     $id_clase = $data["clase"];
     $data["clase"] = refrescarClase($pdo, $id_clase);
     //Construimos el inventario del personaje
-    $data["Inventario"] = refrescarInventario($pdo, $id_personaje);
+    $data["inventario"] = refrescarInventario($pdo, $id_personaje);
     //Buscamos las habilidades del personaje
     $data["habilidades"] = refrescarHabilidades($pdo, $id_personaje, $id_clase);
     //Buscamos los atributos del personaje
@@ -158,13 +159,13 @@ function refrescarHabilidades(PDO $pdo, int $id_personaje, int $id_clase): array
     //Generar las instancias de las habilidades de personaje y almacenarlas SOLO si no están duplicadas
     //Primero me guardo los ids en un array temporal
     $tmp_ids = [];
-    foreach ($habilidades as $habilidad){
+    foreach ($habilidades as $habilidad) {
         $tmp_ids[] = $habilidad->getId();
     }
     //Luego almacenamos solo las habilidades que no se encuentran en las de tipo clase (son del personaje)
     foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) as $idHabilidad) {
         $habilidad = obtenerHabilidad($pdo, $idHabilidad);
-        if(!in_array($habilidad->getId(), $tmp_ids)){
+        if (!in_array($habilidad->getId(), $tmp_ids)) {
             $habilidades[] = $habilidad;
         }
     }
@@ -192,7 +193,7 @@ function refrescarIncursiones($pdo, $id_personaje): array
     //Obtenemos los datos de la incursión y el desempeño del personaje en la misma
     $stmt = $pdo->prepare("SELECT * FROM incursion JOIN incursion_personaje ON incursion.id = incursion_personaje.id_incursion WHERE incursion_personaje.id_personaje = :id_personaje;");
     $stmt->bindParam("id_personaje", $id_personaje, PDO::PARAM_INT);
-    $stmt->execute;
+    $stmt->execute();
     //Para cada incursión generamos la estructura de datos y la añadimos al array
     foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $incursion) {
         $incursiones[] = [
@@ -261,7 +262,7 @@ function obtenerObjeto(PDO $pdo, int $id, $tipo): Objeto
     switch ($tipo) {
         case "arma": {
             //Datos e instancia de objeto tipo arma
-            $stmt = $pdo->prepare("SELECT * FROM objeto JOIN arma JOIN imagen_objeto ON objeto.id = arma.id AND objeto.id = imagen_objeto.id_objeto WHERE objeto.id = :id_objeto;");
+            $stmt = $pdo->prepare("SELECT * FROM objeto JOIN arma LEFT JOIN imagen_objeto ON objeto.id = arma.id AND objeto.id = imagen_objeto.id_objeto WHERE objeto.id = :id_objeto;");
             $stmt->bindParam("id_objeto", $id, PDO::PARAM_INT);
             $stmt->execute();
             $datos = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -271,19 +272,19 @@ function obtenerObjeto(PDO $pdo, int $id, $tipo): Objeto
                 $datos["nombre"],
                 "arma",
                 $datos["descripcion"],
-                $datos["img_data"],
                 $datos["precio"],
                 $efectos,
                 $datos["modificador"],
                 $datos["material"],
                 $datos["combate"],
                 $datos["doble"],
+                $datos["img_data"],
             );
             break;
         }
         case "armadura": {
             //Datos e instancia de objeto tipo armadura
-            $stmt = $pdo->prepare("SELECT * FROM objeto JOIN armadura JOIN imagen_objeto ON objeto.id = armadura.id AND objeto.id = imagen_objeto.id_objeto WHERE objeto.id = :id_objeto;");
+            $stmt = $pdo->prepare("SELECT * FROM objeto JOIN armadura LEFT JOIN imagen_objeto ON objeto.id = armadura.id AND objeto.id = imagen_objeto.id_objeto WHERE objeto.id = :id_objeto;");
             $stmt->bindParam("id_objeto", $id, PDO::PARAM_INT);
             $stmt->execute();
             $datos = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -293,18 +294,18 @@ function obtenerObjeto(PDO $pdo, int $id, $tipo): Objeto
                 $datos["nombre"],
                 "armadura",
                 $datos["descripcion"],
-                $datos["img_data"],
                 $datos["precio"],
                 $efectos,
                 $datos["corporal"],
                 $datos["modificador"],
                 $datos["material"],
+                $datos["img_data"],
             );
             break;
         }
         case "base": {
             //Datos e instancia de objeto tipo base
-            $stmt = $pdo->prepare("SELECT * FROM objeto JOIN base JOIN imagen_objeto ON objeto.id = base.id AND objeto.id = imagen_objeto.id_objeto WHERE objeto.id = :id_objeto;");
+            $stmt = $pdo->prepare("SELECT * FROM objeto JOIN base LEFT JOIN imagen_objeto ON objeto.id = base.id AND objeto.id = imagen_objeto.id_objeto WHERE objeto.id = :id_objeto;");
             $stmt->bindParam("id_objeto", $id, PDO::PARAM_INT);
             $stmt->execute();
             $datos = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -315,7 +316,7 @@ function obtenerObjeto(PDO $pdo, int $id, $tipo): Objeto
             $stmt->execute();
             //Instanciamos cada evento y lo guardamos en un array de eventos
             foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $evento) {
-                $eventos[] = new Evento (
+                $eventos[] = new Evento(
                     $evento["id"],
                     $evento["nombre"],
                     $evento["descripcion"],
@@ -327,18 +328,18 @@ function obtenerObjeto(PDO $pdo, int $id, $tipo): Objeto
                 $datos["nombre"],
                 "base",
                 $datos["descripcion"],
-                $datos["img_data"],
                 $datos["precio"],
                 $efectos,
                 $datos["basico"],
                 $datos["uso"],
                 $eventos,
+                $datos["img_data"],
             );
             break;
         }
         case "consumible": {
             //Datos en instancia de objeto tipo consumible 
-            $stmt = $pdo->prepare("SELECT * FROM objeto JOIN consumible JOIN imagen_objeto ON objeto.id = consumible.id AND objeto.id = imagen_objeto.id_objeto WHERE objeto.id = :id_objeto;");
+            $stmt = $pdo->prepare("SELECT * FROM objeto JOIN consumible LEFT JOIN imagen_objeto ON objeto.id = consumible.id AND objeto.id = imagen_objeto.id_objeto WHERE objeto.id = :id_objeto;");
             $stmt->bindParam("id_objeto", $id, PDO::PARAM_INT);
             $stmt->execute();
             $datos = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -348,17 +349,17 @@ function obtenerObjeto(PDO $pdo, int $id, $tipo): Objeto
                 $datos["nombre"],
                 "consumible",
                 $datos["descripcion"],
-                $datos["img_data"],
                 $datos["precio"],
                 $efectos,
                 $datos["usos"],
+                $datos["img_data"],
             );
             break;
         }
         case "paquete":
         case "agrupacion": {
             //Datos en instancia de objeto tipo paquete o agrupación
-            $stmt = $pdo->prepare("SELECT * FROM objeto JOIN paquete JOIN imagen_objeto ON objeto.id = paquete.id AND objeto.id = imagen_objeto.id_objeto WHERE objeto.id = :id_objeto;");
+            $stmt = $pdo->prepare("SELECT * FROM objeto JOIN paquete LEFT JOIN imagen_objeto ON objeto.id = paquete.id AND objeto.id = imagen_objeto.id_objeto WHERE objeto.id = :id_objeto;");
             $stmt->bindParam("id_objeto", $id, PDO::PARAM_INT);
             $stmt->execute();
             $datos = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -371,12 +372,12 @@ function obtenerObjeto(PDO $pdo, int $id, $tipo): Objeto
                 $datos["nombre"],
                 $datos["tipo"],
                 $datos["descripcion"],
-                $datos["img_data"],
                 $datos["precio"],
                 $efectos,
                 $ob1,
                 $ob2,
                 $datos["ambos"],
+                $datos["img_data"],
             );
             break;
         }
@@ -388,12 +389,12 @@ function obtenerObjeto(PDO $pdo, int $id, $tipo): Objeto
                 "Nada",
                 "base",
                 "",
-                null,
                 0,
                 [],
                 1,
                 "Carente de uso",
                 [],
+                null,
             );
             break;
         }
@@ -402,7 +403,8 @@ function obtenerObjeto(PDO $pdo, int $id, $tipo): Objeto
     return $objeto;
 }
 
-function obtenerHabilidad($pdo, $id_habilidad){
+function obtenerHabilidad($pdo, $id_habilidad)
+{
     //Seleccionamos una habilidad y tomamos sus datos
     $stmt = $pdo->prepare("SELECT * FROM habilidad WHERE id = :id_habilidad;");
     $stmt->bindParam("id_habilidad", $id_habilidad);
