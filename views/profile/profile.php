@@ -36,40 +36,27 @@ if (!isset($_SESSION["usuario"])) {
             //Expositor de personajes
             $personajes = $_SESSION["usuario"]->getPersonajes();
             if (!empty($personajes)) {
-                echo '<div id="newCharacter" class="personaje">
-                        <form action="../controllers/newCharacter.module.php">
-                            <h3>Nuevo Personaje</h3>
-                            <p>
-                                <label for="nombre">Nombre: </label>
-                                <input type="text" name="nombre" id="nombre">
-                            </p>
-                            <p>
-                                <label for="historia">Historia: </label>
-                                <input type="text" name="historia" id="historia">
-                            </p>
-                            <button type="submit">Crear</button>
-                        </form>
-                      </div>';
                 foreach ($personajes as $personaje) {
                     $personaje->toShortHTML();
                 }
             } else {
-                echo "<p>¡No tienes personajes!</p>";
-                echo '<div id="newCharacter" class="personaje">
-                        <form action="../controllers/newCharacter.module.php">
-                            <p>¡Crea tu primer personaje ahora!</p/>
+                echo "<p>¡Crea tu primer personaje ahora!</p/>";
+            }
+            echo '<hr>
+                    <div id="newCharacter" class="personaje">
+                        <form action="../controllers/newCharacter.controller.php" method="POST">
+                            <h3>Nuevo Personaje</h3>
                             <p>
                                 <label for="nombre">Nombre: </label>
-                                <input type="text" name="nombre" id="nombre">
+                                <input type="text" name="nombre" id="nombre" placeholder="Drax el invisible">
                             </p>
                             <p>
                                 <label for="historia">Historia: </label>
-                                <input type="text" name="historia" id="historia">
+                                <textarea name="historia" id="historia" rows="3" cols="30" placeholder="Escribe una breve historia para desarrollar y contextualizar tu personaje."></textarea>
                             </p>
                             <button type="submit">Crear</button>
                         </form>
                       </div>';
-            }
             ?>
         </section>
     </main>
