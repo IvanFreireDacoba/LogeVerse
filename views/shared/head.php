@@ -18,3 +18,4 @@
         echo $title ?? "ERROR_001";
     ?>
 </title>
+<link rel="icon" href="../resources/shared/favicon.png" type="image/png">
