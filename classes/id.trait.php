@@ -15,7 +15,7 @@ trait Identificable
     }
 
     //Obtiene la imagen formateada para ser mostrada en el navegador
-    public function getFormattedImg($data = null): string
+    public function getFormattedImg(string $route, ?string $data = null): string
     {
         //Comprueba si la imagen no es nula; si lo es, devuelve la imagen por defecto
         if(!is_null($data)){
@@ -32,10 +32,10 @@ trait Identificable
                 $img = "data:$mimeType;base64,$base64";
             } else {
                 //Si no es una imagen, devuelve la imagen por defecto
-                $img = "../resources/player/default.png";
+                $img = $route;
             }
         } else {
-            $img = "../resources/player/default.png";
+            $img = $route;
         }
         return $img;
     }
