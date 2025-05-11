@@ -25,7 +25,6 @@ class Jugador
         $this->setPropuestas($propuestas);
         $this->setPuntos($puntos);
         $this->setPersonajes($personajes);
-        $this->setPersonajes($propuestas);
         $this->setImgData($imagen);
     }
 
