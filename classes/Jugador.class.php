@@ -9,7 +9,7 @@ class Jugador
     private string $correo;
     private int $puntos;
     private array $personajes;
-    private string $img_data;
+    private ?string $img_data;
     private bool $admin = false;
     private array $propuestas;
     private int $notificaciones;
@@ -110,7 +110,7 @@ class Jugador
     }
     public function setImgData(?string $img_data): self
     {
-        $this->img_data = $this->getFormattedImg($img_data);
+        $img_data === null ? $this->img_data = null : $this->img_data = $this->getFormattedImg($img_data);
         return $this;
     }
 

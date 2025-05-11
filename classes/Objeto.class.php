@@ -22,9 +22,9 @@ abstract class Objeto implements toDatabase
         string $nombre,
         string $tipo,
         string $descripcion,
-        string $imagen,
         float $precio,
         array $efectos = [new Efecto(0, "Ninguno", "No tiene ningún efecto", 0, 0, "none")],
+        ?string $imagen = null,
     ) {
         $this->setId($id);
         $this->setNombre($nombre);
@@ -116,9 +116,9 @@ abstract class Objeto implements toDatabase
         return $this->imagen;
     }
 
-    public function setImagen(string $imagen): self
+    public function setImagen(?string $imagen = null): self
     {
-        $this->imagen = $this->getFormattedImg($imagen);
+        $this->imagen = $this->getFormattedImg("../resources/item/default.png", $imagen);
         return $this;
     }
 
@@ -160,15 +160,15 @@ class Arma extends Objeto
         string $nombre,
         string $tipo,
         string $descripcion,
-        string $imagen,
         float $precio,
         array $efectos,
         int $modificador,
         Objeto $material,
         string $combate,
         bool $doble = false,
+        ?string $imagen = null,
     ) {
-        parent::__construct($id, $nombre, $tipo, $descripcion, $imagen, $precio, $efectos);
+        parent::__construct($id, $nombre, $tipo, $descripcion, $precio, $efectos, $imagen);
         $this->setModificador($modificador);
         $this->setMaterial($material);
         $this->setDoble($doble);
@@ -258,14 +258,14 @@ class Armadura extends Objeto
         string $nombre,
         string $tipo,
         string $descripcion,
-        string $imagen,
         float $precio,
         array $efectos,
         string $corporal,
         int $modificador,
         Objeto $material,
+        ?string $imagen = null,
     ) {
-        parent::__construct($id, $nombre, $tipo, $descripcion, $imagen, $precio, $efectos);
+        parent::__construct($id, $nombre, $tipo, $descripcion, $precio, $efectos, $imagen);
         $this->setCorporal($corporal);
         $this->setModificador($modificador);
         $this->setMaterial($material);
@@ -341,12 +341,12 @@ class Consumible extends Objeto
         string $nombre,
         string $tipo,
         string $descripcion,
-        string $imagen,
         float $precio,
         array $efectos,
         int $usos,
+        ?string $imagen = null,
     ) {
-        parent::__construct($id, $nombre, $tipo, $descripcion, $imagen, $precio, $efectos);
+        parent::__construct($id, $nombre, $tipo, $descripcion,$precio, $efectos, $imagen);
         $this->setUsos($usos);
     }
 
@@ -392,14 +392,14 @@ class Base extends Objeto
         string $nombre,
         string $tipo,
         string $descripcion,
-        string $imagen,
         float $precio,
         array $efectos,
         bool $basico,
         string $uso,
         array $eventos,
+        ?string $imagen = null,
     ) {
-        parent::__construct($id, $nombre, $tipo, $descripcion, $imagen, $precio, $efectos);
+        parent::__construct($id, $nombre, $tipo, $descripcion,$precio, $efectos, $imagen);
         $this->setBasico($basico);
         $this->setUso($uso);
         $this->setEventos($eventos);
@@ -467,14 +467,14 @@ class Paquete extends Objeto
         string $nombre,
         string $tipo,
         string $descripcion,
-        string $imagen,
         float $precio,
         array $efectos,
         Objeto $objeto1,
         Objeto $objeto2,
         bool $ambos = false,
+        ?string $imagen = null,
     ) {
-        parent::__construct($id, $nombre, $tipo, $descripcion, $imagen, $precio, $efectos);
+        parent::__construct($id, $nombre, $tipo, $descripcion,$precio, $efectos, $imagen);
         $this->setObjeto1($objeto1);
         $this->setObjeto2($objeto2);
         $this->setAmbos($ambos);

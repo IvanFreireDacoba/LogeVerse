@@ -331,9 +331,9 @@ class Personaje implements toDatabase
     {
         return $this->img_data;
     }
-    public function setImgData(string $img_data): self
+    public function setImgData(?string $img_data = null): self
     {
-        $this->img_data = $this->getFormattedImg($img_data);
+        $this->img_data = $this->getFormattedImg("../resources/player/default.png", $img_data);
         return $this;
     }
 

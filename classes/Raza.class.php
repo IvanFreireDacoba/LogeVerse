@@ -37,7 +37,7 @@ final class Raza implements toDatabase
             'nombre' => $this->getNombre(),
             'caracteristicas' => $this->getDescripcion(),
             'historia' => $this->getHistoria(),
-            'atributos' => json_encode($this->getAtributos()),
+            'atributos' => $this->getAtributos(),
             'velocidad' => $this->getVelocidad(),
         ];
     } 
@@ -112,8 +112,9 @@ final class Raza implements toDatabase
     }
     public function setAtributos(array $atributos, array $cantidades): self
     {
+        $this->atributos[] = [];
         for ($i = 0; $i < count($atributos); $i++) {
-            $this->atributos = [$atributos[$i], $cantidades[$i]];
+            $this->atributos[] = [$atributos[$i], $cantidades[$i]];
         }
         return $this;
     }
@@ -148,7 +149,7 @@ final class Raza implements toDatabase
     }
     public function setPasivas(array $pasivas): self
     {
-        $this->pasivas = $pasivas;
+        $this->pasivas[] = $pasivas;
 
         return $this;
     }
@@ -160,7 +161,7 @@ final class Raza implements toDatabase
     }
     public function setImagen(?string $imagen = null): self
     {
-        $this->imagen = $this->getFormattedImg($imagen);
+        $this->imagen = $this->getFormattedImg("../resources/race/default.png", $imagen);
         return $this;
     }
 }
