@@ -5,7 +5,11 @@
 
     //Si el usuario tiene alguna alerta pendiente, la mostramos
     if(isset($_SESSION["alert"])){
-        echo "<script>alert('".$_SESSION["alert"]."');</script>";
+        echo "<script>
+                window.onload = function() {
+                    alert('" . $_SESSION["alert"] . "');
+                };
+              </script>";
         //Una vez mostrada la alerta, la eliminamos de la sesión
         unset($_SESSION["alert"]);
     }

@@ -142,3 +142,95 @@ function generarPersonaje(pdo $conexion, array $datos): int
     }
     return $last_id;
 }
+
+/**
+ * Summary of eliminarJugador
+ * @param pdo $conexion
+ * @param int $id
+ * @return void
+ * 
+ * Elimina un usuario y todos los datos de este de la base de datos
+ */
+function eliminarJugador(pdo $conexion, int $id): void
+{
+    try {
+        //Obtener los personajes del jugador
+        $conexion->beginTransaction();
+        $stmt = $conexion->prepare("SELECT id FROM personaje WHERE propietario = :id_prop");
+        $stmt->bindParam("id_prop", $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $personajes = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        //Eliminar los personajes del jugador
+        foreach ($personajes as $personaje) {
+            eliminarPersonaje($conexion, $personaje);
+        }
+
+        //Eliminar los datos del jugador en las tablas relacionadas de la base de datos
+        $tablas = [
+            "imagen_perfil",
+            "propuestas",
+        ];
+
+        foreach ($tablas as $tabla) {
+            $stmt = $conexion->prepare("DELETE FROM $tabla WHERE id_jugador = :id_jugador");
+            $stmt->bindParam(":id_jugador", $id, PDO::PARAM_INT);
+            $stmt->execute();
+        }
+
+        //Eliminar al jugador (si es administrador, borrarlo de la tabla admins)
+        $stmt = $conexion->prepare("DELETE FROM admins WHERE id = :id_jugador");
+        $stmt->bindParam(":id_jugador", $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $stmt = $conexion->prepare("DELETE FROM jugador WHERE id = :id_jugador");
+        $stmt->bindParam(":id_jugador", $id, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $conexion->commit();
+    
+    } catch (PDOException $e) {
+        $conexion->rollBack();
+        error_log("Error al eliminar el usuario.");
+        throw $e;
+    }
+}
+
+/**
+ * Summary of eliminarPersonaje
+ * @param pdo $conexion
+ * @param int $id
+ * @return void
+ * 
+ * Elimina un personaje y toda la información de este de la base de datos
+ */
+function eliminarPersonaje(pdo $conexion, int $id): void
+{
+    try {
+        $conexion->beginTransaction();
+
+        //Eliminar la información del pesonaje de las tablas relacionadas en la base de datos
+        $tablas = [
+            "atributo_personaje",
+            "habilidad_personaje",
+            "imagen_personaje",
+            "incursion_personaje",
+        ];
+
+        foreach ($tablas as $tabla) {
+            $stmt = $conexion->prepare("DELETE FROM $tabla WHERE id_personaje = :id_pj");
+            $stmt->bindParam(":id_pj", $id, PDO::PARAM_INT);
+            $stmt->execute();
+        }
+
+        //Eliminar el personaje
+        $stmt = $conexion->prepare("DELETE FROM personaje WHERE id = :id_pj");
+        $stmt->bindParam(":id_pj", $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $conexion->commit();
+    } catch (PDOException $e) {
+        $conexion->rollBack();
+        error_log("Error al eliminar al personaje {$id}");
+        throw $e;
+    }
+}
