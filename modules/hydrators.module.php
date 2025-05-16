@@ -52,7 +52,7 @@ function hydrateJugador(array $datos): Jugador {
         $datos["img_data"] = null;
     }
 
-    return new Jugador(
+    $jugador = new Jugador(
         $datos["id"],
         $datos["nombre"],
         $datos["correo"],
@@ -62,6 +62,10 @@ function hydrateJugador(array $datos): Jugador {
         $datos["propuestas"],
         $datos["img_data"],
     );
+
+    $jugador->setAdmin($datos["admin"]);  
+
+    return $jugador;
 }
 
 function hydratePersonaje(array $datos): Personaje {

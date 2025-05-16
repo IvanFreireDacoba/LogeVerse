@@ -15,6 +15,8 @@ if (!isset($_SESSION["usuario"])) {
     //Añadimos el head de la página común al resto de páginas
     include_once '../views/shared/head.php';
     ?>
+    <script src="../views/profile/scripts/drop_user_confirmation.js">
+    </script>
 </head>
 
 <body>
@@ -31,28 +33,51 @@ if (!isset($_SESSION["usuario"])) {
         </div>
         <hr>
         <h2 id="profile_title">Configuración de la cuenta</h2>
-        <div id="profile_settings">
-            <form action="../modules/settings.module.php" method="POST">
+        <section id="profile_settings">
+            <div id="users">
+                <form action="../modules/settings.module.php" method="POST">
+                    <div>
+                        <label for="name">Nombre:</label>
+                        <input type="text" id="name" name="name"
+                            value="<?php echo $_SESSION["usuario"]->getNombre(); ?>" required>
+                    </div>
+                    <div>
+                        <label for="email">Correo:</label>
+                        <input type="email" id="email" name="email"
+                            value="<?php echo $_SESSION["usuario"]->getCorreo(); ?>" required>
+                    </div>
+                    <div>
+                        <label for="password">Contraseña:</label>
+                        <input type="password" id="password" name="password">
+                        <br>
+                        <label for="password_confirm">Confirmar contraseña:</label>
+                        <input type="password" id="password_confirm" name="password_confirm">
+                    </div>
+                    <button>Actualizar</button>
+                </form>
+                <br>
+                <form action="../modules/drop_profile.module.php" method="POST">
+                    <input id="confirmation" name="confirmation" value=""
+                        data_username="<?php echo htmlspecialchars(strtoupper($_SESSION["usuario"]->getNombre())); ?>"
+                        hidden>
+                    <button id="remove_btn" type="submit">ELIMINAR CUENTA</button>
+                </form>
+            </div>
+            <?php if ($_SESSION["usuario"]->getAdmin()) {
+                $confirmed = checkAdmin($_SESSION["usuario"]->getId());
+            }
+            if ($confirmed): ?>
                 <div>
-                    <label for="name">Nombre:</label>
-                    <input type="text" id="name" name="name" value="<?php echo $_SESSION["usuario"]->getNombre(); ?>" required>
+                    <script src="admin_debugger.js"></script>
+                    <ce-debugger
+                        status="<?php echo isset($_SESSION["debug"]) && $_SESSION["debug"] ? "on" : "off" ?>"></ce-debugger>
+                    <form id="debug_form" action="" method="POST" hidden>
+                        <input id="debug" name="debug"
+                            value="<?php echo isset($_SESSION["debug"]) && $_SESSION["debug"] ? "on" : "off" ?>">
+                    </form>
                 </div>
-                <div>
-                    <label for="email">Correo:</label>
-                    <input type="email" id="email" name="email" value="<?php echo $_SESSION["usuario"]->getCorreo(); ?>" required>
-                </div>
-                <div>
-                    <label for="password">Contraseña:</label>
-                    <input type="password" id="password" name="password">
-                    <br>
-                    <label for="password_confirm">Confirmar contraseña:</label>
-                    <input type="password" id="password_confirm" name="password_confirm">
-                </div>
-                <button>Actualizar</button>
-            </form>
-            <br>
-            <button id="remove_btn">ELIMINAR CUENTA</button>
-        </div>
+            <?php endif; ?>
+        </section>
     </main>
     <?php
     //Añadimos el pie de página común al resto de páginas
@@ -61,4 +86,3 @@ if (!isset($_SESSION["usuario"])) {
 </body>
 
 </html>
-
