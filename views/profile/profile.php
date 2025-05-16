@@ -29,7 +29,7 @@ if (!isset($_SESSION["usuario"])) {
             <p><strong>Nombre:</strong> <?php echo $_SESSION["usuario"]->getNombre(); ?></p>
             <p><strong>Correo:</strong> <?php echo $_SESSION["usuario"]->getCorreo(); ?></p>
         </div>
-        <button id="btn_settings_profile">Ajustes</button>
+        <button id="btn_settings_profile" onclick="window.location.href='./settings.controller.php'">Ajustes</button>
         <hr>
         <section id="profile_characters">
             <?php
@@ -37,7 +37,7 @@ if (!isset($_SESSION["usuario"])) {
             $personajes = $_SESSION["usuario"]->getPersonajes();
             if (!empty($personajes)) {
                 foreach ($personajes as $personaje) {
-                    $personaje->toShortHTML();
+                    echo $personaje->toShortHTML();
                 }
             } else {
                 echo "<p>¡Crea tu primer personaje ahora!</p/>";

@@ -4,11 +4,11 @@ include_once "../classes/include_classes.php";
 include_once "./hydrators.module.php";
 include_once "./toDatabase.module.php";
 
-
+//================================REFRESCAR U OBTENER DATOS===============================
 function refrescarUsuario(PDO $pdo, int $id_usuario): Jugador
 {
     //Obtenemos y guardamos el jugador
-    $stmt = $pdo->prepare("SELECT * FROM jugador LEFT JOIN imagen_perfil ON jugador.id = imagen_perfil.id__jugador WHERE jugador.id = :id_usuario;");
+    $stmt = $pdo->prepare("SELECT * FROM jugador LEFT JOIN imagen_perfil ON jugador.id = imagen_perfil.id_jugador WHERE jugador.id = :id_usuario;");
     $stmt->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
     $stmt->execute();
     $data = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -30,6 +30,11 @@ function refrescarUsuario(PDO $pdo, int $id_usuario): Jugador
         $personajes[] = refrescarPersonaje($pdo, $id_personaje);
     }
     $data["personajes"] = $personajes;
+    //Checkeamos el estado administrador
+    $stmt = $pdo->prepare("SELECT id FROM admins WHERE id = :id_jugador;");
+    $stmt->bindParam(':id_jugador', $id_usuario, PDO::PARAM_INT);
+    $stmt->execute();
+    $data["admin"] = $stmt->rowCount() === 1;  
     //Devolvemos el objeto jugador construido con todos sus parámetros
     return hydrateJugador($data);
 }
@@ -427,6 +432,21 @@ function obtenerHabilidad($pdo, $id_habilidad)
     }
     //Devolvemos la instancia de la habilidad hidratada
     return hydrateHabilidad($datos);
+}
+
+function checkAdmin($id): bool
+{
+    try {
+        $conexion = conectar();
+        $stmt = $conexion->prepare("SELECT true FROM admins WHERE id = :id");
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $admin = $stmt->fetchColumn() ? true : false;
+    } catch (Error $e) {
+        $_SESSION["alert"]("Error, no se ha podido verificar el status de administrador.");
+        $admin = false;
+    }
+    return $admin;
 }
 
 //================================PROPUESTAS===============================
