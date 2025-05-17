@@ -7,6 +7,8 @@ export function loadedDomAt() {
             updateAtributes();
         });
     }
+    //Actualizar el total de puntos al cargar la página (Pueden entrar datos previos de POST)
+    updateAtributes();
     //Eliminar el listener del DOMContentLoaded (JScript no gestiona esto de manera automática)
     document.removeEventListener("DOMContentLoaded", loadedDomAt);
 }
@@ -32,7 +34,7 @@ export function updateAtributes() {
     //Obtenemos los inputs de cada uno de los atributos
     let atr_tot_inputs = document.getElementsByClassName("atr_input_for_js");
     //Declaramos las variables que almacenarán el valor de cada apartado del atributo
-    let v_raza, v_dice, v_ptos, v_tot, index, v_ptos_consumidos = 0;
+    let v_raza, v_dice, v_ptos, v_tot, v_ptos_consumidos = 0;
     //Obtenemos todas las filas de la tabla de atributos
     let atr_rows = document.getElementsByClassName("atr_row");
     //Iteramos sobre las filas realizando los cálculos pertinentes y estableciento el valor final
@@ -45,7 +47,7 @@ export function updateAtributes() {
         v_tot = v_raza + v_dice + v_ptos;
         v_ptos_consumidos += v_ptos;
         //Establecemos el valor total en la celda correspondiente
-        row.lastChild.textContent = v_tot;
+        row.getElementsByClassName("atr_total")[0].textContent = v_tot;
         //Establecemos el valor total en el input correspondiente
         atr_tot_inputs[i].setAttribute("value", v_tot);
         i++;
@@ -53,5 +55,7 @@ export function updateAtributes() {
 
     //Actualizamos el input de puntos de habilidad disponibles
     let p_ptos_habilidad = document.getElementById("ptos_habilidad_info");
+    let input_ptos_habilidad = document.getElementById("ptos_habilidad");
     p_ptos_habilidad.textContent = p_ptos_habilidad.getAttribute("max-value") - v_ptos_consumidos;
+    input_ptos_habilidad.value = p_ptos_habilidad.getAttribute("max-value") - v_ptos_consumidos;
 }

@@ -14,6 +14,7 @@ if (!isset($_SESSION["usuario"])) {
 }
 
 if ($_POST) {
+    $_SESSION["POST"] = $_POST;
     foreach ($_POST as $key => $value) {
         $$key = $value;
     }
@@ -50,6 +51,8 @@ if ($_POST) {
         $pdo = $conexion->prepare("SELECT id, nombre FROM atributo;");
         $pdo->execute();
         $atributos_existentes = $pdo->fetchAll(PDO::FETCH_ASSOC);
+        //Obtener de base de datos la cantidad máxima de puntos iniciales disponibles
+        $max_atr_points = (int) obtenerConstante(1);
     } catch (PDOException $e) {
         $_SESSION["alert"] = "Error al conectar a la base de datos. Por favor, prueba otra vez.";
         header("Location: ../controllers/newCharacter.controller.php");
@@ -124,7 +127,6 @@ if ($_POST) {
         header("Location: ../controllers/newCharacter.controller.php");
         exit;
     }
-
     //Almacenamos los datos del personaje en la base de datos
     //construimos el array de datos del personaje
     $id_usuario = $_SESSION["usuario"]->getId();
@@ -153,13 +155,14 @@ if ($_POST) {
 
     //Creamos el personaje en la base de datos
     $pj_id = generarPersonaje($conexion, $datos_pj);
-    
+
     //Devolvemos la información del proceso, almacenando el personaje en la sesión si todo se ha generado correctamente
     if ($pj_id > 0) {
         $pj = refrescarPersonaje($conexion, $pj_id);
         $usser_pjs = $_SESSION["usuario"]->getPersonajes();
         $usser_pjs[] = $pj;
         $_SESSION["usuario"]->setPersonajes($usser_pjs);
+        unset($_SESSION["POST"]);
         $_SESSION["alert"] = "Personaje creado correctamente.";
         $conexion = null; //Cerramos la conexión a la base de datos
         header("Location: ../controllers/profile.controller.php");
@@ -172,7 +175,6 @@ if ($_POST) {
         header("Location: ../controllers/newCharacter.controller.php");
         exit;
     }
-
 } else {
     $_SESSION["alert"] = "Error al obtener los datos del formulario.";
     $conexion = null; //Cerramos la conexión a la base de datos

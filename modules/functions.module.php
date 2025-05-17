@@ -1,10 +1,10 @@
 <?php
 
 include_once "../classes/include_classes.php";
-include_once "./hydrators.module.php";
-include_once "./toDatabase.module.php";
+include_once "../modules/hydrators.module.php";
+include_once "../modules/toDatabase.module.php";
 
-//================================REFRESCAR U OBTENER DATOS===============================
+// ================================ REFRESCAR U OBTENER DATOS ===============================
 function refrescarUsuario(PDO $pdo, int $id_usuario): Jugador
 {
     //Obtenemos y guardamos el jugador
@@ -34,7 +34,7 @@ function refrescarUsuario(PDO $pdo, int $id_usuario): Jugador
     $stmt = $pdo->prepare("SELECT id FROM admins WHERE id = :id_jugador;");
     $stmt->bindParam(':id_jugador', $id_usuario, PDO::PARAM_INT);
     $stmt->execute();
-    $data["admin"] = $stmt->rowCount() === 1;  
+    $data["admin"] = $stmt->rowCount() === 1;
     //Devolvemos el objeto jugador construido con todos sus parámetros
     return hydrateJugador($data);
 }
@@ -449,7 +449,188 @@ function checkAdmin($id): bool
     return $admin;
 }
 
-//================================PROPUESTAS===============================
+// ================================== CUERPOS HTML =================================
+function listarRazasSeleccion(): string
+{
+    /*
+        <input id="estadoRazas" name="raza" data-status="1" data-max="' . count($razas) . '" value="1" hidden>;
+
+        <div class='razaContainer' id='raza_" . $raza["id"] . "' hidden>
+            <p class='nombreRaza'>{$raza->getNombre()}</p>
+            <img class='imgRaza' src='{$raza->getImagen()}'>
+        </div>
+    */
+
+    try {
+        $pdo = conectar();
+        $stmt = $pdo->prepare("SELECT id FROM raza ORDER BY id;");
+        $stmt->execute();
+        $ids_razas = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $razas = [];
+        //Obtener todas las razas disponibles en la base de datos 
+        foreach ($ids_razas as $id_raza) {
+            $razas[] = refrescarRaza($pdo, $id_raza);
+        }
+        //Preparar el input de raza
+        $input = '<input id="estadoRazas" name="raza" data-status="1" data-max="' . count($razas) . '" value="1" hidden>';
+        //Preparar el HTML con cada raza
+        $div_raz = "";
+        foreach ($razas as $raza) {
+            $div_raz .= "<div class='razaContainer' id='raza_" . $raza->getId() . "' hidden>
+                            <p class='nombreRaza'>" . $raza->getNombre() . "</p>
+                            <img class='imgRaza' src='" . $raza->getImagen() . "'>
+                        </div>";
+        }
+        //Preparar el script de carga de atributos de cada raza, seleccionamos todos los atributos de cada raza
+        $stmt = $pdo->prepare("SELECT atributo.id as id, atributo.nombre as nombre, atributo.descripcion as descripcion, atributo_raza.cantidad as cantidad, raza.id as raza FROM raza JOIN atributo_raza JOIN atributo ON raza.id = atributo_raza.id_raza AND atributo.id = atributo_raza.id_atributo ORDER BY raza.id;");
+        $stmt->execute();
+        $atrs_razas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $script_atr = "<script> var atr_razas = { ";
+        $id_raza_actual = -1;
+        foreach ($atrs_razas as $atrs_raza) {
+            if ($id_raza_actual === $atrs_raza["raza"])
+                $script_atr .= ", " . $atrs_raza["cantidad"];
+            else {
+                $script_atr .= $id_raza_actual !== -1 ? "], " : "";
+                $id_raza_actual = $atrs_raza["raza"];
+                $script_atr .= $id_raza_actual . ": [ null, " . $atrs_raza["cantidad"];
+
+            }
+        }
+        $script_atr .= "]}; </script>";
+        $salida = $input . $script_atr . $div_raz;
+    } catch (Exception $error) {
+
+        $salida = "<p>Error al cargar las razas,<br>por favor refresca la página</p>";
+    }
+
+    return $salida;
+}
+
+function listarClasesSeleccion(): string
+{
+    /*
+        <input id="estadoClases" name="clase" data-max="' . count($clases) - 1 . '" value="" hidden>
+        <div class='claseContainer' id='clase_" . $clase["id"] . "' hidden>
+            <p class='nombreClase'>{$clase->getNombre()}</p>
+            <img class='imgClase' src='{$clase->getImagen()}'>
+        </div>"
+    */
+    try {
+        $pdo = conectar();
+        $stmt = $pdo->prepare("SELECT id FROM clase ORDER BY id;");
+        $stmt->execute();
+        $ids_clases = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $clases = [];
+        foreach ($ids_clases as $id_clase) {
+            $clases[] = refrescarClase($pdo, $id_clase);
+        }
+        $salida = '<input id="estadoClases" name="clase" data-max="' . count($clases) . '" value="" hidden>';
+        foreach ($clases as $clase) {
+            $salida .= "<div class='claseContainer' id='clase_" . $clase->getId() . "' hidden>
+                            <p class='nombreClase'>" . $clase->getNombre() . "</p>
+                            <img class='imgClase' src='" . $clase->getImagen() . "'>
+                        </div>";
+        }
+    } catch (Error $e) {
+        $salida = "<p>Error al cargar las clases,<br>por favor refresca la página</p>";
+    }
+    return $salida;
+}
+
+function listarAtributosSeleccion(): string
+{
+    try {
+        $pdo = conectar();
+        $max_atr_points = (int) obtenerConstante(1);
+        $inputs = ' <p>Puntos disponibles: <span id="ptos_habilidad_info" max-value="' . $max_atr_points . '">' . $max_atr_points . '</span></p>
+                   <input type="number" id="ptos_habilidad" name="ptos_habilidad" value="' . $max_atr_points . '" hidden>';
+        $stmt = $pdo->prepare("SELECT id, nombre, descripcion FROM atributo ORDER BY id;");
+        $stmt->execute();
+        $atributos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $table = '<table id="tabla_atributos">
+                    <thead>
+                        <tr>
+                            <th>Atributo</th>
+                            <td></td>
+                            <th>Raza</th>
+                            <td></td>
+                            <th>Dados</th>
+                            <td></td>
+                            <th>Puntos</th>
+                            <td></td>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+        foreach ($atributos as $atributo) {
+            $_SESSION["tiradas_pj"][$atributo["id"]] = lanzarDado(6);
+            $inputs .= '<input type="number" name="' . $atributo["id"] . '" class="atr_input_for_js" value="0" hidden>';
+            $table .= '<tr class="atr_row">
+                        <td>' . $atributo["nombre"] . '</td>
+                        <td>:</td>
+                        <td class="atr_raza" index="' . $atributo["id"] . '">0</td>
+                        <td>+</td>
+                        <td class="atr_dice">' . $_SESSION["tiradas_pj"][$atributo["id"]] . '</td>
+                        <td>+</td>
+                        <td>
+                            <input type="number"
+                                name="atr_ptos_' . $atributo["nombre"] . '"
+                                class="atr_pts"
+                                value="0"
+                                min="0"
+                                required>
+                        </td>
+                        <td>=</td>
+                        <td class="atr_total">0</td>
+                    </tr>';
+        }
+        $table .= "</tbody></table>";
+        $salida = $inputs . $table;
+    } catch (Error $e) {
+        $salida = "<p>Error al cargar los atributos,<br>por favor refresca la página</p>";
+    }
+    return $salida;
+}
+
+// ================================== FUNCIONALES ==================================
+
+function lanzarDado(int $caras, ?int $min = 1): int
+{
+    return random_int($min, $caras);
+}
+
+function obtenerConstante(?int $id = null, ?string $name = null): string
+{
+    if ($id === null && $name === null) {
+        throw new Exception("Error, parámetro de cte. necesario.");
+    }
+
+    try {
+        $pdo = conectar();
+
+        if ($id !== null) {
+            $stmt = $pdo->prepare("SELECT valor FROM constantes WHERE id = :id");
+            $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        } else {
+            $stmt = $pdo->prepare("SELECT valor FROM constantes WHERE nombre = :nombre");
+            $stmt->bindParam(":nombre", $name, PDO::PARAM_STR);
+        }
+
+        $stmt->execute();
+        $valor = $stmt->fetchColumn();
+
+        if ($valor === false) {
+            throw new Exception("Error, constante no encontrada.");
+        }
+
+        return $valor;
+    } catch (PDOException $e) {
+        throw new Exception("Error, imposible conectar con la base de datos.");
+    }
+}
+
+// =================================== PROPUESTAS ==================================
 //Gestiona la propuesta de una raza, comprobando los campos que se proponen 
 function propuestaRaza(pdo $conexion, array $datos): void
 {
