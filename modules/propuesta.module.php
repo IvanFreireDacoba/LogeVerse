@@ -1,7 +1,7 @@
 <?php
 
 include_once "../classes/include_classes.php";
-include_once "./functions.module.php";
+include_once "../modules/functions.module.php";
 
 session_start();
 
@@ -13,49 +13,75 @@ if (!isset($_SESSION["usuario"])) {
 }
 
 if ($_POST) {
+    $_SESSION["POST"] = $_POST;
     $datos = [];
     foreach ($_POST as $key => $value) {
-        $datos = [$$key => $value];
+        $datos[$key] = htmlspecialchars($value);
     }
 
     $types = [
         "clase",
-        "raza"
+        "raza",
+        "efecto",
+        "habilidad",
+        "pasiva",
+        "objeto"
     ];
 
-    if ($proposal_type && in_array($proposal_type, $types)) {
-        switch ($proposal_type) {
-            case "raza": {
-                try {
-                    $conexion = conectar();
-                    propuestaRaza($conexion, $datos);
-                } catch (error) {
-
+    if ($datos["proposal_type"] && in_array($datos["proposal_type"], $types)) {
+        $exito = false;
+        $infoMsg = null;
+        try {
+            $conexion = conectar();
+            switch ($datos["proposal_type"]) {
+                case "raza": {
+                    $idProp = propuestaRaza($conexion, $datos, $infoMsg, $exito);
+                    break;
                 }
-                break;
-            }
-            case "clase": {
-                try {
-                    $conexion = conectar();
-                    propuestaClase($conexion, $datos);
-                } catch (error) {
-
+                case "clase": {
+                    $idProp = propuestaClase($conexion, $datos, $infoMsg, $exito);
+                    break;
                 }
-                break;
+                case "efecto": {
+                    $idProp = propuestaEfecto($conexion, $datos, $infoMsg, $exito);
+                    break;
+                }
+                case "habilidad": {
+                    $idProp = propuestaHabilidad($conexion, $datos, $infoMsg, $exito);
+                    break;
+                }
+                case "pasiva": {
+                    $idProp = propuestaPasiva($conexion, $datos, $infoMsg, $exito);
+                    break;
+                }
+                case "objeto": {
+                    $idProp = propuestaObjeto($conexion, $datos, $infoMsg, $exito);
+                    break;
+                }
+                default: {
+                    $conexion = null;
+                    break;
+                }
             }
-            default: {
-                $_SESSION["alert"] = "No se ha podido realizar la propuesta.";
-                header("Location: ../controllers/propuestas.controller.php");
-                exit;
+            if ($exito) {
+                try {
+                    registrarPropuesta($conexion, $_SESSION["usuario"]->getId(), $idProp, $datos["proposal_type"]);
+                    $_SESSION["alert"] = "Propuesta realizada con éxito.";
+                } catch (Error $e) {
+                    $_SESSION["alert"] = "Propuesta realizada con éxito, no se ha podido registrar al usuario.";
+                }
+            } else if ($infoMsg !== null) {
+                $_SESSION["alert"] = $infoMsg;
             }
+        } catch (error) {
+            $_SESSION["alert"] = "No se ha podido realizar la propuesta: " . $infoMsg;
         }
+        $conexion = null;
     } else {
-        $_SESSION["alert"] = "No se ha podido realizar la propuesta.";
-        header("Location: ../controllers/propuestas.controller.php");
-        exit;
+        $_SESSION["alert"] = "La entidad propuesta no existe.";
     }
 } else {
     $_SESSION["alert"] = "Error al obtener los datos del formulario.";
-    header("Location: ../controllers/propuestas.controller.php");
-    exit;
 }
+header("Location: ../controllers/propuestas.controller.php");
+exit;

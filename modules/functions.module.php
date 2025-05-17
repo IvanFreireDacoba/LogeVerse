@@ -632,13 +632,89 @@ function obtenerConstante(?int $id = null, ?string $name = null): string
 
 // =================================== PROPUESTAS ==================================
 //Gestiona la propuesta de una raza, comprobando los campos que se proponen 
-function propuestaRaza(pdo $conexion, array $datos): void
+function propuestaRaza(pdo $conexion, array $datos, string &$infoMsg, bool &$exito): int
 {
 
 }
 
 //Gestiona la propuesta de una clase, comprobando los campos que se proponen 
-function propuestaClase(pdo $conexion, array $datos): void
+function propuestaClase(pdo $conexion, array $datos, string &$infoMsg, bool &$exito): int
 {
 
+}
+
+//Gestiona la propuesta de un efecto, comprobando los campos que se proponen 
+function propuestaEfecto(PDO $conexion, array $datos, string &$infoMsg, bool &$exito): int
+{
+    $id = 0;
+    $infoMsg = "";
+    //Comprobamos que el array contiene todos los datos necesarios
+    if ($datos["efecto_nombre"] === null) {
+        $infoMsg .= "El nombre es obligatorio.\n";
+    }
+    if ($datos["efecto_descripcion"] === null) {
+        $infoMsg .= "La descripción es obligatoria.\n";
+    }
+    if ($datos["efecto_cantidad"] === null) {
+        $infoMsg .= "La cantidad es obligatoria.\n";
+    }
+    if ($datos["efecto_duracion"] === null) {
+        $infoMsg .= "La duración es obligatoria.\n";
+    }
+    if ($datos["efecto_tipo"] === null) {
+        $infoMsg .= "El tipo es obligatorio.";
+    }
+    if (empty($infoMsg)) {
+        try {
+            $stmt = $conexion->prepare("INSERT INTO prop_efecto (nombre, descripcion, cantidad, duracion, tipo) VALUES (:nombre, :descripcion, :cantidad, :duracion, :tipo);");
+            $stmt->bindParam(":nombre", $datos["efecto_nombre"], PDO::PARAM_STR);
+            $stmt->bindParam(":descripcion", $datos["efecto_descripcion"], PDO::PARAM_STR);
+            $cantidad = (int) $datos["efecto_cantidad"];
+            $stmt->bindParam(":cantidad", $cantidad, PDO::PARAM_INT);
+            $duracion = (int) $datos["efecto_duracion"];
+            $stmt->bindParam(":duracion", $duracion, PDO::PARAM_INT);
+            $stmt->bindParam(":tipo", $datos["efecto_tipo"], PDO::PARAM_STR);
+            $stmt->execute();
+            $id = $conexion->lastInsertId();
+            $exito = true;
+        } catch (Exception $e) {
+            $infoMsg = "Error al intentar insertar los datos.";
+            $exito = false;
+        }
+    } else {
+        $exito = false;
+    }
+    return $id;
+}
+
+//Gestiona la propuesta de una clase, comprobando los campos que se proponen 
+function propuestaHabilidad(pdo $conexion, array $datos, string &$infoMsg, bool &$exito): int
+{
+
+}
+
+//Gestiona la propuesta de una clase, comprobando los campos que se proponen 
+function propuestaPasiva(pdo $conexion, array $datos, string &$infoMsg, bool &$exito): int
+{
+
+}
+
+//Gestiona la propuesta de un objeto, comprobando los campos que se proponen 
+function propuestaObjeto(pdo $conexion, array $datos, string &$infoMsg, bool &$exito): int
+{
+
+}
+
+//Registra una propuesta realizada por un jugador
+function registrarPropuesta(pdo $pdo, int $id_jugador, int $id_propuesta, string $proposal_type): void
+{
+    try {
+        $stmt = $pdo->prepare("INSERT INTO propuestas (id_jugador, id_prop, tipo) VALUES (:id_jug, :id_prop, :tipo);");
+        $stmt->bindParam(":id_jug", $id_jugador, PDO::PARAM_INT);
+        $stmt->bindParam(":id_prop", $id_propuesta, PDO::PARAM_INT);
+        $stmt->bindParam(":tipo", $proposal_type, PDO::PARAM_STR);
+        $stmt->execute();
+    } catch (Error $e) {
+        throw new Exception("Error registrando la respuesta");
+    }
 }

@@ -9,10 +9,9 @@ function onDomContentLoaded() {
         });
 
         //Mostrar solo el divisor seleccionado en el evento
-        const seleccionado = formularios.querySelector(`#${event.target.value}`);
+        const nombreSel = document.getElementById("seleccionPropuesta").value;
+        const seleccionado = document.getElementById(nombreSel);
         if (seleccionado) {
-            console.log(event.target.value);
-            
             seleccionado.removeAttribute("hidden");
         }
     });
