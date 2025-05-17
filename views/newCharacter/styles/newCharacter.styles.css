@@ -41,7 +41,7 @@
     }
 }
 
-.atr_raza, .atr_dice, .atr_pts {
+.atr_raza, .atr_dice, .atr_pts, .atr_total {
     text-align: center;
 }
 
@@ -49,6 +49,7 @@
     display: inline-block;
     aspect-ratio: 1 / 1;
     white-space: nowrap;
+    width: 25%;
 }
 
 

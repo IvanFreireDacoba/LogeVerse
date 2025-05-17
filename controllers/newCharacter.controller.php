@@ -16,6 +16,12 @@ if ($_POST) {
     foreach($_POST as $key => $value){
         $_SESSION["newChar"][$key] = $value;
     }
+} else if ($_SESSION["POST"]) {
+    $_SESSION["newChar"] = [];
+    foreach($_SESSION["POST"] as $key => $value){
+        $_SESSION["newChar"][$key] = $value;
+    }
+    unset($_SESSION["POST"]);
 }
 
 $title = 'Creador PJs';
