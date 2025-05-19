@@ -6,7 +6,7 @@ class Personaje implements toDatabase
     use Identificable;            //Trait para la identificación de objetos
     private string $nombre;
     private string $historia;
-    private Jugador $propietario;
+    private int $propietario;
     private int $experiencia;     //Con la experiencia se calcula el nivel
     private Raza $raza;
     private Clase $clase;
@@ -29,7 +29,7 @@ class Personaje implements toDatabase
     private array $efectos;       //Efectos que sufre el personaje actualmente
 
     //=====================================CONSTRUCTOR=====================================
-    public function __construct(int $id, Jugador $propietario, Raza $raza, Clase $clase, string $nombre, string $historia, int $experiencia, float $dinero = 0, int $puntos_habilidad = 0, bool $estado = true, array $atributos, array $habilidades, Inventario $inventario, array $incursiones = [], string $imagen = null)
+    public function __construct(int $id, int $propietario, Raza $raza, Clase $clase, string $nombre, string $historia, int $experiencia, float $dinero, int $puntos_habilidad, array $habilidades, Inventario $inventario, array $atributos, bool $estado = true, array $incursiones = [], ?string $imagen = null)
     {
         $this->setId($id);
         $this->setNombre($nombre);
@@ -58,7 +58,7 @@ class Personaje implements toDatabase
     {
         return [
             'id' => $this->getId(),
-            'propietario' => $this->getPropietario()->getId(),
+            'propietario' => $this->getPropietario(),
             'raza' => $this->getRaza()->getId(),
             'clase' => $this->getClase()->getId(),
             'nombre' => $this->getNombre(),
@@ -130,7 +130,7 @@ class Personaje implements toDatabase
         if (array_key_exists($atributo, $this->atributos)) {
             return $this->atributos[$atributo];
         } else {
-            throw new Exception("El atributo '$atributo' no existe en el personaje.");
+            throw new Exception("El atributo " . $atributo . " no existe en el personaje.");
         }
     }
 
@@ -228,11 +228,11 @@ class Personaje implements toDatabase
     }
 
     //GSPropietario
-    public function getPropietario(): Jugador
+    public function getPropietario(): int
     {
         return $this->propietario;
     }
-    public function setPropietario(Jugador $propietario): self
+    public function setPropietario(int $propietario): self
     {
         $this->propietario = $propietario;
         return $this;
@@ -331,9 +331,9 @@ class Personaje implements toDatabase
     {
         return $this->img_data;
     }
-    public function setImgData(string $img_data): self
+    public function setImgData(?string $img_data = null): self
     {
-        $this->img_data = $this->getFormattedImg($img_data);
+        $this->img_data = $this->getFormattedImg("../resources/player/default.png", $img_data);
         return $this;
     }
 
@@ -346,7 +346,7 @@ class Personaje implements toDatabase
         }
         return $incursionActual;
     }
-    public function setOnIncursion(bool $on, Incursion $incursion = null, array $status = null): self
+    public function setOnIncursion(bool $on, ?Incursion $incursion = null, ?array $status = null): self
     {
         if($incursion == null){
             $incursion = new Incursion(0, "Ninguna", "No está realizando ninguna incursión");
