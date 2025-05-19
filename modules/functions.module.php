@@ -810,11 +810,9 @@ function propuestaIdioma(pdo $conexion, array $datos, string &$infoMsg, bool &$e
             $stmt->bindParam(":descripcion", $datos["idioma_descripcion"], PDO::PARAM_STR);
             $stmt->execute();$stmt->closeCursor();            
             $stmt->closeCursor();
-
             $stmt = $conexion->query("SELECT @resultado AS resultado");
             $fila = $stmt->fetch(PDO::FETCH_ASSOC);
             $id = (int) $fila['resultado'];
-
             $exito = ($id > 0);
             if (!$exito) {
                 $infoMsg .= "Error al intentar insertar los datos.\nIdioma no registrado.";
