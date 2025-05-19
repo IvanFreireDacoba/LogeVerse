@@ -12,7 +12,7 @@ if (!isset($_SESSION["usuario"])) {
     exit;
 }
 
-if ($_POST) {
+if (isset($_POST)) {
     $_SESSION["POST"] = $_POST;
     $datos = [];
     foreach ($_POST as $key => $value) {
@@ -25,12 +25,13 @@ if ($_POST) {
         "efecto",
         "habilidad",
         "pasiva",
-        "objeto"
+        "objeto",
+        "idioma"
     ];
 
     if ($datos["proposal_type"] && in_array($datos["proposal_type"], $types)) {
         $exito = false;
-        $infoMsg = null;
+        $infoMsg = "";
         try {
             $conexion = conectar();
             switch ($datos["proposal_type"]) {
@@ -56,6 +57,10 @@ if ($_POST) {
                 }
                 case "objeto": {
                     $idProp = propuestaObjeto($conexion, $datos, $infoMsg, $exito);
+                    break;
+                }
+                case "idioma": {
+                    $idProp = propuestaIdioma($conexion, $datos, $infoMsg, $exito);
                     break;
                 }
                 default: {

@@ -6,16 +6,17 @@ if (!isset($_SESSION["usuario"])) {
     exit;
 }
 ?>
-
 <!DOCTYPE html>
-<html lang="en">
+
+<html lang="es">
 
 <head>
     <?php
     //Añadimos el head de la página común al resto de páginas
     include_once '../views/shared/head.php';
     ?>
-    <script src="../views/propuestas/scripts/visibility.js"></script>
+    <script type="module" src="../views/propuestas/scripts/mainScript.js"></script>
+    <link rel="stylesheet" href="../views/propuestas/styles/propuestas.styles.css">
 </head>
 
 <body>
@@ -36,6 +37,7 @@ if (!isset($_SESSION["usuario"])) {
                 <option id="divPasiva">Pasiva</option>
                 <option id="divHabilidad">Habilidad</option>
                 <option id="divObjeto">Objeto</option>
+                <option id="divIdioma">Idioma</option>
             </select>
         </p>
         <section id="formularios">
@@ -98,8 +100,8 @@ if (!isset($_SESSION["usuario"])) {
                             </option>
                         </select>
                     </div>
-                    <button type="submit">PROPONER</button>
-                    <button type="reset">Limpiar formulario</button>
+                    <button class="btn_proponer" type="submit">PROPONER</button>
+                    <button class="btn_reset" type="reset">Limpiar formulario</button>
                 </form>
             </div>
             <div id="Pasiva" class="propuesta" hidden>
@@ -112,31 +114,53 @@ if (!isset($_SESSION["usuario"])) {
                     </div>
                     <div>
                         <label for="pasiva_descripcion">Descripción: </label>
-                        <input id="pasiva_descripcion" name="pasiva_descripcion" type="text"
-                            placeholder="Breve descipción de la pasiva.">
+                        <textarea id="pasiva_descripcion" name="pasiva_descripcion" type="text"
+                            placeholder="Breve descipción de la pasiva."></textarea>
                     </div>
                     <div id="checkbox_pasiva_efectos">
-                        <label>Efectos </label>
-                        <input type="checkbox">
+                        <label for="has_effects">Efectos </label>
+                        <input id="has_effects" name="has_effects" type="checkbox">
                     </div>
-                    <div id="pasiva_efectos" class="pasiva_efectos_select" hidden>
-                        <label>Efectos seleccionados</label>
-                        <div id="pasiva_selected_efects">
+
+                    <div id="pasiva_efectos_select" class="pasiva_efectos_select_style" hidden>
+                        <div>
+                            <p>Efectos seleccionados</p>
+                            <div id="pasiva_selected_efects">
+                            </div>
+                        </div>
+                        <div>
+                            <p>Efectos disponibles</p>
+                            <div id="pasiva_avaliable_efects">
+                                <?php
+                                try {
+                                    $pdo = conectar();
+                                    $stmt = $pdo->prepare("SELECT id, nombre, descripcion, cantidad, duracion, tipo FROM efecto;");
+                                    $stmt->execute();
+                                    $efectos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                    foreach ($efectos as $efecto) {
+                                        $salida = "<div class='pasiva_efecto' id='pasiva_efecto_" . $efecto["id"] . "'>
+                                                    <p>" . $efecto["nombre"] . ": [duración: ";
+                                        $salida .= $efecto["duracion"] === 0 ? "Instanáneo" : $efecto["duracion"];
+                                        $salida .= " || cantidad : " . $efecto["cantidad"] . "]</p>
+                                                <p>" . $efecto["descripcion"] . "</p>
+                                                <input type='number' name='pasiva_efecto_" . $efecto["id"] . "' value='" . $efecto["id"] . "' hidden disabled>
+                                                <div class='div_modificador' title='Modificador del efecto -> la cantidad del efecto se multiplicará por este modificador.' hidden>
+                                                    <label for='mod_pasiva_efecto_" . $efecto["id"] . "'>Mod. </label>
+                                                    <input class='modificador' id='mod_pasiva_efecto_" . $efecto["id"] . "' name='mod_pasiva_efecto_" . $efecto["id"] . "' type='number' min='1' value='1' hidden disabled>
+                                                </div>
+                                               </div>";
+                                        echo $salida;
+                                    }
+                                } catch (Error $e) {
+                                    echo "<p>Error al conectar con la base de datos, por favor refresca la página.</p>";
+                                }
+                                ?>
+                            </div>
                         </div>
                     </div>
+                    <button class="btn_proponer" type="submit">PROPONER</button>
+                    <button class="btn_reset" type="reset">Limpiar formulario</button>
                 </form>
-                <div class="pasiva_efectos_select" hidden>
-                    <label>Efectos disponibles</label>
-                    <div id="pasiva_avaliable_efects">
-                        <?php
-                            
-                        ?>
-                        <div class="drag">
-                            <p>Nombre efecto || cantidad || turnos || tipo </p>
-                            <input id="efecto_pasiva_1" name="efecto_pasiva_1" class="efecto_pasiva" value="">
-                        </div>
-                    </div>
-                </div>
             </div>
             <div id="Habilidad" class="propuesta" hidden>
                 <h4>Proponer Habilidad</h4>
@@ -150,6 +174,21 @@ if (!isset($_SESSION["usuario"])) {
                 <form action="../modules/propuesta.module.php" method="POST">
                     <input id="proposal_type" name="proposal_type" value="objeto" hidden>
                     <p>No disponible</p>
+                </form>
+            </div>
+            <div id="Idioma" class="propuesta" hidden>
+                <h4>Proponer Idioma</h4>
+                <form action="../modules/propuesta.module.php" method="POST">
+                    <input id="proposal_type" name="proposal_type" value="idioma" hidden>
+                    <div>
+                        <label for="idioma_nombre">Nombre: </label>
+                        <input id="idioma_nombre" name="idioma_nombre" type="text" placeholder="Nombre del idioma.">
+                    </div>
+                    <div>
+                        <label for="idioma_descripcion">Descripción: </label>
+                        <textarea id="idioma_descripcion" name="idioma_descripcion" type="text"
+                            placeholder="Breve descipción del idioma."></textarea>
+                    </div>
                 </form>
             </div>
         </section>
