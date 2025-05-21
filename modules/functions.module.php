@@ -11,34 +11,34 @@ function refrescarUsuario(PDO $pdo, int $id_usuario): Jugador
     $stmt = $pdo->prepare("SELECT * FROM jugador LEFT JOIN imagen_perfil ON jugador.id = imagen_perfil.id_jugador WHERE jugador.id = :id_usuario;");
     $stmt->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
     $stmt->execute();
-    $stmt->closeCursor();
     $data = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
     //Obtenemos las propuestas realizadas por el jugador
     $stmt = $pdo->prepare("SELECT * FROM propuestas WHERE propuestas.id_jugador = :id_jugador ORDER BY propuestas.fecha;");
     $stmt->bindParam(':id_jugador', $id_usuario, PDO::PARAM_INT);
     $stmt->execute();
-    $stmt->closeCursor();
     $data["propuestas"] = [];
     $data["propuestas"] = $stmt->fetchAll(PDO::FETCH_FUNC, function ($id_prop, $tipo, $aceptado, $fecha) {
         return [$id_prop, $tipo, $aceptado, $fecha];
     });
+    $stmt->closeCursor();
     //Obtenemos los personajes del jugador
     $stmt = $pdo->prepare("SELECT id FROM personaje WHERE personaje.propietario = :id_jugador;");
     $stmt->bindParam(':id_jugador', $id_usuario, PDO::PARAM_INT);
-    $stmt->execute();
-    $stmt->closeCursor();
+    $stmt->execute();    
     $personajes = [];
     //Guardamos cada personaje en el array de personajes
     foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) as $id_personaje) {
         $personajes[] = refrescarPersonaje($pdo, $id_personaje);
     }
     $data["personajes"] = $personajes;
+    $stmt->closeCursor();
     //Checkeamos el estado administrador
     $stmt = $pdo->prepare("SELECT id FROM admins WHERE id = :id_jugador;");
     $stmt->bindParam(':id_jugador', $id_usuario, PDO::PARAM_INT);
     $stmt->execute();
-    $stmt->closeCursor();
     $data["admin"] = $stmt->rowCount() === 1;
+    $stmt->closeCursor();
     //Devolvemos el objeto jugador construido con todos sus parámetros
     return hydrateJugador($data);
 }
@@ -48,8 +48,8 @@ function refrescarPersonaje(PDO $pdo, $id_personaje): Personaje
     $stmt = $pdo->prepare("SELECT * FROM personaje LEFT JOIN imagen_personaje ON personaje.id = imagen_personaje.id_personaje WHERE personaje.id = :id_personaje;");
     $stmt->bindParam(':id_personaje', $id_personaje, PDO::PARAM_INT);
     $stmt->execute();
-    $stmt->closeCursor();
     $data = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
     //Construimos la raza del personaje
     $id_raza = $data["raza"];
     $data["raza"] = refrescarRaza($pdo, $id_raza);
@@ -74,8 +74,8 @@ function refrescarRaza(PDO $pdo, int $id_raza): Raza
     $stmt = $pdo->prepare("SELECT * FROM raza LEFT JOIN imagen_raza ON raza.id = imagen_raza.id_raza WHERE raza.id = :id_raza;");
     $stmt->bindParam("id_raza", $id_raza, PDO::PARAM_INT);
     $stmt->execute();
-    $stmt->closeCursor();
     $datos = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
     //Obtenemos las pasivas de la raza
     $stmt = $pdo->prepare("SELECT pasiva.id, pasiva.nombre, pasiva.descripcion FROM raza JOIN pasiva_raza JOIN pasiva ON raza.id = pasiva_raza.id_raza AND pasiva_raza.id_pasiva = pasiva.id WHERE pasiva_raza.id_raza = :id_raza;");
     $pasivas = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -93,18 +93,17 @@ function refrescarRaza(PDO $pdo, int $id_raza): Raza
     $stmt = $pdo->prepare("SELECT atributo.nombre, atributo_raza.cantidad FROM atributo_raza JOIN atributo ON atributo_raza.id_atributo = atributo.id WHERE atributo_raza.id_raza = :id_raza;");
     $stmt->bindParam("id_raza", $id_raza, PDO::PARAM_INT);
     $stmt->execute();
-    $stmt->closeCursor();
     $datos["atributos"] = [];
     $datos["cantidades"] = [];
     foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $atributo) {
         $datos["atributos"][] = $atributo["nombre"];
         $datos["cantidades"][] = $atributo["cantidad"];
     }
+    $stmt->closeCursor();
     //Obtenemos los idiomas de la raza
     $stmt = $pdo->prepare("SELECT idioma.* FROM idioma JOIN idioma_raza JOIN raza ON idioma.id = idioma_raza.id_idioma AND idioma_raza.id_raza = raza.id WHERE raza.id = :id_raza;");
     $stmt->bindParam("id_raza", $id_raza, PDO::PARAM_INT);
     $stmt->execute();
-    $stmt->closeCursor();
     $datos["idiomas"] = [];
     foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $idioma) {
         $datos["idiomas"][] = new Idioma(
@@ -113,6 +112,7 @@ function refrescarRaza(PDO $pdo, int $id_raza): Raza
             $idioma["descripcion"]
         );
     }
+    $stmt->closeCursor();
     //Devolver la raza hidratada con los datos
     return hydrateRaza($datos);
 }
@@ -123,14 +123,14 @@ function refrescarClase(PDO $pdo, int $id_clase): Clase
     $stmt = $pdo->prepare("SELECT * FROM clase LEFT JOIN imagen_clase ON clase.id = imagen_clase.id_clase WHERE id = :id_clase");
     $stmt->bindParam("id_clase", $id_clase, PDO::PARAM_INT);
     $stmt->execute();
-    $stmt->closeCursor();
     $datos = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
     //Obtener el objeto inicial de la clase
     $stmt = $pdo->prepare("SELECT objeto.id, objeto.tipo FROM objeto LEFT JOIN clase ON objeto.id = clase.equipo_inicial WHERE clase.id = :id_clase;");
     $stmt->bindParam("id_clase", $id_clase, PDO::PARAM_INT);
     $stmt->execute();
-    $stmt->closeCursor();
     $objeto = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
     $datos["equipo_inicial"] = obtenerObjeto($pdo, $objeto["id"], $objeto["tipo"]);
     //Devolver la clase hidratada con los datos
     return hydrateClase($datos);
@@ -142,7 +142,6 @@ function refrescarInventario(PDO $pdo, int $id_jugador): Inventario
     $stmt = $pdo->prepare("SELECT * FROM inventario WHERE inventario.id_personaje = :id_jugador;");
     $stmt->bindParam("id_jugador", $id_jugador, PDO::PARAM_INT);
     $stmt->execute();
-    $stmt->closeCursor();
     $objetos = [];
     $cantidades = [];
     //Generar la estructura de datos del inventario
@@ -150,6 +149,7 @@ function refrescarInventario(PDO $pdo, int $id_jugador): Inventario
         $objetos[] = obtenerObjeto($pdo, $dato["id_objeto"], false);
         $cantidades[] = $dato["cantidad"];
     }
+    $stmt->closeCursor();
     //Devolver el inventario
     return new Inventario(
         $id_jugador,
@@ -165,11 +165,11 @@ function refrescarHabilidades(PDO $pdo, int $id_personaje, int $id_clase): array
     $stmt = $pdo->prepare("SELECT habilidad.id FROM habilidad JOIN clase_habilidad JOIN clase ON clase.id = clase_habilidad.id_clase AND clase_habilidad.id_habilidad = habilidad.id WHERE clase.id = :id_clase;");
     $stmt->bindParam("id_clase", $id_clase, PDO::PARAM_INT);
     $stmt->execute();
-    $stmt->closeCursor();
     //Generar las instancias de las habilidades de clase y almacenarlas
     foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) as $idHabilidad) {
         $habilidades[] = obtenerHabilidad($pdo, $idHabilidad);
     }
+    $stmt->closeCursor();
     //Obtener las habilidades del personaje
     $stmt = $pdo->prepare("SELECT habilidad.* FROM habilidad JOIN habilidad_personaje ON habilidad.id = habilidad_personaje.id_habilidad WHERE habilidad_personaje.id_personaje = :id_personaje;");
     $stmt->bindParam("id_personaje", $id_personaje, PDO::PARAM_INT);
@@ -196,11 +196,11 @@ function refrescarAtributos(PDO $pdo, int $id_personaje): array
     $stmt = $pdo->prepare("SELECT atributo.nombre, atributo_personaje.cantidad FROM atributo JOIN atributo_personaje ON atributo.id = atributo_personaje.id_personaje WHERE atributo_personaje.id_personaje = :id_personaje;");
     $stmt->bindParam("id_personaje", $id_personaje);
     $stmt->execute();
-    $stmt->closeCursor();
     //Los almacenamos en el array de atributos asociando una cantidad (valor) a cada nombre (clave)
     foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $atr) {
         $atributos[$atr["nombre"]] = $atr["cantidad"];
     }
+    $stmt->closeCursor();
     //Devolvemos el array de atributos
     return $atributos;
 }
@@ -212,7 +212,6 @@ function refrescarIncursiones($pdo, $id_personaje): array
     $stmt = $pdo->prepare("SELECT * FROM incursion JOIN incursion_personaje ON incursion.id = incursion_personaje.id_incursion WHERE incursion_personaje.id_personaje = :id_personaje;");
     $stmt->bindParam("id_personaje", $id_personaje, PDO::PARAM_INT);
     $stmt->execute();
-    $stmt->closeCursor();
     //Para cada incursión generamos la estructura de datos y la añadimos al array
     foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $incursion) {
         $incursiones[] = [
@@ -226,6 +225,7 @@ function refrescarIncursiones($pdo, $id_personaje): array
             $incursion["finalizada"],
         ];
     }
+    $stmt->closeCursor();
     //Devolvemos el array de incursiones
     return $incursiones;
 }
@@ -237,7 +237,6 @@ function obtenerEfectosPasiva(PDO $pdo, int $id_pasiva): array
     $stmt = $pdo->prepare("SELECT efecto.* FROM efecto JOIN efecto_pasiva JOIN pasiva ON efecto.id = efecto_pasiva.id_efecto AND pasiva.id = efecto_pasiva.id_pasiva WHERE pasiva.id = :id_pasiva;");
     $stmt->bindParam("id:pasiva", $id_pasiva, PDO::PARAM_INT);
     $stmt->execute();
-    $stmt->closeCursor();
     //Instanciamos y añadimos cada efecto al array de efectos
     foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $efecto) {
         $efectos[] = new Efecto(
@@ -249,6 +248,7 @@ function obtenerEfectosPasiva(PDO $pdo, int $id_pasiva): array
             $efecto["tipo"],
         );
     }
+    $stmt->closeCursor();
     //Devolvemos los efectos
     return $efectos;
 }
@@ -260,14 +260,13 @@ function obtenerObjeto(PDO $pdo, int $id, $tipo): Objeto
         $stmt = $pdo->prepare("SELECT tipo FROM objeto WHERE id = :id_objeto;");
         $stmt->bindParam("id_objeto", $id, PDO::PARAM_INT);
         $stmt->execute();
-        $stmt->closeCursor();
         $tipo = $stmt->fetchColumn();
+        $stmt->closeCursor();
     }
     //Seleccionamos todos los efectos del objeto
     $stmt = $pdo->prepare("SELECT efecto.* FROM efecto JOIN efecto_objeto ON efecto.id = efecto_objeto.id_objeto WHERE efecto_objeto.id_objeto = :id_objeto");
     $stmt->bindParam("id_objeto", $id, PDO::PARAM_INT);
     $stmt->execute();
-    $stmt->closeCursor();
     //Instanciamos cada efecto y lo guardamos en un array de efectos
     $efectos = [];
     foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $efecto) {
@@ -280,6 +279,7 @@ function obtenerObjeto(PDO $pdo, int $id, $tipo): Objeto
             $efecto["tipo"],
         );
     }
+    $stmt->closeCursor();
     //En función de su tipo instanciamos y tratamos el objeto
     switch ($tipo) {
         case "arma": {
@@ -287,8 +287,8 @@ function obtenerObjeto(PDO $pdo, int $id, $tipo): Objeto
             $stmt = $pdo->prepare("SELECT * FROM objeto JOIN arma LEFT JOIN imagen_objeto ON objeto.id = arma.id AND objeto.id = imagen_objeto.id_objeto WHERE objeto.id = :id_objeto;");
             $stmt->bindParam("id_objeto", $id, PDO::PARAM_INT);
             $stmt->execute();
-            $stmt->closeCursor();
             $datos = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
             //Instancia
             $objeto = new Arma(
                 $id,
@@ -310,8 +310,8 @@ function obtenerObjeto(PDO $pdo, int $id, $tipo): Objeto
             $stmt = $pdo->prepare("SELECT * FROM objeto JOIN armadura LEFT JOIN imagen_objeto ON objeto.id = armadura.id AND objeto.id = imagen_objeto.id_objeto WHERE objeto.id = :id_objeto;");
             $stmt->bindParam("id_objeto", $id, PDO::PARAM_INT);
             $stmt->execute();
-            $stmt->closeCursor();
             $datos = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
             //Instancia
             $objeto = new Armadura(
                 $id,
@@ -332,14 +332,13 @@ function obtenerObjeto(PDO $pdo, int $id, $tipo): Objeto
             $stmt = $pdo->prepare("SELECT * FROM objeto JOIN base LEFT JOIN imagen_objeto ON objeto.id = base.id AND objeto.id = imagen_objeto.id_objeto WHERE objeto.id = :id_objeto;");
             $stmt->bindParam("id_objeto", $id, PDO::PARAM_INT);
             $stmt->execute();
-            $stmt->closeCursor();
             $datos = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
             //Recogemos los eventos del objeto base
             $eventos = [];
             $stmt = $pdo->prepare("SELECT evento.* FROM evento JOIN base_evento ON evento.id = base_evento.id_evento WHERE base_evento.id_objeto = :id_objeto;");
             $stmt->bindParam("id_objeto", $id, PDO::PARAM_INT);
             $stmt->execute();
-            $stmt->closeCursor();
             //Instanciamos cada evento y lo guardamos en un array de eventos
             foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $evento) {
                 $eventos[] = new Evento(
@@ -348,6 +347,7 @@ function obtenerObjeto(PDO $pdo, int $id, $tipo): Objeto
                     $evento["descripcion"],
                 );
             }
+            $stmt->closeCursor();
             //Instancia
             $objeto = new Base(
                 $id,
@@ -368,8 +368,8 @@ function obtenerObjeto(PDO $pdo, int $id, $tipo): Objeto
             $stmt = $pdo->prepare("SELECT * FROM objeto JOIN consumible LEFT JOIN imagen_objeto ON objeto.id = consumible.id AND objeto.id = imagen_objeto.id_objeto WHERE objeto.id = :id_objeto;");
             $stmt->bindParam("id_objeto", $id, PDO::PARAM_INT);
             $stmt->execute();
-            $stmt->closeCursor();
             $datos = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
             //Instancia
             $objeto = new Consumible(
                 $id,
@@ -389,8 +389,8 @@ function obtenerObjeto(PDO $pdo, int $id, $tipo): Objeto
             $stmt = $pdo->prepare("SELECT * FROM objeto JOIN paquete LEFT JOIN imagen_objeto ON objeto.id = paquete.id AND objeto.id = imagen_objeto.id_objeto WHERE objeto.id = :id_objeto;");
             $stmt->bindParam("id_objeto", $id, PDO::PARAM_INT);
             $stmt->execute();
-            $stmt->closeCursor();
             $datos = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
             //Recursión para obtener los objetos internos del paquete
             $ob1 = obtenerObjeto($pdo, $datos["obj1"], false);
             $ob2 = obtenerObjeto($pdo, $datos["obj2"], false);
@@ -437,8 +437,8 @@ function obtenerHabilidad($pdo, $id_habilidad)
     $stmt = $pdo->prepare("SELECT * FROM habilidad WHERE id = :id_habilidad;");
     $stmt->bindParam("id_habilidad", $id_habilidad);
     $stmt->execute();
-    $stmt->closeCursor();
     $datos = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
     //Seleccionamos los efectos de dicha habilidad
     $stmt->prepare("SELECT efecto.* FROM efecto JOIN efecto_habilidad JOIN habilidad ON efecto_habilidad.id_efecto = efecto.id AND efecto_habilidad.id_habilidad = habilidad.id  WHERE habilidad.id = :id_habilidad;");
     $stmt->bindParam("id_habilidad", $id_habilidad);
@@ -465,8 +465,8 @@ function checkAdmin($id): bool
         $stmt = $conexion->prepare("SELECT true FROM admins WHERE id = :id");
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
         $stmt->execute();
-        $stmt->closeCursor();
         $admin = $stmt->fetchColumn() ? true : false;
+        $stmt->closeCursor();
     } catch (Error $e) {
         $_SESSION["alert"]("Error, no se ha podido verificar el status de administrador.");
         $admin = false;
@@ -490,8 +490,8 @@ function listarRazasSeleccion(): string
         $pdo = conectar();
         $stmt = $pdo->prepare("SELECT id FROM raza ORDER BY id;");
         $stmt->execute();
-        $stmt->closeCursor();
         $ids_razas = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $stmt->closeCursor();
         $razas = [];
         //Obtener todas las razas disponibles en la base de datos 
         foreach ($ids_razas as $id_raza) {
@@ -510,8 +510,8 @@ function listarRazasSeleccion(): string
         //Preparar el script de carga de atributos de cada raza, seleccionamos todos los atributos de cada raza
         $stmt = $pdo->prepare("SELECT atributo.id as id, atributo.nombre as nombre, atributo.descripcion as descripcion, atributo_raza.cantidad as cantidad, raza.id as raza FROM raza JOIN atributo_raza JOIN atributo ON raza.id = atributo_raza.id_raza AND atributo.id = atributo_raza.id_atributo ORDER BY raza.id;");
         $stmt->execute();
-        $stmt->closeCursor();
         $atrs_razas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
         $script_atr = "<script> var atr_razas = { ";
         $id_raza_actual = -1;
         foreach ($atrs_razas as $atrs_raza) {
@@ -547,8 +547,8 @@ function listarClasesSeleccion(): string
         $pdo = conectar();
         $stmt = $pdo->prepare("SELECT id FROM clase ORDER BY id;");
         $stmt->execute();
-        $stmt->closeCursor();
         $ids_clases = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $stmt->closeCursor();
         $clases = [];
         foreach ($ids_clases as $id_clase) {
             $clases[] = refrescarClase($pdo, $id_clase);
@@ -575,8 +575,8 @@ function listarAtributosSeleccion(): string
                    <input type="number" id="ptos_habilidad" name="ptos_habilidad" value="' . $max_atr_points . '" hidden>';
         $stmt = $pdo->prepare("SELECT id, nombre, descripcion FROM atributo ORDER BY id;");
         $stmt->execute();
-        $stmt->closeCursor();
         $atributos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
         $table = '<table id="tabla_atributos">
                     <thead>
                         <tr>
@@ -634,7 +634,6 @@ function obtenerConstante(?int $id = null, ?string $name = null): string
     if ($id === null && $name === null) {
         throw new Exception("Error, parámetro de cte. necesario.");
     }
-
     try {
         $pdo = conectar();
 
@@ -645,15 +644,12 @@ function obtenerConstante(?int $id = null, ?string $name = null): string
             $stmt = $pdo->prepare("SELECT valor FROM constantes WHERE nombre = :nombre");
             $stmt->bindParam(":nombre", $name, PDO::PARAM_STR);
         }
-
         $stmt->execute();
-        $stmt->closeCursor();
         $valor = $stmt->fetchColumn();
-
+        $stmt->closeCursor();
         if ($valor === false) {
             throw new Exception("Error, constante no encontrada.");
         }
-
         return $valor;
     } catch (PDOException $e) {
         throw new Exception("Error, imposible conectar con la base de datos.");
@@ -706,8 +702,8 @@ function propuestaEfecto(PDO $conexion, array $datos, string &$infoMsg, bool &$e
             $stmt->bindParam(":duracion", $duracion, PDO::PARAM_INT);
             $stmt->bindParam(":tipo", $datos["efecto_tipo"], PDO::PARAM_STR);
             $stmt->execute();
-            $stmt->closeCursor();
             $id = $conexion->lastInsertId();
+            $stmt->closeCursor();
             $exito = true;
         } catch (Exception $e) {
             $infoMsg = "Error al intentar insertar los datos.\nEfecto no registrado.";
@@ -757,8 +753,8 @@ function propuestaPasiva(pdo $conexion, array $datos, string &$infoMsg, bool &$e
             $stmt->bindParam(":nombre", $_POST["pasiva_nombre"], PDO::PARAM_STR);
             $stmt->bindParam(":descripcion", $_POST["pasiva_descripcion"], PDO::PARAM_STR);
             $stmt->execute();
-            $stmt->closeCursor();
             $id = $conexion->lastInsertId();
+            $stmt->closeCursor();
             $infoMsg = "Pasiva registrada con éxito.";
             if ($datos["has_effects"]) {
                 foreach ($efects as $efect) {
@@ -767,11 +763,11 @@ function propuestaPasiva(pdo $conexion, array $datos, string &$infoMsg, bool &$e
                     $stmt->bindParam(":id_pasiva", $id, PDO::PARAM_INT);
                     $stmt->bindParam(":modificador", $efect[1], PDO::PARAM_INT);
                     $stmt->execute();
-                    $stmt->closeCursor();
                 }
                 $infoMsg .= "\nEfectos asignados a la pasiva con éxito.";
             }
             $conexion->commit();
+            $stmt->closeCursor();
             $exito = true;
         } catch (Exception $e) {
             if ($conexion->inTransaction()) {
@@ -808,11 +804,11 @@ function propuestaIdioma(pdo $conexion, array $datos, string &$infoMsg, bool &$e
             $stmt = $conexion->prepare("CALL proponerIdioma(:nombre, :descripcion, @resultado)");
             $stmt->bindParam(":nombre", $datos["idioma_nombre"], PDO::PARAM_STR);
             $stmt->bindParam(":descripcion", $datos["idioma_descripcion"], PDO::PARAM_STR);
-            $stmt->execute();$stmt->closeCursor();            
-            $stmt->closeCursor();
+            $stmt->execute();
             $stmt = $conexion->query("SELECT @resultado AS resultado");
             $fila = $stmt->fetch(PDO::FETCH_ASSOC);
             $id = (int) $fila['resultado'];
+            $stmt->closeCursor();
             $exito = ($id > 0);
             if (!$exito) {
                 $infoMsg .= "Error al intentar insertar los datos.\nIdioma no registrado.";
