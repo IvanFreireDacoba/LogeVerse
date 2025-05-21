@@ -1,0 +1,22 @@
+#!/bin/bash
+set -e
+
+# ============================ Actualizar web ===========================
+echo "Borrando contenido anterior..."
+rm -rf /opt/lampp/htdocs/*
+
+echo "Clonando repositorio..."
+git clone https://github.com/IvanFreireDacoba/LogeVerse.git /opt/lampp/htdocs
+rm -rf /opt/lampp/htdocs/.git
+
+echo "¡Web actualizada correctamente!"
+
+# ======================= Instalar vlucas/phpdotenv =====================
+echo "Instalando vlucas/phpdotenv con Composer..."
+cd /opt/lampp/htdocs
+composer require vlucas/phpdotenv
+
+# ========================== Ejecutar script PHP ========================
+echo "Ejecutando el script de base de datos..."
+/opt/lampp/bin/php /opt/lampp/htdocs/DB_Schema/perform/perform_database.php
+echo "¡Base de datos configurada correctamente!"
