@@ -28,12 +28,14 @@ try {
       <button onclick="window.location.href=\'/LogeVerse\'">INICIAR</button>';
     }
 } catch (\PDOException $e) {
-    // Conectamos sin especificar la base de datos para poder crearla
+    //Conectar sin especificar la base de datos para poder crearla
     try {
         $pdo = new PDO("mysql:host=$host;charset=$charset", $user, $pass);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $pdo->exec("CREATE DATABASE IF NOT EXISTS $db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-        $pdo->exec("USE $db;");
+        //Cerrar la conexión actual y crea una nueva apuntando a la nueva base de datos
+        $pdo = new PDO($dsn, $user, $pass);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         cargarEstructura($pdo, $script_estructura);
         cargarDatos($pdo, $script_inserciones);
     } catch (\PDOException $ex) {
