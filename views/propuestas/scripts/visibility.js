@@ -1,7 +1,7 @@
-function onDomContentLoaded() {
-    document.getElementById("seleccionPropuesta").addEventListener("change", (event) => {
+export function visibility() {
+    document.getElementById("seleccionPropuesta").addEventListener("change", () => {
         
-        $formularios = document.getElementById("formularios");
+        const formularios = document.getElementById("formularios");
 
         //Ocultar todos los divisores hijos de $formularios
         Array.from(formularios.children).forEach((child) => {
@@ -9,15 +9,12 @@ function onDomContentLoaded() {
         });
 
         //Mostrar solo el divisor seleccionado en el evento
-        const seleccionado = formularios.querySelector(`#${event.target.value}`);
+        const nombreSel = document.getElementById("seleccionPropuesta").value;
+        const seleccionado = document.getElementById(nombreSel);
         if (seleccionado) {
-            console.log(event.target.value);
-            
             seleccionado.removeAttribute("hidden");
         }
     });
 
-    document.removeEventListener("DOMContentLoaded", onDomContentLoaded);
+    document.removeEventListener("DOMContentLoaded", visibility);
 }
-
-document.addEventListener("DOMContentLoaded", onDomContentLoaded);
