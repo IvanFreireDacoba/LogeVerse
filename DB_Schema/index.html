@@ -104,7 +104,7 @@
         #indiceTablas {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: repeat(9, auto);
+            grid-template-rows: repeat(10, auto);
             grid-auto-flow: column;
         }
 
@@ -138,7 +138,7 @@
 
             #indiceTablas {
                 grid-template-columns: 1fr 1fr;
-                grid-template-rows: repeat(18, auto);
+                grid-template-rows: repeat(25, auto);
             }
         }
 
@@ -254,6 +254,7 @@
                 <li><a href="#base_eventoTabla">base_evento</a></li>
                 <li><a href="#claseTabla">clase</a></li>
                 <li><a href="#clase_habilidadTabla">clase_habilidad</a></li>
+                <li><a href="#constantesTabla">constantes</a></li>
                 <li><a href="#consumibleTabla">consumible</a></li>
                 <li><a href="#efectoTabla">efecto</a></li>
                 <li><a href="#efecto_habilidadTabla">efecto_habilidad</a></li>
@@ -611,6 +612,35 @@
                     </tr>
                 </tbody>
             </table>
+            <table id="constantesTabla">
+                <caption>
+                    <h4>Tabla constantes</h4>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Dato</th>
+                        <th>Tipo Dato</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="primaryKey" title="Primary Key">id</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>Se elige un tinyint ya que no se cuenta tener una gran cantidad de constantes</td>
+                    </tr>
+                    <tr>
+                        <td class="unique">nombre</td>
+                        <td>VARCHAR(50)</td>
+                        <td>Nombre de la constante, único y descriptivo</td>
+                    </tr>
+                    <tr>
+                        <td>valor</td>
+                        <td>VARCHAR(10)</td>
+                        <td>Valor de la constante</td>
+                    </tr>
+                </tbody>
+            </table>
             <table id="consumibleTabla">
                 <caption>
                     <h4>Tabla consumible*</h4>
@@ -703,6 +733,11 @@
                         <td>SMALLINT(5) UNSIGNED</td>
                         <td>El tipo de dato debe coincidir con el id de <a href="#habilidadTabla">habilidad</a></td>
                     </tr>
+                    <tr>
+                        <td>modificador</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>Un valor entre 0 y 999 que multiplica el valor base del efecto.</td>
+                    </tr>
                 </tbody>
             </table>
             <table title="N:M" id="efecto_objetoTabla">
@@ -727,6 +762,11 @@
                         <td>INT(10) UNSIGNED</td>
                         <td>El tipo de dato debe coincidir con el id de <a href="#objetoTabla">objeto</a></td>
                     </tr>
+                    <tr>
+                        <td>modificador</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>Un valor entre 0 y 999 que multiplica el valor base del efecto.</td>
+                    </tr>
                 </tbody>
             </table>
             <table title="N:M" id="efecto_pasivaTabla">
@@ -750,6 +790,11 @@
                         <td class="primaryKey" title="Primary Key">id_pasiva</td>
                         <td>MEDIUMINT(8) UNSIGNED</td>
                         <td>El tipo de dato debe coincidir con el id de <a href="#pasivaTabla">pasiva</a></td>
+                    </tr>
+                    <tr>
+                        <td>modificador</td>
+                        <td>TINYINT(3) UNSIGNED</td>
+                        <td>Un valor entre 0 y 999 que multiplica el valor base del efecto.</td>
                     </tr>
                 </tbody>
             </table>
@@ -872,6 +917,11 @@
                         <td>descripcion</td>
                         <td>VARCHAR(500)</td>
                         <td>500 caracteres para describir el idioma</td>
+                    </tr>
+                    <tr>
+                        <td>id_pasiva</td>
+                        <td>MEDIUMINT(7) UNSIGNED</td>
+                        <td>El tipo de dato debe coincidir con el id de <a href="#pasivaTabla">pasiva</a></td>
                     </tr>
                 </tbody>
             </table>
@@ -1441,10 +1491,11 @@
                     <li><a href="#aceptarClase">aceptarClase()</a></li>
                     <li><a href="#aceptarConsumible">aceptarConsumible()</a></li>
                     <li><a href="#aceptarEfecto">aceptarEfecto()</a></li>
+                    <li><a href="#aceptarEvento">aceptarEvento()</a></li>
                 </ul>
                 <ul id="ProcedimientosAceptar_g2">
-                    <li><a href="#aceptarEvento">aceptarEvento()</a></li>
                     <li><a href="#aceptarHabilidad">aceptarHabilidad()</a></li>
+                    <li><a href="#aceptarIdioma">aceptarIdioma()</a></li>
                     <li><a href="#aceptarObjeto">aceptarObjeto()</a></li>
                     <li><a href="#aceptarObjetoBase">aceptarObjetoBase()</a></li>
                     <li><a href="#aceptarPaquete">aceptarPaquete()</a></li>
@@ -1464,6 +1515,7 @@
                     <li><a href="#proponerArma">proponerArma()</a></li>
                     <li><a href="#proponerArmadura">proponerArmadura()</a></li>
                     <li><a href="#proponerConsumible">proponerConsumible()</a></li>
+                    <li><a href="#proponerIdioma">proponerIdioma()</a></li>
                     <li><a href="#proponerObjeto">proponerObjeto()</a></li>
                     <li><a href="#proponerObjetoBase">proponerObjetoBase()</a></li>
                     <li><a href="#proponerPaquete">proponerPaquete()</a></li>
@@ -1739,6 +1791,39 @@
                         <br>
                         <a title="Diagrama de flujo: aceptarHabilidad()"><img src="./diagrams/aceptarHabilidad.svg"
                             alt="Diagrama de flujo: aceptarHabilidad()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="aceptarIdioma">
+                    <div>
+                        <h3>Aceptar Idioma</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 3</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "aceptarIdioma()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>idiomaID</td>
+                                    <td>SMALLINT(5) UNSIGNED</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Migra un idioma de la tabla de idiomas propuestos "prop_idioma" a la tabla "idioma"</p>
+                        <p>Gestiona la pasiva asociada a dicho idioma</p>
+                        <br>
+                        <p>Devuelve el ID de el idioma migrado:<br><strong class="returnType">SMALLINT(5) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                        <a title="Diagrama de flujo: aceptarIdioma()"><img src="./diagrams/aceptarIdioma.svg"
+                            alt="Diagrama de flujo: aceptarIdioma()"></a>
                     </details>
                 </div>
                 <div class="procedure" id="aceptarObjeto">
@@ -2401,6 +2486,42 @@
                         <br>
                     <a title="Diagrama de flujo: proponerConsumible()"><img src="./diagrams/proponerConsumible.svg"
                             alt="Diagrama de flujo: proponerConsumible()"></a>
+                    </details>
+                </div>
+                <div class="procedure" id="proponerIdioma">
+                    <div>
+                        <h3>Proponer Idioma</h3>
+                        <p class="complejidad">Complejidad Ciclomática: 2</p>
+                        <hr>
+                        <table>
+                            <caption>Datos de entrada "proponerIdioma()"</caption>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>nombre</td>
+                                    <td>VARCHAR(20)</td>
+                                </tr>
+                                <tr>
+                                    <td>descripcion</td>
+                                    <td>VARCHAR(500)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Permite crear una proposición de idioma a partir de los parámetros de entrada</p>
+                        <br>
+                        <p>Devuelve el ID del idioma creado:<br><strong class="returnType">SMALLINT(5) UNSIGNED</strong>
+                        </p>
+                    </div>
+                    <details>
+                        <summary>Ver diagrama de flujo</summary>
+                        <br>
+                    <a title="Diagrama de flujo: proponerIdioma()"><img src="./diagrams/proponerIdioma.svg"
+                            alt="Diagrama de flujo: proponerIdioma()"></a>
                     </details>
                 </div>
                 <div class="procedure" id="proponerObjeto">

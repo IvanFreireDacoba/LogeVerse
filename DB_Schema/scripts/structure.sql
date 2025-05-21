@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS `clase` (
   `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
   `nombre` varchar(50) NOT NULL,
   `descripcion` text NOT NULL,
-  `puntos_golpe` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `dado_golpe` tinyint(3) unsigned NOT NULL DEFAULT 0,
   `equipo_inicial` int(10) unsigned NOT NULL,
   `hp_atr` tinyint(3) unsigned NOT NULL,
   `hp_mod` tinyint(2) unsigned NOT NULL DEFAULT 1,
@@ -136,7 +136,7 @@ CREATE TABLE IF NOT EXISTS `clase` (
   CONSTRAINT `equipo_ini_clase` FOREIGN KEY (`equipo_inicial`) REFERENCES `objeto` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `golpe_atr` FOREIGN KEY (`golpe_atr`) REFERENCES `atributo` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `hp_atr` FOREIGN KEY (`hp_atr`) REFERENCES `atributo` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- La exportación de datos fue deseleccionada.
 
@@ -149,6 +149,28 @@ CREATE TABLE IF NOT EXISTS `clase_habilidad` (
   CONSTRAINT `habilidades_class_clase` FOREIGN KEY (`id_clase`) REFERENCES `clase` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `habilidades_class_habilidad` FOREIGN KEY (`id_habilidad`) REFERENCES `habilidad` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Contiene la relación entre las clases y sus habilidades predeterminadas.';
+
+-- La exportación de datos fue deseleccionada.
+
+-- Volcando estructura para tabla dndmanager.confirmation
+CREATE TABLE IF NOT EXISTS `confirmation` (
+  `id_usuario` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `conf_code` char(32) NOT NULL,
+  PRIMARY KEY (`id_usuario`),
+  UNIQUE KEY `id_usuario` (`id_usuario`),
+  CONSTRAINT `conf_code` FOREIGN KEY (`id_usuario`) REFERENCES `jugador` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- La exportación de datos fue deseleccionada.
+
+-- Volcando estructura para tabla dndmanager.constantes
+CREATE TABLE IF NOT EXISTS `constantes` (
+  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(50) NOT NULL,
+  `valor` varchar(10) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `nombre` (`nombre`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- La exportación de datos fue deseleccionada.
 
@@ -166,7 +188,7 @@ CREATE TABLE IF NOT EXISTS `consumible` (
 CREATE TABLE IF NOT EXISTS `efecto` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `nombre` varchar(50) NOT NULL,
-  `descripción` varchar(250) DEFAULT NULL,
+  `descripcion` varchar(250) DEFAULT NULL,
   `cantidad` mediumint(8) unsigned DEFAULT NULL,
   `duracion` tinyint(3) unsigned DEFAULT NULL,
   `tipo` enum('damage','status','debuf','buff','other','none') NOT NULL DEFAULT 'none',
@@ -179,7 +201,8 @@ CREATE TABLE IF NOT EXISTS `efecto` (
 -- Volcando estructura para tabla dndmanager.efecto_habilidad
 CREATE TABLE IF NOT EXISTS `efecto_habilidad` (
   `id_efecto` int(10) unsigned NOT NULL,
-  `id_habilidad` smallint(5) unsigned NOT NULL DEFAULT 0,
+  `id_habilidad` smallint(5) unsigned NOT NULL,
+  `modificador` tinyint(4) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id_efecto`,`id_habilidad`),
   KEY `efectos_hab_habilidad` (`id_habilidad`),
   CONSTRAINT `efectos_hab_efecto` FOREIGN KEY (`id_efecto`) REFERENCES `efecto` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -192,6 +215,7 @@ CREATE TABLE IF NOT EXISTS `efecto_habilidad` (
 CREATE TABLE IF NOT EXISTS `efecto_objeto` (
   `id_efecto` int(10) unsigned NOT NULL,
   `id_objeto` int(10) unsigned NOT NULL,
+  `modificador` tinyint(4) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id_efecto`,`id_objeto`),
   KEY `efectos_obj_objeto` (`id_objeto`),
   CONSTRAINT `efectos_obj_efecto` FOREIGN KEY (`id_efecto`) REFERENCES `efecto` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -203,7 +227,8 @@ CREATE TABLE IF NOT EXISTS `efecto_objeto` (
 -- Volcando estructura para tabla dndmanager.efecto_pasiva
 CREATE TABLE IF NOT EXISTS `efecto_pasiva` (
   `id_efecto` int(10) unsigned NOT NULL,
-  `id_pasiva` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `id_pasiva` mediumint(8) unsigned NOT NULL,
+  `modificador` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id_efecto`,`id_pasiva`),
   KEY `FK_efecto_pasiva_dndmanager.pasiva` (`id_pasiva`),
   CONSTRAINT `FK_efecto_pasiva_dndmanager.pasiva` FOREIGN KEY (`id_pasiva`) REFERENCES `pasiva` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -253,8 +278,11 @@ CREATE TABLE IF NOT EXISTS `idioma` (
   `id` smallint(5) unsigned NOT NULL DEFAULT 0,
   `nombre` varchar(20) NOT NULL,
   `descripcion` varchar(500) DEFAULT NULL,
+  `id_pasiva` mediumint(7) unsigned NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `nombre` (`nombre`)
+  UNIQUE KEY `nombre` (`nombre`),
+  UNIQUE KEY `id_pasiva` (`id_pasiva`),
+  CONSTRAINT `idioma_pasiva` FOREIGN KEY (`id_pasiva`) REFERENCES `pasiva` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- La exportación de datos fue deseleccionada.
@@ -293,10 +321,10 @@ CREATE TABLE IF NOT EXISTS `imagen_objeto` (
 
 -- Volcando estructura para tabla dndmanager.imagen_perfil
 CREATE TABLE IF NOT EXISTS `imagen_perfil` (
-  `id__jugador` mediumint(8) unsigned NOT NULL,
+  `id_jugador` mediumint(8) unsigned NOT NULL,
   `img_data` longblob NOT NULL,
-  PRIMARY KEY (`id__jugador`),
-  CONSTRAINT `perfil_jugador` FOREIGN KEY (`id__jugador`) REFERENCES `jugador` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  PRIMARY KEY (`id_jugador`) USING BTREE,
+  CONSTRAINT `FK_img_perfil` FOREIGN KEY (`id_jugador`) REFERENCES `jugador` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- La exportación de datos fue deseleccionada.
@@ -362,7 +390,7 @@ CREATE TABLE IF NOT EXISTS `inventario` (
 
 -- Volcando estructura para tabla dndmanager.jugador
 CREATE TABLE IF NOT EXISTS `jugador` (
-  `id` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `nombre` varchar(50) NOT NULL,
   `correo` varchar(75) NOT NULL,
   `hash` char(60) NOT NULL DEFAULT '',
@@ -371,7 +399,7 @@ CREATE TABLE IF NOT EXISTS `jugador` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `nombre` (`nombre`),
   UNIQUE KEY `correo` (`correo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='tabla de usuarios';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='tabla de usuarios';
 
 -- La exportación de datos fue deseleccionada.
 
@@ -445,7 +473,7 @@ CREATE TABLE IF NOT EXISTS `personaje` (
   CONSTRAINT `personaje_clase` FOREIGN KEY (`clase`) REFERENCES `clase` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `personaje_raza` FOREIGN KEY (`raza`) REFERENCES `raza` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `pesonaje_propietario` FOREIGN KEY (`propietario`) REFERENCES `jugador` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tabla con la información de cada personaje.';
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tabla con la información de cada personaje.';
 
 -- La exportación de datos fue deseleccionada.
 
@@ -456,7 +484,7 @@ CREATE TABLE IF NOT EXISTS `propuestas` (
   `tipo` enum('clase','raza','objeto','habilidad','efecto','pasiva','idioma','atributo') NOT NULL,
   `aceptado` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `fecha` date NOT NULL DEFAULT curdate(),
-  PRIMARY KEY (`id_jugador`,`id_prop`,`tipo`,`aceptado`),
+  PRIMARY KEY (`id_jugador`,`id_prop`,`tipo`) USING BTREE,
   CONSTRAINT `jugador_propuesta` FOREIGN KEY (`id_jugador`) REFERENCES `jugador` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -540,7 +568,7 @@ CREATE TABLE IF NOT EXISTS `prop_clase` (
   `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
   `nombre` varchar(50) NOT NULL,
   `descripcion` text NOT NULL,
-  `puntos_golpe` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `dado_golpe` tinyint(3) unsigned NOT NULL DEFAULT 0,
   `equipo_inicial` int(10) unsigned NOT NULL,
   `hp_atr` tinyint(3) unsigned NOT NULL,
   `hp_mod` tinyint(2) unsigned NOT NULL DEFAULT 1,
@@ -593,7 +621,7 @@ CREATE TABLE IF NOT EXISTS `prop_efecto` (
   `tipo` enum('damage','status','debuf','buff','other','none') NOT NULL DEFAULT 'none',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `nombre` (`nombre`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- La exportación de datos fue deseleccionada.
 
@@ -601,6 +629,7 @@ CREATE TABLE IF NOT EXISTS `prop_efecto` (
 CREATE TABLE IF NOT EXISTS `prop_efecto_habilidad` (
   `id_efecto` int(10) unsigned NOT NULL,
   `id_habilidad` smallint(5) unsigned NOT NULL DEFAULT 0,
+  `modificador` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id_efecto`,`id_habilidad`) USING BTREE,
   KEY `efectos_hab_habilidad` (`id_habilidad`) USING BTREE,
   CONSTRAINT `FK_prop_efecto_habilidad_prop_habilidad` FOREIGN KEY (`id_habilidad`) REFERENCES `prop_habilidad` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -613,6 +642,7 @@ CREATE TABLE IF NOT EXISTS `prop_efecto_habilidad` (
 CREATE TABLE IF NOT EXISTS `prop_efecto_objeto` (
   `id_efecto` int(10) unsigned NOT NULL,
   `id_objeto` int(10) unsigned NOT NULL,
+  `modificador` tinyint(4) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id_efecto`,`id_objeto`) USING BTREE,
   KEY `efectos_obj_objeto` (`id_objeto`) USING BTREE,
   CONSTRAINT `FK_prop_efecto_objeto_prop_objeto` FOREIGN KEY (`id_objeto`) REFERENCES `prop_objeto` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -625,6 +655,7 @@ CREATE TABLE IF NOT EXISTS `prop_efecto_objeto` (
 CREATE TABLE IF NOT EXISTS `prop_efecto_pasiva` (
   `id_efecto` int(10) unsigned NOT NULL,
   `id_pasiva` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `modificador` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id_efecto`,`id_pasiva`) USING BTREE,
   KEY `efectos_ps_pasiva` (`id_pasiva`) USING BTREE,
   CONSTRAINT `FK_prop_efecto_pasiva_prop_pasiva` FOREIGN KEY (`id_pasiva`) REFERENCES `prop_pasiva` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -662,8 +693,11 @@ CREATE TABLE IF NOT EXISTS `prop_idioma` (
   `id` smallint(5) unsigned NOT NULL DEFAULT 0,
   `nombre` varchar(20) NOT NULL,
   `descripcion` varchar(500) DEFAULT NULL,
+  `id_pasiva` mediumint(7) unsigned NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `nombre` (`nombre`) USING BTREE
+  UNIQUE KEY `nombre` (`nombre`) USING BTREE,
+  UNIQUE KEY `id_pasiva` (`id_pasiva`),
+  CONSTRAINT `prop_idioma_pasiva` FOREIGN KEY (`id_pasiva`) REFERENCES `prop_pasiva` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- La exportación de datos fue deseleccionada.
@@ -744,7 +778,7 @@ CREATE TABLE IF NOT EXISTS `prop_pasiva` (
   `descripcion` mediumtext DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `nombre` (`nombre`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- La exportación de datos fue deseleccionada.
 
@@ -1061,8 +1095,8 @@ BEGIN
    	SET nuevoID = LAST_INSERT_ID();
    	IF nuevoID > 0 THEN
 			#check Efectos
-			INSERT INTO efecto_habilidad (id_efecto, id_habilidad)
-   		SELECT id_efecto, nuevoID FROM prop_efecto_habilidad WHERE id_habilidad = habilidadID;
+			INSERT INTO efecto_habilidad (id_efecto, id_habilidad, modificador)
+   		SELECT id_efecto, nuevoID, modificador FROM prop_efecto_habilidad WHERE id_habilidad = habilidadID;
    		DELETE FROM prop_efecto_habilidad WHERE id_habilidad = habilidadID;
    		DELETE FROM prop_habilidad WHERE id = habilidadID;
    		COMMIT;
@@ -1071,6 +1105,44 @@ BEGIN
    		ROLLBACK;
 		END IF;
 	END IF;
+   SET p_resultado = nuevoID;
+END//
+DELIMITER ;
+
+-- Volcando estructura para procedimiento dndmanager.aceptarIdioma
+DELIMITER //
+CREATE PROCEDURE `aceptarIdioma`(
+	IN `idiomaID` SMALLINT(5) UNSIGNED,
+	OUT `p_resultado` INT
+)
+BEGIN
+	DECLARE n_nombre VARCHAR(20);
+   DECLARE n_descripcion VARCHAR(500);
+   DECLARE n_id_pas MEDIUMINT(7) UNSIGNED;
+   DECLARE n_id_pas_new MEDIUMINT(7) UNSIGNED;
+   DECLARE n_nombre_pas VARCHAR(50);
+   DECLARE n_descripcion_pas MEDIUMTEXT;
+   DECLARE nuevoID TINYINT(3) UNSIGNED DEFAULT 0;
+   DECLARE existe BOOLEAN DEFAULT FALSE;
+   SELECT TRUE, nombre, descripcion, id_pasiva INTO existe, n_nombre, n_descripcion, n_id_pas
+   FROM idioma WHERE id = idiomaID;
+   IF existe THEN
+   	START TRANSACTION;
+   	SELECT nombre, descripcion INTO n_nombre_pas, n_descripcion_pas
+		FROM prop_pasiva WHERE id = n_id_pas;
+   	INSERT INTO pasiva (nombre, descripcion) VALUES (n_nombre_pas, n_descripcion_pas);
+   	SET n_id_pas_new = LAST_INSERT_ID();
+   	INSERT INTO idioma (nombre, descripcion, id_pasiva) VALUES (n_nombre, n_descripcion, n_id_pas_new);
+   	SET nuevoID = LAST_INSERT_ID();
+   	IF nuevoID > 0 THEN
+   		DELETE FROM prop_pasiva WHERE id = n_id_pas;
+   		DELETE FROM prop_idioma WHERE id = idiomaID;
+   		COMMIT;
+   	ELSE
+   		SET nuevoID = 0;
+   		ROLLBACK;
+   	END IF;
+   END IF;
    SET p_resultado = nuevoID;
 END//
 DELIMITER ;
@@ -1096,8 +1168,8 @@ BEGIN
    	CALL crearObjeto(n_nombre, n_tipo, n_descripcion, n_precio, nuevoID);
    	IF nuevoID > 0 THEN
 	   	#Check Efectos
-	   	INSERT INTO efecto_objeto (id_efecto, id_objeto)
-	   	SELECT id_efecto, nuevoID FROM prop_efecto_objeto WHERE id_objeto = objetoID;
+	   	INSERT INTO efecto_objeto (id_efecto, id_objeto, modificador)
+	   	SELECT id_efecto, nuevoID, modificador FROM prop_efecto_objeto WHERE id_objeto = objetoID;
 	   	DELETE FROM prop_efecto_objeto WHERE id_objeto = objetoID;
 	   	#Check Imagen
 	   	INSERT INTO imagen_objeto (id_objeto, img_data)
@@ -1218,8 +1290,8 @@ BEGIN
    	SET nuevoID = LAST_INSERT_ID();
    	IF nuevoID > 0 THEN
 			#check Efectos
-			INSERT INTO efecto_pasiva (id_efecto, id_pasiva)
-   		SELECT id_efecto, nuevoID FROM prop_efecto_pasiva WHERE id_pasiva = pasivaID;
+			INSERT INTO efecto_pasiva (id_efecto, id_pasiva, modificador)
+   		SELECT id_efecto, nuevoID, modificador FROM prop_efecto_pasiva WHERE id_pasiva = pasivaID;
    		DELETE FROM prop_efecto_pasiva WHERE id_pasiva = pasivaID;
    		#Borrar prop pasiva
    		DELETE FROM prop_pasiva WHERE id = pasivaID;
@@ -1572,6 +1644,32 @@ BEGIN
 END//
 DELIMITER ;
 
+-- Volcando estructura para procedimiento dndmanager.proponerIdioma
+DELIMITER //
+CREATE PROCEDURE `proponerIdioma`(
+	IN `p_nombre` VARCHAR(20),
+	IN `p_descripcion` VARCHAR(500),
+	OUT `p_resultado` INT UNSIGNED
+)
+BEGIN
+    DECLARE idiomaID SMALLINT(5) UNSIGNED;
+    DECLARE id_pas MEDIUMINT(7) UNSIGNED;
+    START TRANSACTION;
+    INSERT INTO prop_pasiva (nombre, descripcion) 
+    VALUES (CONCAT("Mente Políglota: ", p_nombre), CONCAT("Dominas el ", p_nombre, ", eres capaz de leer y conversar en este idioma."));
+    SET id_pas = LAST_INSERT_ID();
+    IF id_pas IS NOT NULL THEN
+        INSERT INTO prop_idioma (nombre, descripcion, id_pasiva) 
+        VALUES (p_nombre, p_descripcion, id_pas);
+        SET p_resultado = LAST_INSERT_ID();
+        COMMIT;
+    ELSE
+        ROLLBACK;
+        SET p_resultado = 0;
+    END IF;
+END//
+DELIMITER ;
+
 -- Volcando estructura para procedimiento dndmanager.proponerObjeto
 DELIMITER //
 CREATE PROCEDURE `proponerObjeto`(
@@ -1684,6 +1782,15 @@ BEGIN
 	 END IF;
 END//
 DELIMITER ;
+
+-- Volcando estructura para disparador dndmanager.inventario_delete_zero
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER `inventario_delete_zero` AFTER UPDATE ON `inventario` FOR EACH ROW BEGIN
+ 	DELETE FROM inventario WHERE cantidad = 0;
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 -- Volcando estructura para disparador dndmanager.updateAcepted
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION';
