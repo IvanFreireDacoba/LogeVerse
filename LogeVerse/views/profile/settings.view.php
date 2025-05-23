@@ -60,19 +60,18 @@ include_once 'LogeVerse/views/shared/head.php';
                 </form>
             </div>
             <?php if ($_SESSION["usuario"]->getAdmin()) {
-                $confirmed = checkAdmin($_SESSION["usuario"]->getId());
-            }
-            if ($confirmed): ?>
-                <div>
-                    <script src="admin_debugger.js"></script>
-                    <ce-debugger
-                        status="<?php echo isset($_SESSION["debug"]) && $_SESSION["debug"] ? "on" : "off" ?>"></ce-debugger>
-                    <form id="debug_form" action="" method="POST" hidden>
-                        <input id="debug" name="debug"
-                            value="<?php echo isset($_SESSION["debug"]) && $_SESSION["debug"] ? "on" : "off" ?>">
-                    </form>
-                </div>
-            <?php endif; ?>
+                        if (checkAdmin($_SESSION["usuario"]->getId())) {
+                            echo '  <div>
+                                    <script src="admin_debugger.js"></script>
+                                    <ce-debugger
+                                        status="<?php echo isset($_SESSION["debug"]) && $_SESSION["debug"] ? "on" : "off" ?>"></ce-debugger>
+                                    <form id="debug_form" action="" method="POST" hidden>
+                                        <input id="debug" name="debug"
+                                            value="<?php echo isset($_SESSION["debug"]) && $_SESSION["debug"] ? "on" : "off" ?>">
+                                    </form>
+                                </div>';
+                        }
+                  }?>
         </section>
     </main>
     <?php
