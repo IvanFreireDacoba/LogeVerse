@@ -1,0 +1,112 @@
+.imgClase, .imgRaza {
+    width: 100%;
+}
+
+#newCharBasicInfo, #selectoresMultiples {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+#selectoresMultiples {
+    /*Uso los ids para no afectar a la 3a columna de atributos*/
+    & #charFormClass > div, #charFormRace > div {
+        display: grid;
+        grid-template-columns: 1fr 2fr 1fr;
+
+        & button {
+            width: 25%;
+            padding: 0;
+            border-color: brown;
+            background-color: burlywood;
+
+            /*
+            & .img_button {
+                width: 100%;
+                height: 100%;
+            }
+            */
+        }
+        
+        /*Alinear el botones izquierdos (prev) pegado a la info de raza*/
+        & #prevRace, #prevClass {
+            justify-self: right;
+            border-top-left-radius: 25px;
+            border-bottom-left-radius: 25px;
+        }
+
+        & #nextRace, #nextClass {
+            border-top-right-radius: 25px;
+            border-bottom-right-radius: 25px;
+        }
+    }
+}
+
+.atr_raza, .atr_dice, .atr_pts, .atr_total {
+    text-align: center;
+}
+
+.atr_pts {
+    display: inline-block;
+    aspect-ratio: 1 / 1;
+    white-space: nowrap;
+    width: 25%;
+}
+
+
+/*Retirar los spinners de incremento y decremento
+de los input type number*/
+
+/*Chrome, Edge y otros navegadores WebKit (Blink)*/
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/*Firefox*/
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* ============================ IMAGEN DE PERFIL =========================== */
+.drop-area {
+    border: 2px dashed #999;
+    border-radius: 10px;
+    padding: 0;
+    text-align: center;
+    cursor: pointer;
+    width: 250px;
+    height: 250px;
+    position: relative;
+    overflow: hidden;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s;
+}
+
+.drop-area.hover {
+    border-color: #007bff;
+    background-color: #eef6ff;
+}
+
+.drop-area img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.drop-area input[type="file"] {
+    display: none;
+}
+
+.placeholder-text {
+    color: #666;
+    font-size: 14px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none;
+    max-width: 80%;
+}
