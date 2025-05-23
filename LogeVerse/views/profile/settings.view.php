@@ -6,17 +6,13 @@ if (!isset($_SESSION["usuario"])) {
     exit;
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
-
-<head>
-    <?php
-    //Añadimos el head de la página común al resto de páginas
-    include_once 'LogeVerse/views/shared/head.php';
-    ?>
-    <script src="./scripts/drop_user_confirmation.js">
-    </script>
+<?php
+//Añadimos el head de la página común al resto de páginas
+include_once 'LogeVerse/views/shared/head.php';
+?>
+<script src="/LogeVerse/views/profile/scripts/drop_user_confirmation.js"></script>
 </head>
 
 <body>
