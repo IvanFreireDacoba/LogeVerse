@@ -2,7 +2,7 @@
 //Control de acceso solo a usuarios con la sesion iniciada
 if (!isset($_SESSION["usuario"])) {
     $_SESSION["alert"] = "No tienes permiso para acceder a esta página.";
-    header("Location: ../controllers/index.controller.php");
+    header("Location: LogeVerse/inicio");
     exit;
 }
 ?>
@@ -13,9 +13,9 @@ if (!isset($_SESSION["usuario"])) {
 <head>
     <?php
     //Añadimos el head de la página común al resto de páginas
-    include_once '../views/shared/head.php';
+    include_once 'LogeVerse/views/shared/head.php';
     ?>
-    <script src="../views/profile/scripts/drop_user_confirmation.js">
+    <script src="./scripts/drop_user_confirmation.js">
     </script>
 </head>
 
@@ -23,7 +23,7 @@ if (!isset($_SESSION["usuario"])) {
     <?php
     //Añadimos la cabecera de la página comín al resto de páginas
     // y el menú de navegación
-    include_once '../views/shared/header.php';
+    include_once 'LogeVerse/views/shared/header.php';
     ?>
     <main id="profile_body">
         <h1 id="profile_title">Perfil de usuario</h1>
@@ -35,7 +35,7 @@ if (!isset($_SESSION["usuario"])) {
         <h2 id="profile_title">Configuración de la cuenta</h2>
         <section id="profile_settings">
             <div id="users">
-                <form action="../modules/settings.module.php" method="POST">
+                <form action="/LogeVerse/cambiarPerfil" method="POST">
                     <div>
                         <label for="name">Nombre:</label>
                         <input type="text" id="name" name="name"
@@ -56,7 +56,7 @@ if (!isset($_SESSION["usuario"])) {
                     <button>Actualizar</button>
                 </form>
                 <br>
-                <form action="../modules/drop_profile.module.php" method="POST">
+                <form action="/LogeVerse/eliminarPerfil" method="POST">
                     <input id="confirmation" name="confirmation" value=""
                         data_username="<?php echo htmlspecialchars(strtoupper($_SESSION["usuario"]->getNombre())); ?>"
                         hidden>
@@ -81,7 +81,7 @@ if (!isset($_SESSION["usuario"])) {
     </main>
     <?php
     //Añadimos el pie de página común al resto de páginas
-    include '../views/shared/footer.html';
+    include 'LogeVerse/views/shared/footer.html';
     ?>
 </body>
 

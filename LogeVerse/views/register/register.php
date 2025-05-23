@@ -3,7 +3,7 @@
 
 <head>
     <?php
-    include_once '../views/shared/head.php';
+    include_once 'LogeVerse/views/shared/head.php';
     ?>
 </head>
 
@@ -11,10 +11,10 @@
     <?php
     //Añadimos la cabecera de la página comín al resto de páginas
     // y el menú de navegación
-    include_once '../views/shared/header.php';
+    include_once 'LogeVerse/views/shared/header.php';
     ?>
     <main id="formulario_login">
-        <form action="../modules/register.module.php" method="POST" id="form_login" aria-labelledby="form_login_heading">
+        <form action="/LogeVerse/registrar" method="POST" id="form_login" aria-labelledby="form_login_heading">
             <h2 id="form_login_heading">Registar usuario</h2>
             <div>
                 <label for="username">Usuario</label>
@@ -49,7 +49,7 @@
     </main>
     <?php
     //Añadimos el pie de página común al resto de páginas
-    include '../views/shared/footer.html';
+    include 'LogeVerse/views/shared/footer.html';
     ?>
 </body>
 

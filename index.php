@@ -8,50 +8,43 @@ $dotenv->load();
 
 $uri = parse_url($_SERVER['REQUEST_URI'])['path'];
 
+if (str_starts_with($uri, "/LogeVerse")) {
+  include_once "LogeVerse/classes/include_classes.php";
+  include_once "LogeVerse/modules/functions.module.php";
+}
+
 $routes = [
-  //=============================LogeCraft=================================
-
-  //controladores de entrada a las vistas
-  '/' => "LogeCraft/controllers/index.controller.php",
-  '/descargas' => "LogeCraft/controllers/download.controller.php",
-  '/login' => "LogeCraft/controllers/login.controller.php",
-  '/register' => "LogeCraft/controllers/register.controller.php",
-  '/profile' => "LogeCraft/controllers/profile.controller.php",
-  '/ajustes' => 'LogeCraft/controllers/settings.controller.php',
-
-  //módulos
-  '/close' => "LogeCraft/modules/close.module.php",
-  '/logear' => "LogeCraft/modules/login.module.php",
-  '/registrar' => "LogeCraft/modules/register.module.php",
-  '/updateImage' => "LogeCraft/modules/updateImage.module.php",
-  '/profileImage' => "LogeCraft/modules/profileImage.module.php",
-  '/confirmar' => 'LogeCraft/modules/mailConfirmation.module.php',
-
-  //recursos
-  '/resources/version.json' => "LogeCraft/resources/version.json",
-  '/Mods&Plugins' => "LogeCraft/licenses/modsNplugins/ModsNPlugins.html",
-
-  //=======================================================================
+  // **********BORRAR AL MIGRAR**************
+  '/' => "LogeVerse/redirect.php",
 
   //=============================LogeVerse=================================
 
   //controladores de entrada a las vistas
-  '/LogeVerse' => "LogeVerse/controllers/index.controller.php",
+  '/LogeVerse/inicio' => "LogeVerse/controllers/index.controller.php",
   '/LogeVerse/login' => "LogeVerse/controllers/login.controller.php",
-  '/LogeVerse/register' => "LogeVerse/controllers/register.controller.php",
-  '/LogeVerse/profile' => "LogeVerse/controllers/profile.controller.php",
+  '/LogeVerse/registrarse' => "LogeVerse/controllers/register.controller.php",
+  '/LogeVerse/perfil' => "LogeVerse/controllers/profile.controller.php",
+  '/LogeVerse/perfil/ajustes' => "LogeVerse/controllers/settings.controller.php",
+  '/LogeVerse/nuevoPersonaje' => "LogeVerse/controllers/newCharacter.controller.php",
+  '/LogeVerse/propuestas' => "LogeVerse/controllers/propuestas.controller.php",
 
   //módulos
-
+  '/LogeVerse/crearPersonaje' => "LogeVerse/modules/newCharacter.module.php",
+  '/LogeVerse/cambiarPerfil' => "LogeVerse/modules/settings.module.php",
+  '/LogeVerse/eliminarPerfil' => "LogeVerse/modules/drop_profile.module.php",
+  '/LogeVerse/proponer' => "LogeVerse/modules/propuesta.module.php",
+  '/LogeVerse/registrar' => "LogeVerse/modules/register.module.php",
+  '/LogeVerse/logear' => "LogeVerse/modules/login.module.php",
+  '/LogeVerse/cerrarSesion' => "LogeVerse/modules/close.module.php",
 
   //recursos
-  
-  
+
+
   //=======================================================================
 ];
 
 session_start();
-if (!isset($_SESSION['usuario'])) {
+if (!isset($_SESSION['usuario']) && str_starts_with($uri, "/LogeCraft")) {
   session_destroy();
 }
 
@@ -59,4 +52,5 @@ if (array_key_exists($uri, $routes)) {
   require($routes[$uri]);
 } else {
   header("Location: /");
+  exit;
 }

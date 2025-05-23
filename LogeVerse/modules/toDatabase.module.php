@@ -1,6 +1,6 @@
 <?php
 
-require_once '../classes/include_classes.php';
+require_once 'LogeVerse/classes/include_classes.php';
 
 /**
  * Summary of conectar
@@ -11,20 +11,12 @@ require_once '../classes/include_classes.php';
  */
 function conectar(): PDO
 {
-    $host = 'localhost';
-    $db = 'dndmanager';
-    $user = 'root';
-    $pass = '';
-    $charset = 'utf8mb4';
+    $host = $_ENV['DB_HOST'];
+    $db = $_ENV['DB_NAME'];
+    $user = $_ENV['DB_USER'];
+    $pass = $_ENV['DB_PASS'];
+    $charset = $_ENV['DB_CHARSET'];
     $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
-    /* INSTALAR composer require vlucas/phpdotenv cuando se migre a LogeCraft
-        $host = $_ENV['DB_HOST'];
-        $db = $_ENV['DB_NAME'];
-        $user = $_ENV['DB_USER'];
-        $pass = $_ENV['DB_PASS'];
-        $charset = $_ENV['DB_CHARSET'];
-        $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
-    */
     try {
         $pdo = new PDO($dsn, $user, $pass);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

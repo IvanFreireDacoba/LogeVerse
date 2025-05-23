@@ -1,13 +1,9 @@
 <?php
 
-include_once "../modules/functions.module.php";
-
-session_start();
-
 //Control de acceso desde perfil
 if (!isset($_SESSION["usuario"])) {
     $_SESSION["alert"] = "No tienes permiso para acceder a esta página.";
-    header("Location: ../controllers/index.controller.php");
+    header("Location: LogeVerse/inicio");
     exit;
 }
 
@@ -25,4 +21,4 @@ if ($_POST) {
 }
 
 $title = 'Creador PJs';
-require "../views/newCharacter/newCharacter.php";
+require "LogeVerse/views/newCharacter/newCharacter.php";

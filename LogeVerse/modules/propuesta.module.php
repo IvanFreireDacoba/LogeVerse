@@ -1,14 +1,14 @@
 <?php
 
-include_once "../classes/include_classes.php";
-include_once "../modules/functions.module.php";
+include_once "LogeVerse/classes/include_classes.php";
+include_once "LogeVerse/modules/functions.module.php";
 
 session_start();
 
 //Control de acceso solo a usuarios con la sesion iniciada
 if (!isset($_SESSION["usuario"])) {
     $_SESSION["alert"] = "No tienes permiso para acceder a esta página.";
-    header("Location: ../controllers/index.controller.php");
+    header("Location: /LogeVerse/inicio");
     exit;
 }
 
@@ -88,5 +88,5 @@ if (isset($_POST)) {
 } else {
     $_SESSION["alert"] = "Error al obtener los datos del formulario.";
 }
-header("Location: ../controllers/propuestas.controller.php");
+header("Location: /LogeVerse/propuestas");
 exit;

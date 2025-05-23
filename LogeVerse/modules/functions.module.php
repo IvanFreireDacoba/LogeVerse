@@ -1,8 +1,8 @@
 <?php
 
-include_once "../classes/include_classes.php";
-include_once "../modules/hydrators.module.php";
-include_once "../modules/toDatabase.module.php";
+include_once "LogeVerse/classes/include_classes.php";
+include_once "LogeVerse/modules/hydrators.module.php";
+include_once "LogeVerse/modules/toDatabase.module.php";
 
 // ================================ REFRESCAR U OBTENER DATOS ===============================
 function refrescarUsuario(PDO $pdo, int $id_usuario): Jugador

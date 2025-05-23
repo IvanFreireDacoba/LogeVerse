@@ -1,7 +1,4 @@
 <?php
-
-include_once 'dataBase.interface.php';
-
 //Contiene los atributos de los personajes que
 //definen sus capacidades para realizar ciertas acciones
 final class Atributo implements toDatabase

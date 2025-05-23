@@ -2,7 +2,7 @@
 
 //Módulo con los hydrator de cada clase
 
-include_once "../classes/include_classes.php";
+include_once "LogeVerse/classes/include_classes.php";
 
 function hydrateRaza(array $datos): Raza
 {

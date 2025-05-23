@@ -1,6 +1,6 @@
 <?php
-include_once '../classes/include_classes.php';
-include_once '../modules/toDatabase.module.php';
+include_once 'LogeVerse/classes/include_classes.php';
+include_once 'LogeVerse/modules/toDatabase.module.php';
 
 /*  Este es el módulo para eliminar perfiles, por ello la condición de entrada al if es rigurosa
  *   
@@ -20,21 +20,21 @@ if (isset($_SESSION["usuario"])) {
             $conexion = null;
             $_SESSION = [];
             session_destroy();
-            header("Location: ../controllers/index.controller.php");
+            header("Location: /LogeVerse/inicio");
             exit;
         } catch (Error $e) {
             $_SESSION["alert"] = "Error intentando borrar el usuario de la base de datos";
-            header("Location: ../controllers/settings.controller.php");
+            header("Location: /LogeVerse/perfil/ajustes");
             exit;
         }
     } else {
         $_SESSION["alert"] = "Acceso ilegal.";
-        header("Location: ../controllers/settings.controller.php");
+        header("Location: /LogeVerse/perfil/ajustes");
         exit;
     }
     //Si ves esto has perdido el juego: https://es.wikipedia.org/wiki/El_Juego_(juego_mental)
 } else {
     $_SESSION["alert"] = "No tienes permiso para acceder a esta página.";
-    header("Location: ../controllers/index.controller.php");
+    header("Location: /LogeVerse/incio");
     exit;
 }

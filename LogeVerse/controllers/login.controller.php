@@ -2,4 +2,4 @@
 
     $title = "Login";
 
-    require '../views/login/login.php';
+    require 'LogeVerse/views/login/login.php';

@@ -1,15 +1,9 @@
 <?php
 
-
-
-//Carga de las clases para el módulo de login
-include_once '../classes/include_classes.php';
-include_once './functions.module.php';
-
 session_start();
 
 //Funciones de conexión a la base de datos
-include_once './toDatabase.module.php';
+include_once 'LogeVerse/modules/toDatabase.module.php';
 
 //Gestión del login
 
@@ -38,7 +32,7 @@ try {
             //Cerrar la conexión a la base de datos
             $pdo = null;
             //Ir al perfil del jugador
-            header("Location: ../controllers/profile.controller.php");
+            header("Location: /LogeVerse/perfil");
             exit;
         } else {
             //Guardar el error en la sesión
@@ -51,7 +45,7 @@ try {
     //Cerrar la conexión a la base de datos
     $pdo = null;
     //Volver a la página de login
-    header("Location: ../controllers/login.controller.php");
+    header("Location: /LogeVerse/login");
     exit;
 } catch (PDOException $e) {
     //Cerrar la conexión a la base de datos
@@ -59,6 +53,6 @@ try {
     //Guardar el error en la sesión
     $_SESSION["alert"] = "Imposible conectar a la base de datos.";
     //Volver a la página de login
-    header("Location: ../controllers/login.controller.php");
+    header("Location: /LogeVerse/login");
     exit;
 }

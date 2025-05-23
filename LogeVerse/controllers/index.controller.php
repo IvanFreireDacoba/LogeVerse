@@ -1,4 +1,4 @@
 <?php
 
     $title = 'LogeVerse';
-    require "../views/index/index.php";
+    require "LogeVerse/views/index/index.php";

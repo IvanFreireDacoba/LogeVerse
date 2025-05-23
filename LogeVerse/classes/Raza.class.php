@@ -161,7 +161,7 @@ final class Raza implements toDatabase
     }
     public function setImagen(?string $imagen = null): self
     {
-        $this->imagen = $this->getFormattedImg("../resources/race/default.png", $imagen);
+        $this->imagen = $this->getFormattedImg("/LogeVerse/resources/race/default.png", $imagen);
         return $this;
     }
 }

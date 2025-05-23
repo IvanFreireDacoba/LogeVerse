@@ -168,7 +168,7 @@ class Clase implements toDatabase
     }
     public function setImagen(?string $imagen = null): self
     {
-        $this->imagen = $this->getFormattedImg("../resources/class/default.png", $imagen);
+        $this->imagen = $this->getFormattedImg("/LogeVerse/resources/class/default.png", $imagen);
         return $this;
     }
 }

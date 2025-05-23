@@ -1,6 +1,6 @@
 <?php
-include_once '../classes/include_classes.php';
-include_once '../modules/toDatabase.module.php';
+include_once 'LogeVerse/classes/include_classes.php';
+include_once 'LogeVerse/modules/toDatabase.module.php';
 
 session_start();
 
@@ -74,10 +74,10 @@ if (isset($_SESSION["usuario"])) {
     } else {
         $_SESSION["alert"] = "Acceso inválido - Error al recuperar los datos del formulario.";
     }
-    header('Location: ../controllers/settings.controller.php');
+    header('Location: /LogeVerse/perfil/ajustes');
     exit;
 } else {
     $_SESSION["alert"] = "No tienes permiso para acceder a esta página.";
-    header("Location: ../controllers/index.controller.php");
+    header("Location: /LogeVerse/perfil/ajustes");
     exit;
 }
