@@ -2,4 +2,4 @@
 
     $title = "Registro";
 
-    require '../views/register/register.php';
+    require 'LogeVerse/views/register/register.php';

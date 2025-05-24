@@ -118,7 +118,7 @@ abstract class Objeto implements toDatabase
 
     public function setImagen(?string $imagen = null): self
     {
-        $this->imagen = $this->getFormattedImg("../resources/item/default.png", $imagen);
+        $this->imagen = $this->getFormattedImg("/LogeVerse/resources/item/default.png", $imagen);
         return $this;
     }
 

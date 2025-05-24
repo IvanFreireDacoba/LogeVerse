@@ -2,7 +2,7 @@
 //Control de acceso solo a usuarios con la sesion iniciada
 if (!isset($_SESSION["usuario"])) {
     $_SESSION["alert"] = "No tienes permiso para acceder a esta página.";
-    header("Location: ../controllers/index.controller.php");
+    header("Location: LogeVerse/inicio");
     exit;
 }
 ?>
@@ -13,7 +13,7 @@ if (!isset($_SESSION["usuario"])) {
 <head>
     <?php
     //Añadimos el head de la página común al resto de páginas
-    include_once '../views/shared/head.php';
+    include_once 'LogeVerse/views/shared/head.php';
     ?>
 </head>
 
@@ -21,7 +21,7 @@ if (!isset($_SESSION["usuario"])) {
     <?php
     //Añadimos la cabecera de la página comín al resto de páginas
     // y el menú de navegación
-    include_once '../views/shared/header.php';
+    include_once 'LogeVerse/views/shared/header.php';
     ?>
     <main id="profile_body">
         <h1 id="profile_title">Perfil de usuario</h1>
@@ -29,7 +29,7 @@ if (!isset($_SESSION["usuario"])) {
             <p><strong>Nombre:</strong> <?php echo $_SESSION["usuario"]->getNombre(); ?></p>
             <p><strong>Correo:</strong> <?php echo $_SESSION["usuario"]->getCorreo(); ?></p>
         </div>
-        <button id="btn_settings_profile" onclick="window.location.href='./settings.controller.php'">Ajustes</button>
+        <button id="btn_settings_profile" onclick="window.location.href='/LogeVerse/perfil/ajustes'">Ajustes</button>
         <hr>
         <section id="profile_characters">
             <?php
@@ -44,7 +44,7 @@ if (!isset($_SESSION["usuario"])) {
             }
             echo '<hr>
                     <div id="newCharacter" class="personaje">
-                        <form action="../controllers/newCharacter.controller.php" method="POST">
+                        <form action="/LogeVerse/nuevoPersonaje" method="POST">
                             <h3>Nuevo Personaje</h3>
                             <p>
                                 <label for="nombre">Nombre: </label>
@@ -62,7 +62,7 @@ if (!isset($_SESSION["usuario"])) {
     </main>
     <?php
     //Añadimos el pie de página común al resto de páginas
-    include '../views/shared/footer.html';
+    include 'LogeVerse/views/shared/footer.html';
     ?>
 </body>
 

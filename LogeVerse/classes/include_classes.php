@@ -6,36 +6,36 @@
 //en su interior, pero no es recomendable por motivos de legibilidad y mantenimiento
 
     //Trait para la identificación
-    include_once 'id.trait.php';
+    include_once 'LogeVerse/classes/id.trait.php';
 
     //Interfaz
     include_once 'database.interface.php';
 
     //Clases independientes
-    include_once 'Atributo.class.php';
-    include_once 'Efecto.class.php';
-    include_once 'Idioma.class.php';
-    include_once 'Incursion.class.php';
-    include_once 'Evento.class.php';
+    include_once 'LogeVerse/classes/Atributo.class.php';
+    include_once 'LogeVerse/classes/Efecto.class.php';
+    include_once 'LogeVerse/classes/Idioma.class.php';
+    include_once 'LogeVerse/classes/Incursion.class.php';
+    include_once 'LogeVerse/classes/Evento.class.php';
 
     //Dependientes de Efecto
-    include_once 'Pasiva.class.php';
-    include_once 'Objeto.class.php'; //Incluye todos los tipos de objeto
+    include_once 'LogeVerse/classes/Pasiva.class.php';
+    include_once 'LogeVerse/classes/Objeto.class.php'; //Incluye todos los tipos de objeto
     
     //Dependiente de Efecto y Atributo
-    include_once 'Habilidad.class.php';
+    include_once 'LogeVerse/classes/Habilidad.class.php';
 
     //Dependiente de Idioma, Pasiva y Atributo
-    include_once 'Raza.class.php';
+    include_once 'LogeVerse/classes/Raza.class.php';
 
     //Dependiente de Habilidad y Objeto
-    include_once 'Clase.class.php';
+    include_once 'LogeVerse/classes/Clase.class.php';
     
     //Dependiente de Objeto
-    include_once 'Inventario.class.php';
+    include_once 'LogeVerse/classes/Inventario.class.php';
 
     //Dependiente de Inventario, Raza y Clase
-    include_once 'Personaje.class.php';
+    include_once 'LogeVerse/classes/Personaje.class.php';
 
     //Dependiente de Personaje
-    include_once 'Jugador.class.php';
+    include_once 'LogeVerse/classes/Jugador.class.php';

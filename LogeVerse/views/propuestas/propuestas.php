@@ -2,7 +2,7 @@
 //Control de acceso solo a usuarios con la sesion iniciada
 if (!isset($_SESSION["usuario"])) {
     $_SESSION["alert"] = "No tienes permiso para acceder a esta página.";
-    header("Location: ../controllers/index.controller.php");
+    header("Location: LogeVerse/inicio");
     exit;
 }
 ?>
@@ -13,17 +13,17 @@ if (!isset($_SESSION["usuario"])) {
 <head>
     <?php
     //Añadimos el head de la página común al resto de páginas
-    include_once '../views/shared/head.php';
+    include_once 'LogeVerse/views/shared/head.php';
     ?>
-    <script type="module" src="../views/propuestas/scripts/mainScript.js"></script>
-    <link rel="stylesheet" href="../views/propuestas/styles/propuestas.styles.css">
+    <script type="module" src="/LogeVerse/views/propuestas/scripts/mainScript.js"></script>
+    <link rel="stylesheet" href="/LogeVerse/views/propuestas/styles/propuestas.styles.css">
 </head>
 
 <body>
     <?php
     //Añadimos la cabecera de la página comín al resto de páginas
     // y el menú de navegación
-    include_once '../views/shared/header.php';
+    include_once 'LogeVerse/views/shared/header.php';
     ?>
     <main>
         <h2>Sección de propuesta</h2>
@@ -43,21 +43,21 @@ if (!isset($_SESSION["usuario"])) {
         <section id="formularios">
             <div id="Clase" class="propuesta" hidden>
                 <h4>Proponer Clase</h4>
-                <form action="../modules/propuesta.module.php" method="POST">
+                <form action="/LogeVerse/proponer" method="POST">
                     <input id="proposal_type" name="proposal_type" value="clase" hidden>
                     <p>No disponible</p>
                 </form>
             </div>
             <div id="Raza" class="propuesta" hidden>
                 <h4>Proponer Raza</h4>
-                <form action="../modules/propuesta.module.php" method="POST">
+                <form action="/LogeVerse/proponer" method="POST">
                     <input id="proposal_type" name="proposal_type" value="raza" hidden>
                     <p>No disponible</p>
                 </form>
             </div>
             <div id="Efecto" class="propuesta" hidden>
                 <h4>Proponer Efecto</h4>
-                <form action="../modules/propuesta.module.php" method="POST">
+                <form action="/LogeVerse/proponer" method="POST">
                     <input id="proposal_type" name="proposal_type" value="efecto" hidden>
                     <div>
                         <label for="efecto_nombre">Nombre: </label>
@@ -94,7 +94,7 @@ if (!isset($_SESSION["usuario"])) {
                             <option title="Mejora temporalmente atributos o habilidades." value="buff">Buff</option>
                             <option title="Disminuye temporalmente atributos o habilidades." value="debuff">Debuff
                             </option>
-                            <option title="Aplica un estado: quemadura, envenenamiento, confusión..." value="status">
+                            <option title="Aplica un estado: quemadura, envenenamiento, confusiónLogeVerse." value="status">
                                 Estado</option>
                             <option title="Efecto especial que no se cataloga en el resto de tipos." value="others">Otro
                             </option>
@@ -106,7 +106,7 @@ if (!isset($_SESSION["usuario"])) {
             </div>
             <div id="Pasiva" class="propuesta" hidden>
                 <h4>Proponer Pasiva</h4>
-                <form action="../modules/propuesta.module.php" method="POST">
+                <form action="/LogeVerse/proponer" method="POST">
                     <input id="proposal_type" name="proposal_type" value="pasiva" hidden>
                     <div>
                         <label for="pasiva_nombre">Nombre: </label>
@@ -164,21 +164,21 @@ if (!isset($_SESSION["usuario"])) {
             </div>
             <div id="Habilidad" class="propuesta" hidden>
                 <h4>Proponer Habilidad</h4>
-                <form action="../modules/propuesta.module.php" method="POST">
+                <form action="/LogeVerse/proponer" method="POST">
                     <input id="proposal_type" name="proposal_type" value="habilidad" hidden>
                     <p>No disponible</p>
                 </form>
             </div>
             <div id="Objeto" class="propuesta" hidden>
                 <h4>Proponer Objeto</h4>
-                <form action="../modules/propuesta.module.php" method="POST">
+                <form action="/LogeVerse/proponer" method="POST">
                     <input id="proposal_type" name="proposal_type" value="objeto" hidden>
                     <p>No disponible</p>
                 </form>
             </div>
             <div id="Idioma" class="propuesta" hidden>
                 <h4>Proponer Idioma</h4>
-                <form action="../modules/propuesta.module.php" method="POST">
+                <form action="/LogeVerse/proponer" method="POST">
                     <input id="proposal_type" name="proposal_type" value="idioma" hidden>
                     <div>
                         <label for="idioma_nombre">Nombre: </label>
@@ -195,7 +195,7 @@ if (!isset($_SESSION["usuario"])) {
     </main>
     <?php
     //Añadimos el pie de página común al resto de páginas
-    include '../views/shared/footer.html';
+    include 'LogeVerse/views/shared/footer.html';
     ?>
 </body>
 

@@ -1,6 +1,6 @@
 <?php
     //Iniciamos la sesión (siempre la mentenemos en cada página)
-    include_once '../classes/include_classes.php';
+    include_once 'LogeVerse/classes/include_classes.php';
     $_SESSION ?? session_start();
 
     //Si el usuario tiene alguna alerta pendiente, la mostramos
@@ -11,7 +11,7 @@
                 };
               </script>";
         //Una vez mostrada la alerta, la eliminamos de la sesión
-        unset($_SESSION["alert"]);
+        unset($_SESSION["alert"]);   
     }
 ?>
 
@@ -22,4 +22,4 @@
         echo $title ?? "ERROR_001";
     ?>
 </title>
-<link rel="icon" href="../resources/shared/favicon.png" type="image/png">
+<link rel="icon" href="LogeVerse/resources/shared/favicon.png" type="image/png">

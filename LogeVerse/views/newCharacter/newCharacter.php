@@ -2,7 +2,7 @@
 //Control de acceso solo a usuarios con la sesion iniciada
 if (!isset($_SESSION["usuario"])) {
     $_SESSION["alert"] = "No tienes permiso para acceder a esta página.";
-    header("Location: ../controllers/index.controller.php");
+    header("Location: LogeVerse/inicio");
     exit;
 } else {
 
@@ -15,20 +15,20 @@ if (!isset($_SESSION["usuario"])) {
 <head>
     <?php
     //Añadimos el head de la página común al resto de páginas
-    include_once '../views/shared/head.php';
+    include_once 'LogeVerse/views/shared/head.php';
     ?>
-    <script type="module" src="../views/newCharacter/scripts/mainScript.js"></script>
-    <link rel="stylesheet" href="../views/newCharacter/styles/newCharacter.styles.css" />
+    <script type="module" src="/LogeVerse/views/newCharacter/scripts/mainScript.js"></script>
+    <link rel="stylesheet" href="/LogeVerse/views/newCharacter/styles/newCharacter.styles.css" />
 </head>
 
 <body>
     <?php
     //Añadimos la cabecera de la página comín al resto de páginas
     // y el menú de navegación
-    include_once '../views/shared/header.php';
+    include_once 'LogeVerse/views/shared/header.php';
     ?>
     <main>
-        <form action="../modules/newCharacter.module.php" method="POST" enctype="multipart/form-data">
+        <form action="/LogeVerse/crearPersonaje" method="POST" enctype="multipart/form-data">
             <div id="newCharBasicInfo">
                 <section id="charFormName">
                     <label for="nombre">Nombre: </label>
@@ -84,7 +84,7 @@ if (!isset($_SESSION["usuario"])) {
     </main>
     <?php
     //Añadimos el pie de página común al resto de páginas
-    include '../views/shared/footer.html';
+    include 'LogeVerse/views/shared/footer.html';
     ?>
 </body>
 

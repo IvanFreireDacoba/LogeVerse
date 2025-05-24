@@ -1,12 +1,12 @@
 <?php
 
     //Carga de las clases para el módulo de login
-    include_once '../classes/include_classes.php';
+    include_once 'LogeVerse/classes/include_classes.php';
 
     session_start();
 
     //Funciones de conexión a la base de datos
-    include_once './toDatabase.module.php';
+    include_once 'LogeVerse/modules/toDatabase.module.php';
 
     //Gestión del login
 
@@ -55,7 +55,7 @@
                     //Cerrar la conexión a la base de datos
                     $pdo = null;
                     //Ir al perfil del jugador
-                    header("Location: ../controllers/profile.controller.php");
+                    header("Location: /LogeVerse/perfil");
                     exit;
                 } else {
                     //Cerrar la conexión a la base de datos
@@ -80,5 +80,5 @@
         $_SESSION["alert"] = "Las contraseñas no coinciden. Por favor, no modifiques el JavaScript.";
     }
     //Si se produce algun error, se redirige al formulario de registro
-    header("Location: ../controllers/register.controller.php");
+    header("Location: /LogeVerse/registrarse");
     exit;

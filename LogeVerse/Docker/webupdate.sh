@@ -11,10 +11,11 @@ rm -rf /opt/lampp/htdocs/.git
 
 echo "¡Web actualizada correctamente!"
 
-# ======================= Instalar vlucas/phpdotenv =====================
-echo "Instalando vlucas/phpdotenv con Composer..."
+# ====================== Instalar librerías composer ====================
+echo "Instalando librerías..."
 cd /opt/lampp/htdocs
-composer require vlucas/phpdotenv
+composer install
+echo "Librerías instaladas correctamente."
 
 # ========================== Ejecutar script PHP ========================
 echo "Ejecutando el script de base de datos..."
