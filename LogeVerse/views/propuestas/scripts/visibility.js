@@ -16,5 +16,12 @@ export function visibility() {
         }
     });
 
+    const modificadores = document.getElementsByClassName("modificador");
+    Array.from(modificadores).forEach(modificador => {
+        modificador.addEventListener("click", (e) => {
+            e.stopPropagation();
+        })
+    });
+
     document.removeEventListener("DOMContentLoaded", visibility);
 }

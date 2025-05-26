@@ -44,9 +44,6 @@ $routes = [
 ];
 
 session_start();
-if (!isset($_SESSION['usuario']) && str_starts_with($uri, "/LogeCraft")) {
-  session_destroy();
-}
 
 if (array_key_exists($uri, $routes)) {
   require($routes[$uri]);

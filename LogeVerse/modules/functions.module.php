@@ -25,7 +25,7 @@ function refrescarUsuario(PDO $pdo, int $id_usuario): Jugador
     //Obtenemos los personajes del jugador
     $stmt = $pdo->prepare("SELECT id FROM personaje WHERE personaje.propietario = :id_jugador;");
     $stmt->bindParam(':id_jugador', $id_usuario, PDO::PARAM_INT);
-    $stmt->execute();    
+    $stmt->execute();
     $personajes = [];
     //Guardamos cada personaje en el array de personajes
     foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) as $id_personaje) {
@@ -658,15 +658,217 @@ function obtenerConstante(?int $id = null, ?string $name = null): string
 
 // =================================== PROPUESTAS ==================================
 //Gestiona la propuesta de una raza, comprobando los campos que se proponen 
-function propuestaRaza(pdo $conexion, array $datos, string &$infoMsg, bool &$exito): int
+function propuestaRaza(pdo $conexion, array &$datos, string &$infoMsg, bool &$exito): int
 {
-
+    $id = 0;
+    $infoMsg = "";
+    $exito = false;
+    $withImage = false;
+    //Comprobamos que el array contiene todos los datos necesarios
+    if (empty($datos["raza_nombre"])) {
+        $infoMsg .= "El nombre de la raza es obligatorio.\n";
+    }
+    if (empty($datos["raza_descripcion"])) {
+        $infoMsg .= "La descripción de la raza es obligatoria.\n";
+    }
+    if (empty($datos["raza_historia"])) {
+        $infoMsg .= "La historia de la raza es obligatoria.\n";
+    }
+    if (empty($datos["raza_velocidad"])) {
+        $infoMsg .= "La velocidad de la raza es obligatoria.\n";
+    }
+    if (!empty($datos["raza_imagen"])) {
+        $withImage = true;
+    }
+    try {
+        $stmt = $conexion->prepare("SELECT count(id) FROM atributo;");
+        $stmt->execute();
+        $cantidad_atributos = $stmt->fetchColumn();
+    } catch (PDOException $e) {
+        $infoMsg = "Error al conectar con la base de datos.";
+    }
+    //Gestionamos los atributos, pasivas e idiomas de la raza
+    $pasivas = [];
+    $idiomas = [];
+    $atributos = [];
+    foreach ($datos as $key => $value) {
+        if (str_starts_with($key, "raza_pasiva_")) {
+            $pasivas[] = $value;
+        } elseif (str_starts_with($key, "raza_idioma_")) {
+            $idiomas[] = $value;
+        } elseif (str_starts_with($key, "raza_atr_")) {
+            $id_atr = substr($key, 9);
+            $atributos[] = [$id_atr, $value];
+        } else {
+            continue;
+        }
+    }
+    if (count($atributos) != $cantidad_atributos) {
+        $infoMsg .= "La cantidad de atributos no coincide.";
+    }
+    if (empty($infoMsg)) {
+        try {
+            $conexion->beginTransaction();
+            $stmt = $conexion->prepare("CALL proponerRaza(
+                                                                    :nombre,
+                                                                    :descripcion,
+                                                                    :historia,
+                                                                    :velocidad,
+                                                                    @p_resultado
+                                                                 );");
+            $stmt->bindParam(":nombre", $datos["raza_nombre"], PDO::PARAM_STR);
+            $stmt->bindParam(":descripcion", $datos["raza_descripcion"], PDO::PARAM_STR);
+            $stmt->bindParam(":historia", $datos["raza_historia"], PDO::PARAM_STR);
+            $stmt->bindParam(":velocidad", $datos["raza_velocidad"], PDO::PARAM_INT);
+            $stmt->execute();
+            $id = $conexion->query("SELECT @p_resultado AS resultado")->fetch(PDO::FETCH_ASSOC)["resultado"];
+            if ($id > 0) {
+                if ($withImage) {
+                    try {
+                        $stmt->closeCursor();
+                        $stmt = $conexion->prepare("INSERT INTO prop_imagen_raza (id_raza, img_data) VALUES (:id, :img_data);");
+                        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+                        $stmt->bindValue(":img_data", $datos["raza_imagen"], PDO::PARAM_LOB);
+                        $stmt->execute();
+                        $infoMsg .= "Imagen de la raza guardada con éxito.\n";
+                    } catch (PDOException $e) {
+                        $infoMsg .= "Error tratando de almacenar la imagen propuesta.";
+                    }
+                }
+                try {
+                    foreach ($atributos as $atributo) {
+                        $stmt->closeCursor();
+                        $stmt = $conexion->prepare("INSERT INTO prop_atributo_raza (id_atributo, id_raza, cantidad) VALUES (:id_atr, :id_raza, :cantidad);");
+                        $stmt->bindParam(":id_atr", $atributo[0], PDO::PARAM_INT);
+                        $stmt->bindParam(":id_raza", $id, PDO::PARAM_INT);
+                        $stmt->bindParam(":cantidad", $atributo[1], PDO::PARAM_INT);
+                        $stmt->execute();
+                    }
+                    $infoMsg = "Atributos de raza establecidos correctamente.\n" . $infoMsg;
+                    foreach ($pasivas as $pasiva) {
+                        $stmt->closeCursor();
+                        $stmt = $conexion->prepare("INSERT INTO prop_pasiva_raza (id_raza, id_pasiva) VALUES (:id_raza, :id_pasiva);");
+                        $stmt->bindParam(":id_raza", $id, PDO::PARAM_INT);
+                        $stmt->bindParam(":id_pasiva", $pasiva, PDO::PARAM_INT);
+                        $stmt->execute();
+                    }
+                    $infoMsg .= !empty($pasivas) ? "Pasivas agregadas con éxito.\n" : "";
+                    foreach ($idiomas as $idioma) {
+                        $stmt->closeCursor();
+                        $stmt = $conexion->prepare("INSERT INTO prop_idioma_raza (id_raza, id_idioma) VALUES (:id_raza, :id_idioma);");
+                        $stmt->bindParam(":id_raza", $id, PDO::PARAM_INT);
+                        $stmt->bindParam(":id_idioma", $idioma, PDO::PARAM_INT);
+                        $stmt->execute();
+                    }
+                    $infoMsg .= !empty($idiomas) ? "Idiomas agregados con éxito.\n" : "";
+                    $conexion->commit();
+                    $infoMsg = "Raza registrada con éxito.\n" . $infoMsg;
+                    $exito = true;
+                } catch (PDOException $e) {
+                    $infoMsg = "Error construyendo la raza.\nRaza no registrada.";
+                    $conexion->rollBack();
+                }
+            } else {
+                throw new Error("Error al intentar insertar los datos.\nRaza no registrada.");
+            }
+        } catch (Error $e) {
+            $conexion->inTransaction() ? $conexion->rollBack() : null;
+            $infoMsg = $e->getMessage();
+        }
+    }
+    return $id;
 }
 
 //Gestiona la propuesta de una clase, comprobando los campos que se proponen 
-function propuestaClase(pdo $conexion, array $datos, string &$infoMsg, bool &$exito): int
+function propuestaClase(pdo $conexion, array &$datos, string &$infoMsg, bool &$exito): int
 {
-
+    $id = 0;
+    $infoMsg = "";
+    $exito = false;
+    $witImage = false;
+    //Comprobamos que el array contiene todos los datos necesarios
+    if (empty($datos["clase_nombre"])) {
+        $infoMsg .= "El nombre de la clase es obligatorio.\n";
+    }
+    if (empty($datos["clase_descripcion"])) {
+        $infoMsg .= "La descripción de la clase es obligatoria.\n";
+    }
+    if (empty($datos["clase_dado"]) || $datos["clase_dado"] < 1) {
+        $infoMsg .= "El valor de dado de golpe para la clase debe ser superior a 0.\n";
+    }
+    if (empty($datos["clase_equipo"])) {
+        $infoMsg .= "El equipo inicial de la clase es obligatorio.\n";
+    }
+    if (!empty($datos["clase_imagen"])) {
+        $withImage = true;
+    }
+    //En caso de que tenga habilidades, recorremos los datos de POST una vez buscandolas
+    $habilidades_clase = [];
+    foreach ($_POST as $key => $value) {
+        if (str_starts_with($key, "clase_habilidad_")) {
+            $habilidades_clase[] = $value;
+        }
+    }
+    if (empty($infoMsg)) {
+        try {
+            $stmt = $conexion->prepare("CALL proponerClase(
+                                                                    :nombre,
+                                                                    :descripcion,
+                                                                    :dado_golpe,
+                                                                    :equipo_inicial,
+                                                                    :hp_art_ref,
+                                                                    :hp_art_mod,
+                                                                    :def_art_ref,
+                                                                    :def_art_mod,
+                                                                    :atq_art_ref,
+                                                                    :atq_art_mod,
+                                                                    @p_resultado
+                                                                 );");
+            $stmt->bindParam(":nombre", $datos["clase_nombre"], PDO::PARAM_STR);
+            $stmt->bindParam(":descripcion", $datos["clase_descripcion"], PDO::PARAM_STR);
+            $stmt->bindParam(":dado_golpe", $datos["clase_dado"], PDO::PARAM_INT);
+            $stmt->bindParam(":equipo_inicial", $datos["clase_equipo"], PDO::PARAM_INT);
+            $stmt->bindParam(":hp_art_ref", $datos["clase_hp_atr"], PDO::PARAM_INT);
+            $stmt->bindParam(":hp_art_mod", $datos["clase_hp_mod"], PDO::PARAM_INT);
+            $stmt->bindParam(":def_art_ref", $datos["clase_def_atr"], PDO::PARAM_INT);
+            $stmt->bindParam(":def_art_mod", $datos["clase_def_mod"], PDO::PARAM_INT);
+            $stmt->bindParam(":atq_art_ref", $datos["clase_atq_atr"], PDO::PARAM_INT);
+            $stmt->bindParam(":atq_art_mod", $datos["clase_atq_mod"], PDO::PARAM_INT);
+            $stmt->execute();
+            $id = $conexion->query("SELECT @p_resultado AS resultado")->fetch(PDO::FETCH_ASSOC);
+            $infoMsg = "Clase registrada con éxito.\n";
+            $exito = true;
+            if ($withImage) {
+                try {
+                    $stmt->closeCursor();
+                    $stmt = $conexion->prepare("INSERT INTO prop_imagen_clase (id_clase, img_data) VALUES (:id, :img_data);");
+                    $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+                    $stmt->bindValue(":img_data", $datos["clase_imagen"], PDO::PARAM_LOB);
+                    $stmt->execute();
+                    $infoMsg .= "Imagen de la clase guardada con éxito.\n";
+                } catch (PDOException $e) {
+                    $infoMsg .= "Error tratando de almacenar la imagen propuesta.\n";
+                }
+            }
+            if (!empty($habilidades_clase)) {
+                try {
+                    foreach ($habilidades_clase as $habilidad) {
+                        $stmt->closeCursor();
+                        $stmt = $conexion->prepare("INSERT INTO prop_clase_habilidad (id_clase, id_habilidad) VALUES (:id_clase, :id_habilidad);");
+                        $stmt->bindParam(":id_clase", $id, PDO::PARAM_INT);
+                        $stmt->bindValue(":id_habilidad", $habilidad, PDO::PARAM_INT);
+                        $stmt->execute();
+                    }
+                    $infoMsg .= "Habilidades de la clase guardadas con éxito.";
+                } catch (PDOException $e) {
+                    $infoMsg .= "Error tratando de almacenar las habilidades de la clase.";
+                }
+            }
+        } catch (Error $e) {
+            $infoMsg = "Error al intentar insertar los datos.\nClase no registrada.";
+        }
+    }
+    return $id;
 }
 
 //Gestiona la propuesta de un efecto, comprobando los campos que se proponen 
@@ -715,7 +917,68 @@ function propuestaEfecto(PDO $conexion, array $datos, string &$infoMsg, bool &$e
 //Gestiona la propuesta de una clase, comprobando los campos que se proponen 
 function propuestaHabilidad(pdo $conexion, array $datos, string &$infoMsg, bool &$exito): int
 {
-
+    $id = 0;
+    $infoMsg = "";
+    $efects = [];
+    $exito = false;
+    //Comprobamos que el array contiene todos los datos necesarios
+    if (empty($datos["habilidad_nombre"])) {
+        $infoMsg .= "El nombre de la habilidad es obligatorio.\n";
+    }
+    if (empty($datos["habilidad_descripcion"])) {
+        $infoMsg .= "La descripción de la habilidad es obligatoria.\n";
+    }
+    if (empty($datos["habilidad_tipo"])) {
+        $infoMsg .= "El tipo de la habilidad es obligatorio.\n";
+    }
+    if (empty($datos["habilidad_nivel"])) {
+        $infoMsg .= "El nivel de la habilidad es obligatorio.\n";
+    }
+    if (isset($datos["has_effects"])) {
+        //En caso de que tenga efectos, recorremos los datos de POST una vez buscando
+        //cada efecto y asociándolo a su modificador
+        foreach ($_POST as $key => $value) {
+            if (str_starts_with($key, "habilidad_efecto_")) {
+                $id = str_replace("habilidad_efecto_", "", $key);
+                $mod_key = "mod_habilidad_efecto_" . $id;
+                if (isset($_POST[$mod_key])) {
+                    $modifier = $_POST[$mod_key];
+                    $efects[] = [$value, $modifier];
+                }
+            }
+        }
+    }
+    if (empty($infoMsg)) {
+        try {
+            $conexion->beginTransaction();
+            $stmt = $conexion->prepare("INSERT INTO prop_habilidad (nombre, descripcion, tipo, nivel) VALUES (:nombre, :descripcion, :tipo, :nivel);");
+            $stmt->bindParam(":nombre", $_POST["habilidad_nombre"], PDO::PARAM_STR);
+            $stmt->bindParam(":descripcion", $_POST["habilidad_descripcion"], PDO::PARAM_STR);
+            $stmt->bindParam(":tipo", $_POST["habilidad_tipo"], PDO::PARAM_STR);
+            $stmt->bindParam(":nivel", $_POST["habilidad_nivel"], PDO::PARAM_INT);
+            $stmt->execute();
+            $id = $conexion->lastInsertId();
+            $stmt->closeCursor();
+            $infoMsg = "Habilidad registrada con éxito.";
+            if (isset($datos["has_effects"])) {
+                foreach ($efects as $efect) {
+                    $stmt = $conexion->prepare("INSERT INTO prop_efecto_habilidad VALUES (:id_efecto, :id_habilidad, :modificador);");
+                    $stmt->bindParam(":id_efecto", $efect[0], PDO::PARAM_INT);
+                    $stmt->bindParam(":id_habilidad", $id, PDO::PARAM_INT);
+                    $stmt->bindParam(":modificador", $efect[1], PDO::PARAM_INT);
+                    $stmt->execute();
+                }
+                $infoMsg .= "\nEfectos asignados a la habilidad con éxito.";
+            }
+            $conexion->commit();
+            $stmt->closeCursor();
+            $exito = true;
+        } catch (Exception $e) {
+            $conexion->inTransaction() ? $conexion->rollBack() : null;
+            $infoMsg = "Error al intentar insertar los datos.\nHabilidad no registrada.";
+        }
+    }
+    return $id;
 }
 
 //Gestiona la propuesta de una clase, comprobando los campos que se proponen 
@@ -732,7 +995,7 @@ function propuestaPasiva(pdo $conexion, array $datos, string &$infoMsg, bool &$e
     if (empty($datos["pasiva_descripcion"])) {
         $infoMsg .= "La descripción de la pasiva es obligatoria.\n";
     }
-    if ($datos["has_effects"]) {
+    if (isset($datos["has_effects"])) {
         //En caso de que tenga efectos, recorremos los datos de POST una vez buscando
         //cada efecto y asociándolo a su modificador
         foreach ($_POST as $key => $value) {
@@ -754,10 +1017,10 @@ function propuestaPasiva(pdo $conexion, array $datos, string &$infoMsg, bool &$e
             $stmt->bindParam(":descripcion", $_POST["pasiva_descripcion"], PDO::PARAM_STR);
             $stmt->execute();
             $id = $conexion->lastInsertId();
-            $stmt->closeCursor();
             $infoMsg = "Pasiva registrada con éxito.";
-            if ($datos["has_effects"]) {
+            if (isset($datos["has_effects"])) {
                 foreach ($efects as $efect) {
+                    $stmt->closeCursor();
                     $stmt = $conexion->prepare("INSERT INTO prop_efecto_pasiva VALUES (:id_efecto, :id_pasiva, :modificador);");
                     $stmt->bindParam(":id_efecto", $efect[0], PDO::PARAM_INT);
                     $stmt->bindParam(":id_pasiva", $id, PDO::PARAM_INT);
@@ -770,9 +1033,7 @@ function propuestaPasiva(pdo $conexion, array $datos, string &$infoMsg, bool &$e
             $stmt->closeCursor();
             $exito = true;
         } catch (Exception $e) {
-            if ($conexion->inTransaction()) {
-                $conexion->rollBack();
-            }
+            $conexion->inTransaction() ? $conexion->rollBack() : null;
             $infoMsg = "Error al intentar insertar los datos.\nPasiva no registrada.";
         }
     }
@@ -810,9 +1071,7 @@ function propuestaIdioma(pdo $conexion, array $datos, string &$infoMsg, bool &$e
             $id = (int) $fila['resultado'];
             $stmt->closeCursor();
             $exito = ($id > 0);
-            if (!$exito) {
-                $infoMsg .= "Error al intentar insertar los datos.\nIdioma no registrado.";
-            }
+            $infoMsg .= $exito ? "Idioma registrado con éxito." : "Error al intentar insertar los datos.\nIdioma no registrado.";
         } catch (Exception $e) {
             $infoMsg = "Error al intentar insertar los datos.\nIdioma no registrado.";
         }
