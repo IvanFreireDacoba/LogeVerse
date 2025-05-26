@@ -3,8 +3,6 @@
 include_once "LogeVerse/classes/include_classes.php";
 include_once "LogeVerse/modules/functions.module.php";
 
-session_start();
-
 //Control de acceso solo a usuarios con la sesion iniciada
 if (!isset($_SESSION["usuario"])) {
     $_SESSION["alert"] = "No tienes permiso para acceder a esta página.";
@@ -16,7 +14,22 @@ if (isset($_POST)) {
     $_SESSION["POST"] = $_POST;
     $datos = [];
     foreach ($_POST as $key => $value) {
-        $datos[$key] = htmlspecialchars($value);
+        if (!str_contains($key, "imagen")) {
+            $datos[$key] = htmlspecialchars($value);
+        } elseif (
+            isset($_FILES[$key]) && is_uploaded_file($_FILES[$key]['tmp_name']) &&
+            exif_imagetype($_FILES[$key]['tmp_name'])
+        ) {
+            $mime = mime_content_type($_FILES[$key]['tmp_name']);
+            $formatosPermitidos = ['image/jpeg', 'image/png'];  //, 'image/gif'
+            if (in_array($mime, $formatosPermitidos)) {
+                $datos[$key] = file_get_contents($_FILES[$key]['tmp_name']);
+            } else {
+                $_SESSION["alert"] = "Formato de imagen no permitido.\nPor favor usa: JPG o PNG.";
+                $datos["proposal_type"] = "invalid";
+                $exito = false;
+            }
+        }
     }
 
     $types = [
@@ -71,7 +84,8 @@ if (isset($_POST)) {
             if ($exito) {
                 try {
                     registrarPropuesta($conexion, $_SESSION["usuario"]->getId(), $idProp, $datos["proposal_type"]);
-                    $_SESSION["alert"] = "Propuesta realizada con éxito.";
+                    $_SESSION["alert"] = $infoMsg;
+                    $_SESSION["datos"] = null;
                 } catch (Error $e) {
                     $_SESSION["alert"] = "Propuesta realizada con éxito, no se ha podido registrar al usuario.";
                 }
@@ -83,7 +97,9 @@ if (isset($_POST)) {
         }
         $conexion = null;
     } else {
-        $_SESSION["alert"] = "La entidad propuesta no existe.";
+        if ($exito === null) {
+            $_SESSION["alert"] = "La entidad propuesta no existe.";
+        }
     }
 } else {
     $_SESSION["alert"] = "Error al obtener los datos del formulario.";
