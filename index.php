@@ -15,7 +15,8 @@ if (str_starts_with($uri, "/LogeVerse")) {
 
 $routes = [
   // **********BORRAR AL MIGRAR**************
-  '/' => "LogeVerse/redirect.php",
+  '/' => "LogeVerse/redirect.php",        //*
+  // ****************************************
 
   //=============================LogeVerse=================================
 
@@ -27,6 +28,7 @@ $routes = [
   '/LogeVerse/perfil/ajustes' => "LogeVerse/controllers/settings.controller.php",
   '/LogeVerse/nuevoPersonaje' => "LogeVerse/controllers/newCharacter.controller.php",
   '/LogeVerse/propuestas' => "LogeVerse/controllers/propuestas.controller.php",
+  '/LogeVerse/portalAdmin' => "LogeVerse/controllers/admin.controller.php",
 
   //módulos
   '/LogeVerse/crearPersonaje' => "LogeVerse/modules/newCharacter.module.php",
@@ -36,6 +38,14 @@ $routes = [
   '/LogeVerse/registrar' => "LogeVerse/modules/register.module.php",
   '/LogeVerse/logear' => "LogeVerse/modules/login.module.php",
   '/LogeVerse/cerrarSesion' => "LogeVerse/modules/close.module.php",
+  //módulos de propuesta aceptada
+  '/LogeVerse/aceptar/Atributo' => "LogeVerse/modules/aceptar/acept_atributo.module.php",
+  '/LogeVerse/aceptar/Clase' => "LogeVerse/modules/aceptar/acept_clase.module.php",
+  '/LogeVerse/aceptar/Efecto' => "LogeVerse/modules/aceptar/acept_efecto.module.php",
+  '/LogeVerse/aceptar/Habilidad' => "LogeVerse/modules/aceptar/acept_habilidad.module.php",
+  '/LogeVerse/aceptar/Objeto' => "LogeVerse/modules/aceptar/acept_objeto.module.php",
+  '/LogeVerse/aceptar/Pasiva' => "LogeVerse/modules/aceptar/acept_pasiva.module.php",
+  '/LogeVerse/aceptar/Raza' => "LogeVerse/modules/aceptar/acept_raza.module.php",
 
   //recursos
 
