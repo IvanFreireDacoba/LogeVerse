@@ -785,7 +785,7 @@ function propuestaClase(pdo $conexion, array &$datos, string &$infoMsg, bool &$e
     $id = 0;
     $infoMsg = "";
     $exito = false;
-    $witImage = false;
+    $withImage = false;
     //Comprobamos que el array contiene todos los datos necesarios
     if (empty($datos["clase_nombre"])) {
         $infoMsg .= "El nombre de la clase es obligatorio.\n";
@@ -811,6 +811,7 @@ function propuestaClase(pdo $conexion, array &$datos, string &$infoMsg, bool &$e
     }
     if (empty($infoMsg)) {
         try {
+            $conexion->beginTransaction();
             $stmt = $conexion->prepare("CALL proponerClase(
                                                                     :nombre,
                                                                     :descripcion,
@@ -835,36 +836,45 @@ function propuestaClase(pdo $conexion, array &$datos, string &$infoMsg, bool &$e
             $stmt->bindParam(":atq_art_ref", $datos["clase_atq_atr"], PDO::PARAM_INT);
             $stmt->bindParam(":atq_art_mod", $datos["clase_atq_mod"], PDO::PARAM_INT);
             $stmt->execute();
-            $id = $conexion->query("SELECT @p_resultado AS resultado")->fetch(PDO::FETCH_ASSOC);
-            $infoMsg = "Clase registrada con éxito.\n";
-            $exito = true;
-            if ($withImage) {
-                try {
-                    $stmt->closeCursor();
-                    $stmt = $conexion->prepare("INSERT INTO prop_imagen_clase (id_clase, img_data) VALUES (:id, :img_data);");
-                    $stmt->bindParam(":id", $id, PDO::PARAM_INT);
-                    $stmt->bindValue(":img_data", $datos["clase_imagen"], PDO::PARAM_LOB);
-                    $stmt->execute();
-                    $infoMsg .= "Imagen de la clase guardada con éxito.\n";
-                } catch (PDOException $e) {
-                    $infoMsg .= "Error tratando de almacenar la imagen propuesta.\n";
-                }
-            }
-            if (!empty($habilidades_clase)) {
-                try {
-                    foreach ($habilidades_clase as $habilidad) {
+            $id = $conexion->query("SELECT @p_resultado AS resultado")->fetch(PDO::FETCH_ASSOC)["resultado"];
+            if ($id > 0) {
+                $infoMsg = "Clase registrada con éxito.\n";
+                $exito = true;
+                if ($withImage) {
+                    try {
                         $stmt->closeCursor();
-                        $stmt = $conexion->prepare("INSERT INTO prop_clase_habilidad (id_clase, id_habilidad) VALUES (:id_clase, :id_habilidad);");
-                        $stmt->bindParam(":id_clase", $id, PDO::PARAM_INT);
-                        $stmt->bindValue(":id_habilidad", $habilidad, PDO::PARAM_INT);
+                        $stmt = $conexion->prepare("INSERT INTO prop_imagen_clase (id_clase, img_data) VALUES (:id, :img_data);");
+                        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+                        $stmt->bindValue(":img_data", $datos["clase_imagen"], PDO::PARAM_LOB);
                         $stmt->execute();
+                        $infoMsg .= "Imagen de la clase guardada con éxito.\n";
+                    } catch (PDOException $e) {
+                        $infoMsg .= "Error tratando de almacenar la imagen propuesta.\n";
                     }
-                    $infoMsg .= "Habilidades de la clase guardadas con éxito.";
-                } catch (PDOException $e) {
-                    $infoMsg .= "Error tratando de almacenar las habilidades de la clase.";
                 }
+                if (!empty($habilidades_clase)) {
+                    try {
+                        foreach ($habilidades_clase as $habilidad) {
+                            $stmt->closeCursor();
+                            $stmt = $conexion->prepare("INSERT INTO prop_clase_habilidad (id_clase, id_habilidad) VALUES (:id_clase, :id_habilidad);");
+                            $stmt->bindParam(":id_clase", $id, PDO::PARAM_INT);
+                            $stmt->bindValue(":id_habilidad", $habilidad, PDO::PARAM_INT);
+                            $stmt->execute();
+                        }
+                        $infoMsg .= "Habilidades de la clase guardadas con éxito.";
+                    } catch (PDOException $e) {
+                        $infoMsg .= "Error tratando de almacenar las habilidades de la clase.";
+                    }
+                }
+                $conexion->commit();
+            } else {
+                $conexion->rollBack();
+                $infoMsg = "Error al intentar insertar los datos.\nClase no registrada.";
             }
-        } catch (Error $e) {
+        } catch (Exception $e) {
+            if ($conexion->inTransaction()) {
+                $conexion->rollBack();
+            }
             $infoMsg = "Error al intentar insertar los datos.\nClase no registrada.";
         }
     }

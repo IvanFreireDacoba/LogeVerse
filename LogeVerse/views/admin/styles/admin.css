@@ -1,0 +1,55 @@
+.infoMsg {
+    text-align: center;
+}
+
+#cabecera_prop {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    align-items: center;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+
+    & .toRigth {
+        justify-self: end;
+        border: 1px solid black;
+    }
+
+    &>h4 {
+        border: 1px solid black;
+        width: 100%;
+        margin-inline: 0px;
+    }
+
+    & .toLeft {
+        justify-self: start;
+        border: 1px solid black;
+    }
+}
+
+#tabla_propuestas {
+    max-height: 100vh;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+
+    & table {
+        width: 100%;
+        border-collapse: collapse;
+
+        & thead th {
+            position: sticky;
+            top: 0;
+            background-color: #f9f9f9;
+            z-index: 1;
+            border-bottom: 1px solid #ccc;
+        }
+
+        & th,
+        td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+    }
+}

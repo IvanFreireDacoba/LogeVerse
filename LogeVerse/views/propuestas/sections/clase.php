@@ -57,7 +57,7 @@
                 </div>
                 <div>
                     <label for="clase_def_atr">Puntos de Defensa => Atributo ref.: </label>
-                    <select id="clase_def_atr">
+                    <select id="clase_def_atr" name="clase_def_atr">
                         <?php
                         foreach ($atributos as $atributo) {
                             echo "<option value='" . $atributo["id"] . "' title='" . $atributo["descripcion"] . "'>" . $atributo["nombre"] . "</option>";
