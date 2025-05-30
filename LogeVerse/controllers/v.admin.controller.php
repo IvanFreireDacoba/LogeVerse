@@ -1,7 +1,5 @@
 <?php
-
 $title = "Portal Admin";
-
 $nombre_propuestas = [
     0 => "Atributo",
     1 => "Clase",
@@ -11,7 +9,6 @@ $nombre_propuestas = [
     5 => "Pasiva",
     6 => "Raza"
 ];
-
 if (isset($_SESSION["usuario"])) {
     if ($_SESSION["usuario"]->getAdmin()) {
         try {

@@ -31,7 +31,7 @@
             <br>
             <button type="submit" aria-label="Enviar formulario para iniciar sesión">
                 Iniciar sesión</button>
-            <button type="" button id="btn_registro" onclick="location.href='register.controller.php'"
+            <button type="" button id="btn_registro" onclick="location.href='/LogeVerse/registrarse'"
                 aria-label="Ir a la página de registro">
                 ¿Necesitas registrarte?</button>
         </form>

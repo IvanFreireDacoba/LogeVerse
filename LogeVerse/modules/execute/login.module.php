@@ -1,19 +1,10 @@
 <?php
-
-session_start();
-
-//Funciones de conexión a la base de datos
-include_once 'LogeVerse/modules/toDatabase.module.php';
-
-//Gestión del login
-
-//Preparación de los datos recibidos por post
-if ($_POST) {
-    foreach ($_POST as $key => $value) {
-        $$key = htmlspecialchars($value);
-    }
+//Control de acceso de seguridad
+if (!defined('IN_CONTROLLER')) {
+    $_SESSION["Alert"] = "Acceso directo no permitido.";
+    header("/LogeVerse/inicio");
+    exit;
 }
-
 //Conexión a la base de datos
 try {
     $pdo = conectar();

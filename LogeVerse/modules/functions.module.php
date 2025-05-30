@@ -1,5 +1,12 @@
 <?php
 
+//Control de acceso de seguridad
+if (!defined('IN_CONTROLLER')) {
+    $_SESSION["Alert"] = "Acceso directo no permitido.";
+    header("/LogeVerse/inicio");
+    exit;
+}
+
 include_once "LogeVerse/classes/include_classes.php";
 include_once "LogeVerse/modules/hydrators.module.php";
 include_once "LogeVerse/modules/toDatabase.module.php";
