@@ -1,4 +1,10 @@
 <?php
+//Control de acceso de seguridad
+if (!defined('IN_CONTROLLER')) {
+    $_SESSION["Alert"] = "Acceso directo no permitido.";
+    header("/LogeVerse/inicio");
+    exit;
+}
 if (isset($_POST)) {
     try {
         $pdo = conectar();

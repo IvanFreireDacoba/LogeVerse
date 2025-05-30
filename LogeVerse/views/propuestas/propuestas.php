@@ -1,8 +1,8 @@
 <?php
-//Control de acceso solo a usuarios con la sesion iniciada
-if (!isset($_SESSION["usuario"])) {
-    $_SESSION["alert"] = "No tienes permiso para acceder a esta página.";
-    header("Location: LogeVerse/inicio");
+//Control de acceso de seguridad
+if (!defined('IN_CONTROLLER')) {
+    $_SESSION["Alert"] = "Acceso directo no permitido.";
+    header("/LogeVerse/inicio");
     exit;
 }
 ?>

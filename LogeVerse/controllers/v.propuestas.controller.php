@@ -1,7 +1,5 @@
 <?php
-
 $title = "Propuestas";
-
 if (isset($_SESSION["usuario"])) {
     if (isset($_SESSION["POST"])) {
         foreach ($_SESSION["POST"] as $key => $value) {
@@ -30,7 +28,7 @@ if (isset($_SESSION["usuario"])) {
                 $objeto["ambos"],
                 $objeto["imagen"],
             );
-            if($obj !== null) {
+            if ($obj !== null) {
                 $contenido = [];
                 $obj->desglosar($contenido);
                 $objetos[] = [$obj, $contenido];

@@ -1,3 +1,11 @@
+<?php
+//Control de acceso de seguridad
+if (!defined('IN_CONTROLLER')) {
+    $_SESSION["Alert"] = "Acceso directo no permitido.";
+    header("/LogeVerse/inicio");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -42,7 +50,7 @@
             <br>
             <button type="submit" aria-label="Enviar formulario para registrarse">
                 Registrarse</button>
-            <button type="" button id="btn_login" onclick="location.href='login.controller.php'"
+            <button type="" button id="btn_login" onclick="location.href='/LogeVerse/login'"
                 aria-label="Ir a la página de login">
                 ¿Ya estás registrado?</button>
         </form>

@@ -2,11 +2,18 @@
 
 //Módulo con los hydrator de cada clase
 
+//Control de acceso de seguridad
+if (!defined('IN_CONTROLLER')) {
+    $_SESSION["Alert"] = "Acceso directo no permitido.";
+    header("/LogeVerse/inicio");
+    exit;
+}
+
 include_once "LogeVerse/classes/include_classes.php";
 
 function hydrateRaza(array $datos): Raza
 {
-    if(!isset($datos["imagen"])){
+    if (!isset($datos["imagen"])) {
         $datos["imagen"] = null;
     }
 
@@ -26,7 +33,7 @@ function hydrateRaza(array $datos): Raza
 
 function hydrateClase(array $datos): Clase
 {
-    if(!isset($datos["imagen"])){
+    if (!isset($datos["imagen"])) {
         $datos["imagen"] = null;
     }
 
@@ -46,9 +53,10 @@ function hydrateClase(array $datos): Clase
     );
 }
 
-function hydrateJugador(array $datos): Jugador {
+function hydrateJugador(array $datos): Jugador
+{
 
-    if(!isset($datos["img_data"])){
+    if (!isset($datos["img_data"])) {
         $datos["img_data"] = null;
     }
 
@@ -63,17 +71,18 @@ function hydrateJugador(array $datos): Jugador {
         $datos["img_data"],
     );
 
-    $jugador->setAdmin($datos["admin"]);  
+    $jugador->setAdmin($datos["admin"]);
 
     return $jugador;
 }
 
-function hydratePersonaje(array $datos): Personaje {
+function hydratePersonaje(array $datos): Personaje
+{
 
-    if(!isset($datos["img_data"])){
+    if (!isset($datos["img_data"])) {
         $datos["img_data"] = null;
     }
-    
+
     return new Personaje(
         $datos["id"],
         $datos["propietario"],
@@ -93,7 +102,8 @@ function hydratePersonaje(array $datos): Personaje {
     );
 }
 
-function hydratePasiva(array $datos): Pasiva {
+function hydratePasiva(array $datos): Pasiva
+{
     return new Pasiva(
         $datos["id"],
         $datos["nombre"],
@@ -102,7 +112,8 @@ function hydratePasiva(array $datos): Pasiva {
     );
 }
 
-function hydrateHabilidad(array $datos): Habilidad {
+function hydrateHabilidad(array $datos): Habilidad
+{
     return new Habilidad(
         $datos["id"],
         $datos["nomre"],

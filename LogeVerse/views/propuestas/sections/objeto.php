@@ -1,3 +1,11 @@
+<?php
+//Control de acceso de seguridad
+if (!defined('IN_CONTROLLER')) {
+    $_SESSION["Alert"] = "Acceso directo no permitido.";
+    header("/LogeVerse/inicio");
+    exit;
+}
+?>
 <section id="Objeto" class="propuesta" hidden>
     <h4>Proponer Objeto</h4>
     <p>No disponible</p>
