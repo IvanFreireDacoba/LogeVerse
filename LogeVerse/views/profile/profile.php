@@ -14,6 +14,7 @@ if (!defined('IN_CONTROLLER')) {
     //Añadimos el head de la página común al resto de páginas
     include_once 'LogeVerse/views/shared/head.php';
     ?>
+    <script type="module" src="/LogeVerse/views/profile/scripts/mainScript.js"></script>
 </head>
 
 <body>
@@ -36,7 +37,12 @@ if (!defined('IN_CONTROLLER')) {
             $personajes = $_SESSION["usuario"]->getPersonajes();
             if (!empty($personajes)) {
                 foreach ($personajes as $personaje) {
+                    echo "<div class='fichaPersonaje'>
+                            <form class='pj_form' action='/LogeVerse/perfil/personaje' method='POST'>
+                                <input name='id' type='text' readonly required style='display: none;' value='" . $personaje->getId() . "'>";
                     echo $personaje->toShortHTML();
+                    echo "  </form>
+                          </div>";
                 }
             } else {
                 echo "<p>¡Crea tu primer personaje ahora!</p/>";
