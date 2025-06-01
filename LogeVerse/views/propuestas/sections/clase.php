@@ -91,9 +91,8 @@ if (!defined('IN_CONTROLLER')) {
                         if (!empty($habilidades)) {
                             foreach ($habilidades as $habilidad) {
                                 $salida = "<div class='clase_habilidad' id='clase_habilidad_" . $habilidad["id"] . "'>
-                                                            <p>" . $habilidad["nombre"] . "</p>
-                                                            <p>" . $habilidad["descripcion"] . "</p>
-                                                            <input type='number' name='clase_habilidad_" . $habilidad["id"] . "' value='" . $habilidad["id"] . "' disabled>
+                                                            <p title='" . $habilidad["descripcion"] . "'>" . $habilidad["nombre"] . "</p>
+                                                            <input type='number' class='hidden' name='clase_habilidad_" . $habilidad["id"] . "' value='" . $habilidad["id"] . "' disabled>
                                                         </div>";
                                 echo $salida;
                             }
