@@ -14,6 +14,7 @@ if (!defined('IN_CONTROLLER')) {
     //Añadimos el head de la página común al resto de páginas
     include_once 'LogeVerse/views/shared/head.php';
     ?>
+    <script type="module" src="/LogeVerse/views/login/scripts/mainScript.js"></script>
 </head>
 
 <body>
@@ -36,8 +37,9 @@ if (!defined('IN_CONTROLLER')) {
                 <input type="password" name="password" id="password" required autocomplete="current-password"
                     placeholder="Introduce tu contraseña" aria-required="true">
             </div>
+            <p><input type="checkbox" id="cb_password"> Mostrar contraseña</p>
             <br>
-            <button type="submit" aria-label="Enviar formulario para iniciar sesión">
+            <button type="submit" id="btn_login" aria-label="Enviar formulario para iniciar sesión" disabled>
                 Iniciar sesión</button>
             <button type="" button id="btn_registro" onclick="location.href='/LogeVerse/registrarse'"
                 aria-label="Ir a la página de registro">

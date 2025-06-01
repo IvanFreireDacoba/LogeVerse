@@ -75,7 +75,7 @@ if (!defined('IN_CONTROLLER')) {
                     <?php echo listarAtributosSeleccion() ?>
                 </section>
                 <button type="reset">Reiniciar</button>
-                <button type="button">Aleatorio</button>
+                <button type="button" id="randomize">Aleatorio</button>
                 <button type="submit">Crear</button>
         </form>
     </main>
