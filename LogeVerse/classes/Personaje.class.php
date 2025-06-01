@@ -74,10 +74,12 @@ class Personaje implements toDatabase
     public function toShortHTML(): string
     {
         $html = "<div class='personaje'>";
-        $html .= "<h2>{$this->getNombre()}</h2>";
-        $html .= "<p><strong>Experiencia:</strong> {$this->getExperiencia()}</p>";
-        $html .= "<p><strong>P.H. Disponibles:</strong> {$this->getPuntosHabilidad()}</p>";
-        $html .= "</div>";
+        $html .= "<img class='pj_img' src='{$this->getImgData()}' alt='Imagen del personaje'><div>";
+        $html .= "<p class='pj_name'>{$this->getNombre()}</p>";
+        $html .= "<p class='pj_lvl'>Lvl {$this->calcularLvl()}</p>";
+        $html .= "<p  class='pj_race'>{$this->getRaza()->getNombre()}</p>";
+        $html .= "<p  class='pj_class'>{$this->getClase()->getNombre()}</p>";
+        $html .= "</div></div>";
         return $html;
     }
 
@@ -88,9 +90,7 @@ class Personaje implements toDatabase
         $html .= "<h2>{$this->getNombre()}</h2>";
         $html .= "<p><strong>Raza:</strong> {$this->getRaza()->getNombre()}</p>";
         $html .= "<p><strong>Clase:</strong> {$this->getClase()->getNombre()}</p>";
-        $html .= "<p><strong>Experiencia:</strong> {$this->getExperiencia()}</p>";
-        $html .= "<p><strong>Dinero:</strong> {$this->getDinero()}</p>";
-        $html .= "<p><strong>P.H. Disponibles:</strong> {$this->getPuntosHabilidad()}</p>";
+        $html .= "<p><strong>Nivel:</strong> {$this->calcularLvl()}</p>";
         $html .= "<div class='atributospersonaje'>";
         foreach ($this->getAtributos() as $atributo => $valor) {
             $html .= "<div class='atributo'>";
@@ -147,7 +147,24 @@ class Personaje implements toDatabase
         //Nivel 100 = 1.000.000 experiencia
         $nivel = log(($this->getExperiencia() / $baseExp) + 1) / log($growthRate);
 
-        return floor($nivel);
+        return floor($nivel) + 1;
+    }
+
+    //Calcular la experiencia necesaria para subir de nivel
+    public function getExpNext(): string
+    {
+        $baseExp = 100;
+        $growthRate = 1.122;
+
+        $nivelActual = $this->calcularLvl();
+        //Calcular la experiencia acumulada para el nivel anterior y el actual
+        $expNivelAnterior = $baseExp * (pow($growthRate, $nivelActual - 1) - 1);
+        $expNivelActual = $baseExp * (pow($growthRate, $nivelActual) - 1);
+        //Progreso actual dentro del nivel
+        $expProgreso = $this->getExperiencia() - $expNivelAnterior;
+        $expParaSubir = $expNivelActual - $expNivelAnterior;
+
+        return intval($expProgreso) . ' / ' . intval($expParaSubir);
     }
 
     //Subir de nivel el personaje
@@ -333,7 +350,7 @@ class Personaje implements toDatabase
     }
     public function setImgData(?string $img_data = null): self
     {
-        $this->img_data = $this->getFormattedImg("../resources/player/default.png", $img_data);
+        $this->img_data = $this->getFormattedImg("/LogeVerse/resources/player/default.png", $img_data);
         return $this;
     }
 
@@ -348,7 +365,7 @@ class Personaje implements toDatabase
     }
     public function setOnIncursion(bool $on, ?Incursion $incursion = null, ?array $status = null): self
     {
-        if($incursion == null){
+        if ($incursion == null) {
             $incursion = new Incursion(0, "Ninguna", "No está realizando ninguna incursión");
         }
 
@@ -364,7 +381,7 @@ class Personaje implements toDatabase
     public function setHpMax(): self
     {
         $info_atributo = $this->getClase()->getHpAtr();
-        try{
+        try {
             $base = $this->getAtributo($info_atributo[0]) * $info_atributo[1];
         } catch (Exception $e) {
             $base = 0;
@@ -419,7 +436,7 @@ class Personaje implements toDatabase
     {
         //Buscamos el atributo que la clase del personaje usa para calcular la defensa
         //y tomamos el valor que tiene el personaje en dicho atributo
-        try{
+        try {
             $valorAtributo = $this->getAtributo($this->getClase()->getDefAtr()[0]);
         } catch (Exception $e) {
             $valorAtributo = 1;
@@ -449,7 +466,7 @@ class Personaje implements toDatabase
     {
         //Buscamos el atributo que la clase del personaje usa para calcular el golpe
         //y tomamos el valor que tiene el personaje en dicho atributo
-        try{
+        try {
             $valorAtributo = $this->getAtributo($this->getClase()->getGolpeAtr()[0]);
         } catch (Exception $e) {
             $valorAtributo = 1;

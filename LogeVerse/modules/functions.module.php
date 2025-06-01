@@ -200,7 +200,7 @@ function refrescarAtributos(PDO $pdo, int $id_personaje): array
 {
     //Obtenemos los atributos de un personaje
     $atributos = [];
-    $stmt = $pdo->prepare("SELECT atributo.nombre, atributo_personaje.cantidad FROM atributo JOIN atributo_personaje ON atributo.id = atributo_personaje.id_personaje WHERE atributo_personaje.id_personaje = :id_personaje;");
+    $stmt = $pdo->prepare("SELECT atributo.nombre, atributo_personaje.cantidad FROM atributo JOIN atributo_personaje ON atributo.id = atributo_personaje.id_atributo WHERE atributo_personaje.id_personaje = :id_personaje;");
     $stmt->bindParam("id_personaje", $id_personaje);
     $stmt->execute();
     //Los almacenamos en el array de atributos asociando una cantidad (valor) a cada nombre (clave)
@@ -241,19 +241,22 @@ function obtenerEfectosPasiva(PDO $pdo, int $id_pasiva): array
 {
     $efectos = [];
     //Buscamos todos los datos de los efectos que tiene la pasiva
-    $stmt = $pdo->prepare("SELECT efecto.* FROM efecto JOIN efecto_pasiva JOIN pasiva ON efecto.id = efecto_pasiva.id_efecto AND pasiva.id = efecto_pasiva.id_pasiva WHERE pasiva.id = :id_pasiva;");
+    $stmt = $pdo->prepare("SELECT efecto.*, efecto_pasiva.modificador FROM efecto JOIN efecto_pasiva JOIN pasiva ON efecto.id = efecto_pasiva.id_efecto AND pasiva.id = efecto_pasiva.id_pasiva WHERE pasiva.id = :id_pasiva;");
     $stmt->bindParam("id:pasiva", $id_pasiva, PDO::PARAM_INT);
     $stmt->execute();
     //Instanciamos y añadimos cada efecto al array de efectos
     foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $efecto) {
-        $efectos[] = new Efecto(
-            $efecto["id"],
-            $efecto["nombre"],
-            $efecto["descripcion"],
-            $efecto["cantidad"],
-            $efecto["duracion"],
-            $efecto["tipo"],
-        );
+        $efectos[] = [
+            new Efecto(
+                $efecto["id"],
+                $efecto["nombre"],
+                $efecto["descripcion"],
+                $efecto["cantidad"],
+                $efecto["duracion"],
+                $efecto["tipo"],
+            ),
+            $efecto["modificador"]
+        ];
     }
     $stmt->closeCursor();
     //Devolvemos los efectos
@@ -271,20 +274,23 @@ function obtenerObjeto(PDO $pdo, int $id, $tipo): Objeto
         $stmt->closeCursor();
     }
     //Seleccionamos todos los efectos del objeto
-    $stmt = $pdo->prepare("SELECT efecto.* FROM efecto JOIN efecto_objeto ON efecto.id = efecto_objeto.id_objeto WHERE efecto_objeto.id_objeto = :id_objeto");
+    $stmt = $pdo->prepare("SELECT efecto.*, efecto_objeto.modificador FROM efecto JOIN efecto_objeto ON efecto.id = efecto_objeto.id_objeto WHERE efecto_objeto.id_objeto = :id_objeto");
     $stmt->bindParam("id_objeto", $id, PDO::PARAM_INT);
     $stmt->execute();
     //Instanciamos cada efecto y lo guardamos en un array de efectos
     $efectos = [];
     foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $efecto) {
-        $efectos[] = new Efecto(
-            $efecto["id"],
-            $efecto["nombre"],
-            $efecto["descripcion"],
-            $efecto["cantidad"],
-            $efecto["duracion"],
-            $efecto["tipo"],
-        );
+        $efectos[] = [
+            new Efecto(
+                $efecto["id"],
+                $efecto["nombre"],
+                $efecto["descripcion"],
+                $efecto["cantidad"],
+                $efecto["duracion"],
+                $efecto["tipo"],
+            ),
+            $efecto["modificador"]
+        ];
     }
     $stmt->closeCursor();
     //En función de su tipo instanciamos y tratamos el objeto
@@ -447,19 +453,22 @@ function obtenerHabilidad($pdo, $id_habilidad)
     $datos = $stmt->fetch(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
     //Seleccionamos los efectos de dicha habilidad
-    $stmt->prepare("SELECT efecto.* FROM efecto JOIN efecto_habilidad JOIN habilidad ON efecto_habilidad.id_efecto = efecto.id AND efecto_habilidad.id_habilidad = habilidad.id  WHERE habilidad.id = :id_habilidad;");
+    $stmt->prepare("SELECT efecto.*, efecto_habilidad.modificador FROM efecto JOIN  JOIN habilidad ON efecto_habilidad.id_efecto = efecto.id AND efecto_habilidad.id_habilidad = habilidad.id  WHERE habilidad.id = :id_habilidad;");
     $stmt->bindParam("id_habilidad", $id_habilidad);
     //Instanciamos cada efecto y lo añadimos al array de $datos["efectos"] 
     $datos["efectos"] = [];
     foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $efecto) {
-        $datos["efectos"][] = new Efecto(
-            $efecto["id"],
-            $efecto["nombre"],
-            $efecto["descripcion"],
-            $efecto["cantidad"],
-            $efecto["duracion"],
-            $efecto["tipo"],
-        );
+        $datos["efectos"][] = [
+            new Efecto(
+                $efecto["id"],
+                $efecto["nombre"],
+                $efecto["descripcion"],
+                $efecto["cantidad"],
+                $efecto["duracion"],
+                $efecto["tipo"],
+            ),
+            $efecto["modificador"]
+        ];
     }
     //Devolvemos la instancia de la habilidad hidratada
     return hydrateHabilidad($datos);
