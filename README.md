@@ -34,7 +34,7 @@
     || Realizado: 🟢</p>
 <ul>
   <li>
-    <p>Gestor de Personajes <a>🔴</a></p>
+    <p>Gestor de Personajes <a>🟢</a></p>
   </li>
   <li>
     <p>Gestor de experiencia y economía <a>🔴</a></p>
@@ -43,10 +43,10 @@
     <p>Gestor de raids <a>🔴</a></p>
  </li>
   <li>
-    <p>Propuesta de Razas <a>🔴</a></p>
+    <p>Propuesta de Razas <a>🟢</a></p>
  </li>
   <li>
-    <p>Propuesta de Clases <a>🔴</a></p>
+    <p>Propuesta de Clases <a>🟢</a></p>
  </li>
   <li>
     <p>Propuesta de Efectos <a>🟢</a></p>
@@ -58,10 +58,10 @@
     <p>Propuesta de Idiomas <a>🟢</a></p>
  </li>
   <li>
-    <p>Propuesta de Habilidades <a>🔴</a></p>
+    <p>Propuesta de Habilidades <a>🟢</a></p>
  </li>
   <li>
-    <p>Propuesta de Atributos <a>🔴</a></p>
+    <p>Propuesta de Atributos <a>🟢</a></p>
  </li>
   <li>
     <p>Propuesta de Pasivas <a>🟢</a></p>
