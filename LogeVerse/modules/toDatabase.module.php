@@ -18,10 +18,10 @@ if (!defined('IN_CONTROLLER')) {
  */
 function conectar(): PDO
 {
-    $host = $_ENV['DB_HOST'];
-    $db = $_ENV['DB_NAME'];
-    $user = $_ENV['DB_USER'];
-    $pass = $_ENV['DB_PASS'];
+    $host = $_ENV['db_servername'];
+    $db = $_ENV['db_logeverse_database'];
+    $user = $_ENV['db_logeverse_username'];
+    $pass = $_ENV['db_logeverse_password'];
     $charset = $_ENV['DB_CHARSET'];
     $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
     try {
@@ -120,15 +120,20 @@ function generarPersonaje(pdo $conexion, array $datos): int
 
     if ($last_id > 0) {
         //Para la imagen
-        $datos["imagen"] === null ? $pdo_img = $conexion->prepare("INSERT INTO imagen_personaje (
-                                                                                                    id_personaje,
-                                                                                                    img_data)
-                                                                                VALUES (
-                                                                                        {$last_id},
-                                                                                        " . $datos["imagen"] . ");") : null;
-        try {
-            $datos["imagen"] === null ? $pdo_img->execute() : null;
-        } catch (PDOException $e) {
+        if ($datos["imagen"] !== null) {
+            $pdo_img = $conexion->prepare("INSERT INTO imagen_personaje (
+                                                                                id_personaje,
+                                                                                img_data)
+                                                                        VALUES (
+                                                                                " . $last_id . ",
+                                                                                :img_data);");
+            $pdo_img->bindParam(":img_data", $datos["imagen"], PDO::PARAM_LOB);
+            try {
+                $pdo_img->execute();
+            } catch (PDOException $e) {
+                $_SESSION["alert"] = "Error subiendo la imagen.";
+            }
+            $pdo_img = null;
         }
     }
     //Ejecutamos los inserts desde un try para controlar posibles errores
