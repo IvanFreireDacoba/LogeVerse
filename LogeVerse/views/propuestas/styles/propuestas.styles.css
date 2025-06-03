@@ -1,14 +1,8 @@
 /* ============================ ESTILOS GENERALES =========================== */
-.double_col_grid,
 .pasiva_efectos_select_style,
 .habilidad_efectos_select_style {
     display: grid;
     grid-template-columns: 1fr 1fr;
-}
-
-.triple_col_grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
 }
 
 .tooltip-container {
@@ -38,7 +32,6 @@
 
 /* ============================ DROPS DE IMAGENES =========================== */
 .drop-area {
-    border: 2px dashed #999;
     border-radius: 10px;
     padding: 0;
     text-align: center;
@@ -47,7 +40,6 @@
     height: 250px;
     position: relative;
     overflow: hidden;
-    background-color: #f9f9f9;
     transition: border-color 0.3s;
 }
 

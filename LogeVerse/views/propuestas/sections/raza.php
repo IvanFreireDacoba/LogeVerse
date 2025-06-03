@@ -38,7 +38,7 @@ if (!defined('IN_CONTROLLER')) {
             </div>
         </div>
         <div>
-            <label>Velocidad: </label>
+            <label for="raza_velocidad">Velocidad: </label>
             <input id="raza_velocidad" name="raza_velocidad" type="number" min="1" step="1" value="1">
             <a id="raza_velocidad_descripción" class="slow"> EXTREMEDAMENTE LENTA</a>
         </div>

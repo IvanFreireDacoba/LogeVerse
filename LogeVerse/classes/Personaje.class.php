@@ -74,11 +74,11 @@ class Personaje implements toDatabase
     public function toShortHTML(): string
     {
         $html = "<div class='personaje'>";
-        $html .= "<img class='pj_img' src='{$this->getImgData()}' alt='Imagen del personaje'><div>";
-        $html .= "<p class='pj_name'>{$this->getNombre()}</p>";
-        $html .= "<p class='pj_lvl'>Lvl {$this->calcularLvl()}</p>";
-        $html .= "<p  class='pj_race'>{$this->getRaza()->getNombre()}</p>";
-        $html .= "<p  class='pj_class'>{$this->getClase()->getNombre()}</p>";
+        $html .= "<img class='pj_img' src='{$this->getImgData()}' alt='Imagen del personaje'><div class='pj_data'>";
+        $html .= "<p class='name_lvl'><a class='pj_name'>{$this->getNombre()}</a>";
+        $html .= "<a class='pj_lvl'>Nv.{$this->calcularLvl()}</a></p>";
+        $html .= "<p><a class='pj_race'>{$this->getRaza()->getNombre()}</a> ";
+        $html .= "<a  class='pj_class'>{$this->getClase()->getNombre()}</a></p>";
         $html .= "</div></div>";
         return $html;
     }

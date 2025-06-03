@@ -104,7 +104,7 @@ if (!defined('IN_CONTROLLER')) {
                 </div>
             </div>
             <div>
-                <label for="clase_equipo">Equipo inicial: </label>
+                <p>Equipo inicial: </p>
                 <div id="class_items_selector">
                     <div class="tarjeta_objeto selected">
                         <input value="1" name="clase_equipo" hidden>
