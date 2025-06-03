@@ -1043,6 +1043,7 @@ function propuestaPasiva(pdo $conexion, array $datos, string &$infoMsg, bool &$e
             $stmt->bindParam(":descripcion", $_POST["pasiva_descripcion"], PDO::PARAM_STR);
             $stmt->execute();
             $id = $conexion->lastInsertId();
+            $stmt->closeCursor();
             $infoMsg = "Pasiva registrada con éxito.";
             if (isset($datos["has_effects"])) {
                 foreach ($efects as $efect) {
