@@ -1,0 +1,9 @@
+#Activar el motor de escritura
+RewriteEngine On
+
+RewriteRule ^vendor(/|$) - [F,L]
+
+#Redirigir todas las peticiones que no sean archivos reales a index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+#QSA -> Incluir peticiones get  ||  L -> última órden que procesa .htaccess
+RewriteRule ^ index.php [QSA,L]
