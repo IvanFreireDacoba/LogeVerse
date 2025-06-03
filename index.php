@@ -63,9 +63,6 @@ $blacklist = [
   '_COOKIE',
   '_SERVER',
   '_ENV',
-  '_FILES',
-  '_GET',
-  '_POST',
   'php_errormsg',
   'HTTP_RAW_POST_DATA',
   'http_response_header'
@@ -73,7 +70,7 @@ $blacklist = [
 
 foreach ($_POST as $key => $value) {
   //Comprobar el envío de valores con al menos un caracter
-  if (!preg_match('/^\w+$/', $key) || in_array($key, $blacklist)) {
+  if (in_array($key, $blacklist)) {
     //Abortar la petición POST e informar
     $_SESSION["alert"] = "Detectada variable ilegal.";
     header("Location: /LogeVerse/inicio");

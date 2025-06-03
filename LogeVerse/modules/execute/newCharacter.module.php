@@ -17,6 +17,7 @@ $_SESSION["POST"] = $_POST;
 foreach ($_POST as $key => $value) {
     $$key = $value;
 }
+
 //Comprobar que todos los datos están correctamente inicializados
 //Nombre
 if (isset($nombre) || empty($nombre)) {

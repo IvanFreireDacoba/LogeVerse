@@ -15,6 +15,7 @@ if (!defined('IN_CONTROLLER')) {
     include_once 'LogeVerse/views/shared/head.php';
     ?>
     <script type="module" src="/LogeVerse/views/profile/scripts/mainScript.js"></script>
+    <link rel="stylesheet" href="/LogeVerse/views/profile/styles/profile.css">
 </head>
 
 <body>
@@ -39,16 +40,20 @@ if (!defined('IN_CONTROLLER')) {
                 foreach ($personajes as $personaje) {
                     echo "<div class='fichaPersonaje'>
                             <form class='pj_form' action='/LogeVerse/perfil/personaje' method='POST'>
-                                <input name='id' type='text' readonly required style='display: none;' value='" . $personaje->getId() . "'>";
+                                <input class='hidden' name='id' type='text' readonly required value='" . $personaje->getId() . "'>";
                     echo $personaje->toShortHTML();
                     echo "  </form>
                           </div>";
                 }
-            } else {
-                echo "<p>¡Crea tu primer personaje ahora!</p/>";
             }
-            echo '<hr>
-                    <div id="newCharacter" class="personaje">
+            ?>
+        </section>
+        <?php
+        if (empty($personajes)) {
+            echo "<p>¡Crea tu primer personaje ahora!</p/>";
+        }
+        echo '<hr>
+                    <div id="newCharacter" class="new_pj">
                         <form action="/LogeVerse/nuevoPersonaje" method="POST">
                             <h3>Nuevo Personaje</h3>
                             <p>
@@ -62,8 +67,7 @@ if (!defined('IN_CONTROLLER')) {
                             <button type="submit">Crear</button>
                         </form>
                       </div>';
-            ?>
-        </section>
+        ?>
     </main>
     <?php
     //Añadimos el pie de página común al resto de páginas

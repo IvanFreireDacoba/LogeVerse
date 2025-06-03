@@ -15,7 +15,7 @@ include_once "LogeVerse/modules/toDatabase.module.php";
 function refrescarUsuario(PDO $pdo, int $id_usuario): Jugador
 {
     //Obtenemos y guardamos el jugador
-    $stmt = $pdo->prepare("SELECT * FROM jugador LEFT JOIN imagen_perfil ON jugador.id = imagen_perfil.id_jugador WHERE jugador.id = :id_usuario;");
+    $stmt = $pdo->prepare("SELECT jugador.*, imagen_perfil.img_data FROM jugador LEFT JOIN imagen_perfil ON jugador.id = imagen_perfil.id_jugador WHERE jugador.id = :id_usuario;");
     $stmt->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
     $stmt->execute();
     $data = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -52,7 +52,7 @@ function refrescarUsuario(PDO $pdo, int $id_usuario): Jugador
 
 function refrescarPersonaje(PDO $pdo, $id_personaje): Personaje
 {
-    $stmt = $pdo->prepare("SELECT * FROM personaje LEFT JOIN imagen_personaje ON personaje.id = imagen_personaje.id_personaje WHERE personaje.id = :id_personaje;");
+    $stmt = $pdo->prepare("SELECT personaje.*, imagen_personaje.img_data FROM personaje LEFT JOIN imagen_personaje ON personaje.id = imagen_personaje.id_personaje WHERE personaje.id = :id_personaje;");
     $stmt->bindParam(':id_personaje', $id_personaje, PDO::PARAM_INT);
     $stmt->execute();
     $data = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -78,7 +78,7 @@ function refrescarPersonaje(PDO $pdo, $id_personaje): Personaje
 function refrescarRaza(PDO $pdo, int $id_raza): Raza
 {
     //Obtenemos los datos de la raza
-    $stmt = $pdo->prepare("SELECT * FROM raza LEFT JOIN imagen_raza ON raza.id = imagen_raza.id_raza WHERE raza.id = :id_raza;");
+    $stmt = $pdo->prepare("SELECT raza.*, imagen_raza.img_data AS 'imagen' FROM raza LEFT JOIN imagen_raza ON raza.id = imagen_raza.id_raza WHERE raza.id = :id_raza;");
     $stmt->bindParam("id_raza", $id_raza, PDO::PARAM_INT);
     $stmt->execute();
     $datos = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -127,7 +127,7 @@ function refrescarRaza(PDO $pdo, int $id_raza): Raza
 function refrescarClase(PDO $pdo, int $id_clase): Clase
 {
     //Recogemos los datos de la clase
-    $stmt = $pdo->prepare("SELECT * FROM clase LEFT JOIN imagen_clase ON clase.id = imagen_clase.id_clase WHERE id = :id_clase");
+    $stmt = $pdo->prepare("SELECT clase.*, imagen_clase.img_data AS 'imagen' FROM clase LEFT JOIN imagen_clase ON clase.id = imagen_clase.id_clase WHERE id = :id_clase");
     $stmt->bindParam("id_clase", $id_clase, PDO::PARAM_INT);
     $stmt->execute();
     $datos = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -1070,7 +1070,7 @@ function propuestaPasiva(pdo $conexion, array $datos, string &$infoMsg, bool &$e
 //Gestiona la propuesta de un objeto, comprobando los campos que se proponen 
 function propuestaObjeto(pdo $conexion, array $datos, string &$infoMsg, bool &$exito): int
 {
-
+    return 0;
 }
 
 //Gestiona la propuesta de un idioma, comprobando los campos que se proponen 

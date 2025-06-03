@@ -15,6 +15,7 @@ if (!defined('IN_CONTROLLER')) {
     include_once 'LogeVerse/views/shared/head.php';
     ?>
     <script type="module" src="/LogeVerse/views/login/scripts/mainScript.js"></script>
+    <link rel="stylesheet" type="text/css" href="/LogeVerse/views/login/styles/login.style.css">
 </head>
 
 <body>
@@ -23,21 +24,23 @@ if (!defined('IN_CONTROLLER')) {
     // y el menú de navegación
     include_once 'LogeVerse/views/shared/header.php';
     ?>
-    <main id="formulario_login">
+    <main id="formulario_login" class="center_text">
         <form action="/LogeVerse/logear" method="POST" id="form_login" aria-labelledby="form_login_heading">
             <h2 id="form_login_heading">Iniciar sesión</h2>
             <div>
-                <label for="username">Usuario/Correo</label>
+                <label for="username">Usuario / Correo</label>
+                <br>
                 <input id="username" type="text" name="username" required autocomplete="username"
                     placeholder="Ej. usuario@correo.com" aria-required="true">
             </div>
             <br>
             <div>
                 <label for="password">Contraseña</label>
+                <br>
                 <input type="password" name="password" id="password" required autocomplete="current-password"
                     placeholder="Introduce tu contraseña" aria-required="true">
+                <p><input type="checkbox" id="cb_password"> Mostrar contraseña</p>
             </div>
-            <p><input type="checkbox" id="cb_password"> Mostrar contraseña</p>
             <br>
             <button type="submit" id="btn_login" aria-label="Enviar formulario para iniciar sesión" disabled>
                 Iniciar sesión</button>

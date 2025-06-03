@@ -23,4 +23,13 @@ if (isset($_SESSION["alert"])) {
     echo $title ?? "ERROR_001";
     ?>
 </title>
-<link rel="icon" href="LogeVerse/resources/shared/favicon.png" type="image/png">
+<link rel="icon" href="/LogeVerse/resources/shared/favicon.png" type="image/png">
+<!-- Fuentes -->
+<link href="https://fonts.googleapis.com/css2?family=Bona+Nova+SC&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=bonny@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jaro&display=swap" rel="stylesheet">
+<!-- Estilos -->
+<link rel="stylesheet" href="/LogeVerse/views/shared/styles/general.css">
+<link rel="stylesheet" href="/LogeVerse/views/shared/styles/header.css">
+<link rel="stylesheet" href="/LogeVerse/views/shared/styles/footer.css">

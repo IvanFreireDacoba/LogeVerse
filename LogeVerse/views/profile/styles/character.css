@@ -1,0 +1,169 @@
+main {
+    border: 3px solid var(--color-border);
+    border-radius: 20px;
+
+
+    #header_pj {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+
+        & .col1 {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: none;
+
+            & #nombre_personaje {
+                font-family: var(--font-title);
+                font-size: 1.5em;
+                font-weight: bold;
+                color: var(--color-text);
+                margin-bottom: 0px;
+            }
+
+            & #lvl_personaje {
+                font-family: var(--font-title-alt-2);
+                font-size: 1.2em;
+                font-weight: bold;
+                color: var(--color-text);
+                margin: 5px 0;
+            }
+
+            & #img_personaje {
+                width: 100%;
+                aspect-ratio: 1 / 1;
+                border: 3px solid var(--color-border);
+                border-radius: 20px;
+                margin: 5px;
+            }
+        }
+
+        & .col2 {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            border: none;
+
+            & #atributos_personaje {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                margin-top: 20%;
+                border: none;
+
+                & table {
+                    border-spacing: 0 75%;
+
+                    & thead {
+                        text-decoration: underline;
+                        font-weight: bold;
+                    }
+
+                    & .td_input {
+                        display: flex;
+                        justify-content: center;
+
+                        & .atr_input {
+                            width: 25%;
+                            text-align: center;
+                            margin-right: 0px;
+                        }
+
+                        & .plus_atr {
+                            margin-left: 0px;
+                        }
+                    }
+                }
+            }
+
+            & #datos_personaje {
+                width: 100%;
+                border: none;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                text-align: center;
+                text-align: left;
+
+                & p {
+                    margin: 5px 0;
+                    font-family: var(--font-title-alt-2);
+                    font-size: 1.2em;
+                    color: var(--color-text);
+                }
+
+                & #xp_personaje {
+                    margin-bottom: 20px;
+                }
+
+                & #raza_clase_personaje {
+                    border: none;
+                    display: flex;
+                    flex-direction: row;
+
+                    & #raza_pj_div {
+                        width: 50%;
+                        text-align: center;
+                        font-family: var(--font-title-alt-2);
+                        font-size: 1.2em;
+                        color: var(--color-text);
+                        border: none;
+                        margin: 0;
+                        padding: 0;
+
+                        & #raza_pj {
+                            margin: 0;
+                            padding: 0;
+                        }
+
+                        & #raza_img_pj {
+                            width: 75%;
+                            margin: 0;
+                            aspect-ratio: 1 / 1;
+                            border: 3px solid var(--color-hover);
+                        }
+                    }
+
+                    & #clase_pj_div {
+                        width: 50%;
+                        text-align: center;
+                        font-family: var(--font-title-alt-2);
+                        font-size: 1.2em;
+                        color: var(--color-text);
+                        border: none;
+                        margin: 0;
+                        padding: 0;
+
+                        & #clase_pj {
+                            margin: 0;
+                            padding: 0;
+                        }
+
+                        & #clase_img_pj {
+                            width: 75%;
+                            margin: 0;
+                            padding: 0;
+                            aspect-ratio: 1 / 1;
+                            border: 3px solid var(--color-shadow);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .dangerZone {
+        border: none;
+        text-align: right;
+
+        button {
+            background-color: var(--color-hover);
+            color: var(--color-border);
+        }
+    }
+
+}

@@ -52,22 +52,6 @@
     width: 25%;
 }
 
-
-/*Retirar los spinners de incremento y decremento
-de los input type number*/
-
-/*Chrome, Edge y otros navegadores WebKit (Blink)*/
-input[type=number]::-webkit-outer-spin-button,
-input[type=number]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-/*Firefox*/
-input[type=number] {
-    -moz-appearance: textfield;
-}
-
 /* ============================ IMAGEN DE PERFIL =========================== */
 .drop-area {
     border: 2px dashed #999;

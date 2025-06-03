@@ -17,7 +17,7 @@ if (!defined('IN_CONTROLLER')) {
         </div>
         <div>
             <label for="objeto_tipo">Tipo: </label>
-            <select id="objeto_nombre" name="objeto_nombre" required>
+            <select id="objeto_tipo" name="objeto_tipo" required>
                 <option value="arma" title="Objetos para el combate">Arma</option>
                 <option value="armadura" title="Objetos equipables">Armadura</option>
                 <option value="base" title="Objetos base">Base</option>
@@ -40,7 +40,7 @@ if (!defined('IN_CONTROLLER')) {
                 placeholder="Breve descipción de la objeto." required></textarea>
         </div>
         <di>
-            <label>Precio: </label>
+            <label for="objeto_precio">Precio: </label>
             <input id="objeto_precio" name="objeto_precio" type="number" min="0" value="1" step="1">
             <a> oro</a>
         </di>
