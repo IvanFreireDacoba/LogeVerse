@@ -2,7 +2,7 @@
 //Control de acceso de seguridad
 if (!defined('IN_CONTROLLER')) {
     $_SESSION["Alert"] = "Acceso directo no permitido.";
-    header("/LogeVerse/inicio");
+    header("Location: " . url_init . "/LogeVerse/inicio");
     exit;
 }
 ?>
@@ -12,7 +12,7 @@ if (!defined('IN_CONTROLLER')) {
 <head>
     <?php
     //Añadimos el head de la página común al resto de páginas
-    include_once 'LogeVerse/views/shared/head.php';
+    include_once root_dir . "LogeVerse/views/shared/head.php";
     ?>
     <script type="module" src="/LogeVerse/views/login/scripts/mainScript.js"></script>
     <link rel="stylesheet" type="text/css" href="/LogeVerse/views/login/styles/login.style.css">
@@ -22,10 +22,10 @@ if (!defined('IN_CONTROLLER')) {
     <?php
     //Añadimos la cabecera de la página comín al resto de páginas
     // y el menú de navegación
-    include_once 'LogeVerse/views/shared/header.php';
+    include_once root_dir . "LogeVerse/views/shared/header.php";
     ?>
     <main id="formulario_login" class="center_text">
-        <form action="/LogeVerse/logear" method="POST" id="form_login" aria-labelledby="form_login_heading">
+        <form action="<?php echo url_init ?>/LogeVerse/logear" method="POST" id="form_login" aria-labelledby="form_login_heading">
             <h2 id="form_login_heading">Iniciar sesión</h2>
             <div>
                 <label for="username">Usuario / Correo</label>
@@ -44,14 +44,14 @@ if (!defined('IN_CONTROLLER')) {
             <br>
             <button type="submit" id="btn_login" aria-label="Enviar formulario para iniciar sesión" disabled>
                 Iniciar sesión</button>
-            <button type="" button id="btn_registro" onclick="location.href='/LogeVerse/registrarse'"
+            <button type="" button id="btn_registro" onclick="location.href='<?php echo url_init ?>/LogeVerse/registrarse'"
                 aria-label="Ir a la página de registro">
                 ¿Necesitas registrarte?</button>
         </form>
     </main>
     <?php
     //Añadimos el pie de página común al resto de páginas
-    include 'LogeVerse/views/shared/footer.html';
+    include_once root_dir . "LogeVerse/views/shared/footer.html";
     ?>
 </body>
 

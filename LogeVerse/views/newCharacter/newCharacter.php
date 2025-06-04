@@ -2,7 +2,7 @@
 //Control de acceso de seguridad
 if (!defined('IN_CONTROLLER')) {
     $_SESSION["Alert"] = "Acceso directo no permitido.";
-    header("/LogeVerse/inicio");
+    header("Location: " . url_init . "/LogeVerse/inicio");
     exit;
 }
 ?>
@@ -12,7 +12,7 @@ if (!defined('IN_CONTROLLER')) {
 <head>
     <?php
     //Añadimos el head de la página común al resto de páginas
-    include_once 'LogeVerse/views/shared/head.php';
+    include_once root_dir . 'LogeVerse/views/shared/head.php';
     ?>
     <script type="module" src="/LogeVerse/views/newCharacter/scripts/mainScript.js"></script>
     <link rel="stylesheet" href="/LogeVerse/views/newCharacter/styles/newCharacter.styles.css" />
@@ -22,10 +22,10 @@ if (!defined('IN_CONTROLLER')) {
     <?php
     //Añadimos la cabecera de la página comín al resto de páginas
     // y el menú de navegación
-    include_once 'LogeVerse/views/shared/header.php';
+    include_once root_dir . 'LogeVerse/views/shared/header.php';
     ?>
     <main>
-        <form action="/LogeVerse/crearPersonaje" method="POST" enctype="multipart/form-data">
+        <form action="<?php echo url_init ?>/LogeVerse/crearPersonaje" method="POST" enctype="multipart/form-data">
             <div id="newCharBasicInfo">
                 <section id="charFormName">
                     <label for="nombre">Nombre: </label>
@@ -44,7 +44,7 @@ if (!defined('IN_CONTROLLER')) {
                         <span class="placeholder-text" id="placeholder">Arrastra una imagen<br>o haz clic para
                             seleccionar</span>
                         <img id="preview" style="display: none;" />
-                        <input type="file" id="imagen" name="imagen" accept="image/*" />    
+                        <input type="file" id="imagen" name="imagen" accept="image/*" />
                     </div>
                     <button type="reset" id="resetImage">Eliminar imagen</button>
                 </section>
@@ -81,7 +81,7 @@ if (!defined('IN_CONTROLLER')) {
     </main>
     <?php
     //Añadimos el pie de página común al resto de páginas
-    include 'LogeVerse/views/shared/footer.html';
+    include_once root_dir . 'LogeVerse/views/shared/footer.html';
     ?>
 </body>
 

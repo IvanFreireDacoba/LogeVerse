@@ -2,7 +2,7 @@
 //Control de acceso de seguridad
 if (!defined('IN_CONTROLLER')) {
     $_SESSION["Alert"] = "Acceso directo no permitido.";
-    header("/LogeVerse/inicio");
+    header("Location: " . url_init . "/LogeVerse/inicio");
     exit;
 }
 ?>
@@ -12,7 +12,7 @@ if (!defined('IN_CONTROLLER')) {
 <head>
     <?php
     //Añadimos el head de la página común al resto de páginas
-    include_once 'LogeVerse/views/shared/head.php';
+    include_once root_dir . 'LogeVerse/views/shared/head.php';
     ?>
     <link rel="stylesheet" href="/LogeVerse/views/profile/styles/character.css">
 </head>
@@ -21,7 +21,7 @@ if (!defined('IN_CONTROLLER')) {
     <?php
     //Añadimos la cabecera de la página comín al resto de páginas
     // y el menú de navegación
-    include_once 'LogeVerse/views/shared/header.php';
+    include_once root_dir . 'LogeVerse/views/shared/header.php';
     ?>
     <main id="ficha_personaje">
         <div id="header_pj">
@@ -171,7 +171,7 @@ if (!defined('IN_CONTROLLER')) {
                 ?>
             </div>
         </div>
-        <form action="/LogeVerse/updateCharacter" method="POST" enctype="multipart/form-data">
+        <form action="<?php echo url_init ?>/LogeVerse/updateCharacter" method="POST" enctype="multipart/form-data">
             <div class="hidden">
                 <input name="id_pj" value="{$personaje->getId()}" readonly>
                 <!-- Controlar si se actualizará la historia -->
@@ -200,7 +200,7 @@ if (!defined('IN_CONTROLLER')) {
     </main>
     <?php
     //Añadimos el pie de página común al resto de páginas
-    include 'LogeVerse/views/shared/footer.html';
+    include_once root_dir . 'LogeVerse/views/shared/footer.html';
     ?>
 </body>
 

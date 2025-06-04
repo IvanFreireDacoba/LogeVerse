@@ -2,7 +2,7 @@
 //Control de acceso de seguridad
 if (!defined('IN_CONTROLLER')) {
     $_SESSION["Alert"] = "Acceso directo no permitido.";
-    header("/LogeVerse/inicio");
+    header("Location: " . url_init . "/LogeVerse/inicio");
     exit;
 }
 ?>
@@ -81,7 +81,7 @@ if (!defined('IN_CONTROLLER')) {
                     <tbody>";
             foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $clase) {
                 $html .= "<tr>
-                            <form action='LogeVerse/aceptar/Clase' method='POST'>
+                            <form action=" . url_init . "'LogeVerse/aceptar/Clase' method='POST'>
                                 <td><input name='clase_id' type='number' value='" . $clase["id"] . "' readonly required></td>
                                 <td><textarea name='clase_nombre' type='text' value='" . $clase["nombre"] . "' required>" . $clase["nombre"] . "</textarea></td>
                                 <td><textarea name='clase_descripcion' type='text' value='" . $clase["descripcion"] . "' required>" . $clase["descripcion"] . "</textarea></td>

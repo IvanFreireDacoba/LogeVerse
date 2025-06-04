@@ -2,7 +2,7 @@
 //Control de acceso de seguridad
 if (!defined('IN_CONTROLLER')) {
     $_SESSION["Alert"] = "Acceso directo no permitido.";
-    header("/LogeVerse/inicio");
+    header("Location: " . url_init . "/LogeVerse/inicio");
     exit;
 }
 //Preparación de los datos recibidos por post
@@ -49,7 +49,7 @@ if ($password == $password_rep) {
                 //Cerrar la conexión a la base de datos
                 $pdo = null;
                 //Ir al perfil del jugador
-                header("Location: /LogeVerse/perfil");
+                header("Location: " . url_init . "/LogeVerse/perfil");
                 exit;
             } else {
                 //Cerrar la conexión a la base de datos
@@ -74,5 +74,5 @@ if ($password == $password_rep) {
     $_SESSION["alert"] = "Las contraseñas no coinciden. Por favor, no modifiques el JavaScript.";
 }
 //Si se produce algun error, se redirige al formulario de registro
-header("Location: /LogeVerse/registrarse");
+header("Location: " . url_init . "/LogeVerse/registrarse");
 exit;

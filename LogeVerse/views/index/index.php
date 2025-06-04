@@ -2,7 +2,7 @@
 //Control de acceso de seguridad
 if (!defined('IN_CONTROLLER')) {
     $_SESSION["Alert"] = "Acceso directo no permitido.";
-    header("/LogeVerse/inicio");
+    header("Location: /LogeVerse/inicio");
     exit;
 }
 ?>
@@ -15,7 +15,7 @@ if (!defined('IN_CONTROLLER')) {
     include 'LogeVerse/views/shared/head.php';
     ?>
     <link rel="icon" href="/LogeVerse/resources/shared/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" type="text/css" href="./views/index/styles/index.css">
+    <link rel="stylesheet" type="text/css" href="/LogeVerse/views/index/styles/index.css">
 </head>
 
 <body>

@@ -12,6 +12,8 @@ $dotenv->load();
 $uri = parse_url($_SERVER['REQUEST_URI'])['path'];
 
 // **********CAMBIAR AL MIGRAR**************
+define('url_init', '');
+define('root_dir', '');
 $location = "Location: /LogeVerse/inicio";  //$location = "Location: /";
 // ****************************************
 

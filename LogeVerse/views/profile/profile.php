@@ -2,7 +2,7 @@
 //Control de acceso de seguridad
 if (!defined('IN_CONTROLLER')) {
     $_SESSION["Alert"] = "Acceso directo no permitido.";
-    header("/LogeVerse/inicio");
+    header("Location: " . url_init . "/LogeVerse/inicio");
     exit;
 }
 ?>
@@ -12,7 +12,7 @@ if (!defined('IN_CONTROLLER')) {
 <head>
     <?php
     //Añadimos el head de la página común al resto de páginas
-    include_once 'LogeVerse/views/shared/head.php';
+    include_once root_dir . 'LogeVerse/views/shared/head.php';
     ?>
     <script type="module" src="/LogeVerse/views/profile/scripts/mainScript.js"></script>
     <link rel="stylesheet" href="/LogeVerse/views/profile/styles/profile.css">
@@ -22,7 +22,7 @@ if (!defined('IN_CONTROLLER')) {
     <?php
     //Añadimos la cabecera de la página comín al resto de páginas
     // y el menú de navegación
-    include_once 'LogeVerse/views/shared/header.php';
+    include_once root_dir . 'LogeVerse/views/shared/header.php';
     ?>
     <main id="profile_body">
         <h1 id="profile_title">Perfil de usuario</h1>
@@ -30,7 +30,7 @@ if (!defined('IN_CONTROLLER')) {
             <p><strong>Nombre:</strong> <?php echo $_SESSION["usuario"]->getNombre(); ?></p>
             <p><strong>Correo:</strong> <?php echo $_SESSION["usuario"]->getCorreo(); ?></p>
         </div>
-        <button id="btn_settings_profile" onclick="window.location.href='/LogeVerse/perfil/ajustes'">Ajustes</button>
+        <button id="btn_settings_profile" onclick="window.location.href='<?php echo url_init ?>/LogeVerse/perfil/ajustes'">Ajustes</button>
         <hr>
         <section id="profile_characters">
             <?php
@@ -39,7 +39,7 @@ if (!defined('IN_CONTROLLER')) {
             if (!empty($personajes)) {
                 foreach ($personajes as $personaje) {
                     echo "<div class='fichaPersonaje'>
-                            <form class='pj_form' action='/LogeVerse/perfil/personaje' method='POST'>
+                            <form class='pj_form' action='" . url_init . "/LogeVerse/perfil/personaje' method='POST'>
                                 <input class='hidden' name='id' type='text' readonly required value='" . $personaje->getId() . "'>";
                     echo $personaje->toShortHTML();
                     echo "  </form>
@@ -71,7 +71,7 @@ if (!defined('IN_CONTROLLER')) {
     </main>
     <?php
     //Añadimos el pie de página común al resto de páginas
-    include 'LogeVerse/views/shared/footer.html';
+    include_once root_dir . 'LogeVerse/views/shared/footer.html';
     ?>
 </body>
 
