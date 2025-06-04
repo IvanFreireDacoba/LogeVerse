@@ -614,7 +614,7 @@ CREATE TABLE IF NOT EXISTS `raza` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `raza` (`nombre`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
- dndmanager.aceptarArma
+
 DELIMITER //
 CREATE PROCEDURE `aceptarArma`(
 	IN `armaID` INT(10) UNSIGNED,
