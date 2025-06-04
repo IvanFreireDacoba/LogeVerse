@@ -2,7 +2,7 @@
 //Control de acceso de seguridad
 if (!defined('IN_CONTROLLER')) {
     $_SESSION["Alert"] = "Acceso directo no permitido.";
-    header("/LogeVerse/inicio");
+    header("Location: " . url_init . "/LogeVerse/inicio");
     exit;
 }
 //Conexión a la base de datos
@@ -23,7 +23,7 @@ try {
             //Cerrar la conexión a la base de datos
             $pdo = null;
             //Ir al perfil del jugador
-            header("Location: /LogeVerse/perfil");
+            header("Location: " . url_init . "/LogeVerse/perfil");
             exit;
         } else {
             //Guardar el error en la sesión
@@ -36,7 +36,7 @@ try {
     //Cerrar la conexión a la base de datos
     $pdo = null;
     //Volver a la página de login
-    header("Location: /LogeVerse/login");
+    header("Location: " . url_init . "/LogeVerse/login");
     exit;
 } catch (PDOException $e) {
     //Cerrar la conexión a la base de datos
@@ -44,6 +44,6 @@ try {
     //Guardar el error en la sesión
     $_SESSION["alert"] = "Imposible conectar a la base de datos.";
     //Volver a la página de login
-    header("Location: /LogeVerse/login");
+    header("Location: " . url_init . "/LogeVerse/login");
     exit;
 }

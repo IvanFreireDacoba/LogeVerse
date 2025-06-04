@@ -2,7 +2,7 @@
 //Control de acceso de seguridad
 if (!defined('IN_CONTROLLER')) {
     $_SESSION["Alert"] = "Acceso directo no permitido.";
-    header("/LogeVerse/inicio");
+    header("Location: " . url_init . "/LogeVerse/inicio");
     exit;
 }
 ?>
@@ -10,7 +10,7 @@ if (!defined('IN_CONTROLLER')) {
 <html lang="es">
 <?php
 //Añadimos el head de la página común al resto de páginas
-include_once 'LogeVerse/views/shared/head.php';
+include_once root_dir . 'LogeVerse/views/shared/head.php';
 ?>
 <script src="/LogeVerse/views/profile/scripts/drop_user_confirmation.js"></script>
 </head>
@@ -19,7 +19,7 @@ include_once 'LogeVerse/views/shared/head.php';
     <?php
     //Añadimos la cabecera de la página comín al resto de páginas
     // y el menú de navegación
-    include_once 'LogeVerse/views/shared/header.php';
+    include_once root_dir . 'LogeVerse/views/shared/header.php';
     ?>
     <main id="profile_body">
         <h1 id="profile_title">Perfil de usuario</h1>
@@ -31,7 +31,7 @@ include_once 'LogeVerse/views/shared/head.php';
         <h2 id="profile_title">Configuración de la cuenta</h2>
         <section id="profile_settings">
             <div id="users">
-                <form action="/LogeVerse/cambiarPerfil" method="POST">
+                <form action="<?php url_init ?>/LogeVerse/cambiarPerfil" method="POST">
                     <div>
                         <label for="name">Nombre:</label>
                         <input type="text" id="name" name="name"
@@ -52,7 +52,7 @@ include_once 'LogeVerse/views/shared/head.php';
                     <button>Actualizar</button>
                 </form>
                 <br>
-                <form action="/LogeVerse/eliminarPerfil" method="POST">
+                <form action="<?php echo url_init ?>/LogeVerse/eliminarPerfil" method="POST">
                     <input id="confirmation" name="confirmation" value=""
                         data_username="<?php echo htmlspecialchars(strtoupper($_SESSION["usuario"]->getNombre())); ?>"
                         hidden>
@@ -77,7 +77,7 @@ include_once 'LogeVerse/views/shared/head.php';
     </main>
     <?php
     //Añadimos el pie de página común al resto de páginas
-    include 'LogeVerse/views/shared/footer.html';
+    include_once root_dir . 'LogeVerse/views/shared/footer.html';
     ?>
 </body>
 

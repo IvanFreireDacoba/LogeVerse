@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS `dndmanager`
+CREATE DATABASE IF NOT EXISTS `dndmanager`;
 USE `dndmanager`;
 
 CREATE TABLE IF NOT EXISTS `admins` (
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `clase` (
   CONSTRAINT `equipo_ini_clase` FOREIGN KEY (`equipo_inicial`) REFERENCES `objeto` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `golpe_atr` FOREIGN KEY (`golpe_atr`) REFERENCES `atributo` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `hp_atr` FOREIGN KEY (`hp_atr`) REFERENCES `atributo` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `clase_habilidad` (
   `id_clase` tinyint(3) unsigned NOT NULL,
@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS `constantes` (
   `valor` varchar(10) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `nombre` (`nombre`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `consumible` (
   `id` int(10) unsigned NOT NULL,
@@ -181,7 +181,7 @@ CREATE TABLE IF NOT EXISTS `habilidad` (
   `nombre` varchar(50) NOT NULL,
   `descripcion` text NOT NULL,
   `tipo` enum('fisico','magico','estado','campo','aux','otro') NOT NULL,
-  `coste` smallint(5) unsigned NOT NULL DEFAULT 0,
+  `nivel` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `nombre` (`nombre`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -290,7 +290,7 @@ CREATE TABLE IF NOT EXISTS `jugador` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `nombre` (`nombre`),
   UNIQUE KEY `correo` (`correo`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='tabla de usuarios';
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='tabla de usuarios';
 
 CREATE TABLE IF NOT EXISTS `objeto` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -320,7 +320,7 @@ CREATE TABLE IF NOT EXISTS `pasiva` (
   `descripcion` mediumtext DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `nombre` (`nombre`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `pasiva_raza` (
   `id_raza` tinyint(3) unsigned NOT NULL,
@@ -349,7 +349,7 @@ CREATE TABLE IF NOT EXISTS `personaje` (
   CONSTRAINT `personaje_clase` FOREIGN KEY (`clase`) REFERENCES `clase` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `personaje_raza` FOREIGN KEY (`raza`) REFERENCES `raza` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `pesonaje_propietario` FOREIGN KEY (`propietario`) REFERENCES `jugador` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tabla con la información de cada personaje.';
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tabla con la información de cada personaje.';
 
 CREATE TABLE IF NOT EXISTS `propuestas` (
   `id_jugador` mediumint(8) unsigned NOT NULL DEFAULT 0,
@@ -437,7 +437,7 @@ CREATE TABLE IF NOT EXISTS `prop_clase` (
   CONSTRAINT `prop_equipo_ini_clase` FOREIGN KEY (`equipo_inicial`) REFERENCES `objeto` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `prop_golpe_atr` FOREIGN KEY (`golpe_atr`) REFERENCES `atributo` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `prop_hp_atr` FOREIGN KEY (`hp_atr`) REFERENCES `atributo` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `prop_clase_habilidad` (
   `id_clase` tinyint(3) unsigned NOT NULL,
@@ -464,7 +464,7 @@ CREATE TABLE IF NOT EXISTS `prop_efecto` (
   `tipo` enum('damage','status','debuf','buff','other','none') NOT NULL DEFAULT 'none',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `nombre` (`nombre`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `prop_efecto_habilidad` (
   `id_efecto` int(10) unsigned NOT NULL,
@@ -509,7 +509,7 @@ CREATE TABLE IF NOT EXISTS `prop_habilidad` (
   `nombre` varchar(50) NOT NULL,
   `descripcion` text NOT NULL,
   `tipo` enum('fisico','magico','estado','campo','aux','otro') NOT NULL,
-  `coste` smallint(5) unsigned NOT NULL DEFAULT 0,
+  `nivel` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `nombre` (`nombre`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
@@ -582,7 +582,7 @@ CREATE TABLE IF NOT EXISTS `prop_pasiva` (
   `descripcion` mediumtext DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `nombre` (`nombre`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `prop_pasiva_raza` (
   `id_raza` tinyint(3) unsigned NOT NULL,
@@ -594,14 +594,14 @@ CREATE TABLE IF NOT EXISTS `prop_pasiva_raza` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='Contiene la relación entre las pasivas y las razas.\r\nCada raza tiene ninguna, una o varias pasivas.';
 
 CREATE TABLE IF NOT EXISTS `prop_raza` (
-  `id` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
   `nombre` varchar(30) NOT NULL,
   `caracteristicas` text NOT NULL,
   `historia` mediumtext NOT NULL,
   `velocidad` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `raza` (`nombre`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE IF NOT EXISTS `raza` (
   `id` tinyint(3) unsigned NOT NULL DEFAULT 0,
@@ -612,7 +612,7 @@ CREATE TABLE IF NOT EXISTS `raza` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `raza` (`nombre`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
+ dndmanager.aceptarArma
 DELIMITER //
 CREATE PROCEDURE `aceptarArma`(
 	IN `armaID` INT(10) UNSIGNED,
@@ -869,14 +869,16 @@ CREATE PROCEDURE `aceptarHabilidad`(
 )
 BEGIN
 	DECLARE n_nombre VARCHAR(20);
-   DECLARE n_descripcion VARCHAR(500);
+   DECLARE n_descripcion TEXT;
+   DECLARE n_tipo ENUM('fisico','magico','estado','campo','aux','otro');
+   DECLARE n_nivel TINYINT UNSIGNED;
    DECLARE nuevoID SMALLINT UNSIGNED DEFAULT 0;
 	DECLARE existe BOOLEAN DEFAULT FALSE;
-   SELECT TRUE, nombre, descripcion INTO existe, n_nombre, n_descripcion
+   SELECT TRUE, nombre, descripcion, tipo, nivel INTO existe, n_nombre, n_descripcion, n_tipo, n_nivel
    FROM prop_habilidad WHERE id = habilidadID;
    IF existe THEN
    	START TRANSACTION;
-   	INSERT INTO habilidad (nombre, descripcion) VALUES (n_nombre, n_descripcion);
+   	INSERT INTO habilidad (nombre, descripcion, tipo, nivel) VALUES (n_nombre, n_descripcion, n_tipo, n_nivel);
    	SET nuevoID = LAST_INSERT_ID();
    	IF nuevoID > 0 THEN
 			#check Efectos
@@ -909,7 +911,7 @@ BEGIN
    DECLARE nuevoID TINYINT(3) UNSIGNED DEFAULT 0;
    DECLARE existe BOOLEAN DEFAULT FALSE;
    SELECT TRUE, nombre, descripcion, id_pasiva INTO existe, n_nombre, n_descripcion, n_id_pas
-   FROM idioma WHERE id = idiomaID;
+   FROM prop_idioma WHERE id = idiomaID;
    IF existe THEN
    	START TRANSACTION;
    	SELECT nombre, descripcion INTO n_nombre_pas, n_descripcion_pas
@@ -919,8 +921,8 @@ BEGIN
    	INSERT INTO idioma (nombre, descripcion, id_pasiva) VALUES (n_nombre, n_descripcion, n_id_pas_new);
    	SET nuevoID = LAST_INSERT_ID();
    	IF nuevoID > 0 THEN
-   		DELETE FROM prop_pasiva WHERE id = n_id_pas;
    		DELETE FROM prop_idioma WHERE id = idiomaID;
+   		DELETE FROM prop_pasiva WHERE id = n_id_pas;
    		COMMIT;
    	ELSE
    		SET nuevoID = 0;
@@ -1528,7 +1530,7 @@ DELIMITER //
 CREATE PROCEDURE `proponerRaza`(
 	IN `p_nombre` VARCHAR(30),
 	IN `p_caracteristicas` TEXT,
-	IN `p_historia`MEDIUMTEXT,
+	IN `p_historia` MEDIUMTEXT,
 	IN `p_velocidad` TINYINT(3) UNSIGNED,
 	OUT `p_resultado` TINYINT(3) UNSIGNED
 )

@@ -2,7 +2,7 @@
 //Control de acceso desde perfil
 if (!isset($_SESSION["usuario"])) {
     $_SESSION["alert"] = "No tienes permiso para acceder a esta página.";
-    header("Location: LogeVerse/inicio");
+    header("Location: " . url_init . "/LogeVerse/inicio");
     exit;
 }
 if ($_POST) {
@@ -18,4 +18,4 @@ if ($_POST) {
     unset($_SESSION["POST"]);
 }
 $title = 'Creador PJs';
-require "LogeVerse/views/newCharacter/newCharacter.php";
+require root_dir . "LogeVerse/views/newCharacter/newCharacter.php";

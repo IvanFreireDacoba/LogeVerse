@@ -1,3 +1,3 @@
 <?php
 $title = 'LogeVerse';
-require "LogeVerse/views/index/index.php";
+require root_dir . "LogeVerse/views/index/index.php";

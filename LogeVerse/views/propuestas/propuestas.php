@@ -2,7 +2,7 @@
 //Control de acceso de seguridad
 if (!defined('IN_CONTROLLER')) {
     $_SESSION["Alert"] = "Acceso directo no permitido.";
-    header("/LogeVerse/inicio");
+    header("Location: " . url_init . "/LogeVerse/inicio");
     exit;
 }
 ?>
@@ -13,7 +13,7 @@ if (!defined('IN_CONTROLLER')) {
 <head>
     <?php
     //Añadimos el head de la página común al resto de páginas
-    include_once 'LogeVerse/views/shared/head.php';
+    include_once root_dir . 'LogeVerse/views/shared/head.php';
     ?>
     <script type="module" src="/LogeVerse/views/propuestas/scripts/mainScript.js"></script>
     <link rel="stylesheet" href="/LogeVerse/views/propuestas/styles/propuestas.styles.css">
@@ -23,7 +23,7 @@ if (!defined('IN_CONTROLLER')) {
     <?php
     //Añadimos la cabecera de la página comín al resto de páginas
     // y el menú de navegación
-    include_once 'LogeVerse/views/shared/header.php';
+    include_once root_dir . 'LogeVerse/views/shared/header.php';
     ?>
     <main>
         <h2>Sección de propuesta</h2>
@@ -42,19 +42,19 @@ if (!defined('IN_CONTROLLER')) {
         </p>
         <section id="formularios">
             <?php
-            include_once 'LogeVerse/views/propuestas/sections/clase.php';
-            include_once 'LogeVerse/views/propuestas/sections/raza.php';
-            include_once 'LogeVerse/views/propuestas/sections/efecto.php';
-            include_once 'LogeVerse/views/propuestas/sections/pasiva.php';
-            include_once 'LogeVerse/views/propuestas/sections/habilidad.php';
-            include_once 'LogeVerse/views/propuestas/sections/objeto.php';
-            include_once 'LogeVerse/views/propuestas/sections/idioma.php';
+            include_once root_dir . 'LogeVerse/views/propuestas/sections/clase.php';
+            include_once root_dir . 'LogeVerse/views/propuestas/sections/raza.php';
+            include_once root_dir . 'LogeVerse/views/propuestas/sections/efecto.php';
+            include_once root_dir . 'LogeVerse/views/propuestas/sections/pasiva.php';
+            include_once root_dir . 'LogeVerse/views/propuestas/sections/habilidad.php';
+            include_once root_dir . 'LogeVerse/views/propuestas/sections/objeto.php';
+            include_once root_dir . 'LogeVerse/views/propuestas/sections/idioma.php';
             ?>
         </section>
     </main>
     <?php
     //Añadimos el pie de página común al resto de páginas
-    include 'LogeVerse/views/shared/footer.html';
+    include_once root_dir . 'LogeVerse/views/shared/footer.html';
     ?>
 </body>
 

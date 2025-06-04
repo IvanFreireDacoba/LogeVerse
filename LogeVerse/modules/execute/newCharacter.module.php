@@ -1,15 +1,15 @@
 <?php
 
-include_once "LogeVerse/classes/include_classes.php";
-include_once "LogeVerse/modules/toDatabase.module.php";
-include_once "LogeVerse/modules/functions.module.php";
+include_once root_dir . "LogeVerse/classes/include_classes.php";
+include_once root_dir . "LogeVerse/modules/toDatabase.module.php";
+include_once root_dir . "LogeVerse/modules/functions.module.php";
 
 session_start();
 
 //Control de acceso de seguridad
 if (!defined('IN_CONTROLLER')) {
     $_SESSION["Alert"] = "Acceso directo no permitido.";
-    header("/LogeVerse/inicio");
+    header("Location: " . url_init . "/LogeVerse/inicio");
     exit;
 }
 
@@ -24,7 +24,7 @@ if (isset($nombre) || empty($nombre)) {
     $nombre = htmlspecialchars($nombre, ENT_QUOTES, 'UTF-8');
 } else {
     $_SESSION["alert"] = "El nombre no puede estar vacío.";
-    header("Location: /LogeVerse/nuevoPersonaje");
+    header("Location: " . url_init . "/LogeVerse/nuevoPersonaje");
     exit;
 }
 //Historia
@@ -32,7 +32,7 @@ if (isset($historia) || empty($historia)) {
     $historia = htmlspecialchars($historia, ENT_QUOTES, 'UTF-8');
 } else {
     $_SESSION["alert"] = "La historia no puede estar vacía.";
-    header("Location: /LogeVerse/nuevoPersonaje");
+    header("Location: " . url_init . "/LogeVerse/nuevoPersonaje");
     exit;
 }
 
@@ -55,7 +55,7 @@ try {
     $max_atr_points = (int) obtenerConstante(1);
 } catch (PDOException $e) {
     $_SESSION["alert"] = "Error al conectar a la base de datos. Por favor, prueba otra vez.";
-    header("Location: /LogeVerse/nuevoPersonaje");
+    header("Location: " . url_init . "/LogeVerse/nuevoPersonaje");
     exit;
 }
 
@@ -64,7 +64,7 @@ if (in_array($raza, $ids_razas_existentes)) {
     $raza = refrescarRaza($conexion, $raza);
 } else {
     $_SESSION["alert"] = "La raza seleccionada no existe.";
-    header("Location: /LogeVerse/nuevoPersonaje");
+    header("Location: " . url_init . "/LogeVerse/nuevoPersonaje");
     exit;
 }
 //Clase
@@ -72,7 +72,7 @@ if (in_array($clase, $ids_clases_existentes)) {
     $clase = refrescarClase($conexion, $clase);
 } else {
     $_SESSION["alert"] = "La clase seleccionada no existe.";
-    header("Location: /LogeVerse/nuevoPersonaje");
+    header("Location: " . url_init . "/LogeVerse/nuevoPersonaje");
     exit;
 }
 //Atributos
@@ -89,7 +89,7 @@ foreach ($atributos_existentes as $atributo) {
     //Si se ha asignado una cantidad negativa de puntos al atributo, es un error. 
     if ($$atr_ptos_value < 0) {
         $_SESSION["alert"] = "No se pueden asignar cantidades negativas de puntos a un atributo.";
-        header("Location: /LogeVerse/nuevoPersonaje");
+        header("Location: " . url_init . "/LogeVerse/nuevoPersonaje");
         exit;
     }
     //Obtenemos el valor del atributo de la raza, si existe, sino le asignamos 0
@@ -112,7 +112,7 @@ foreach ($atributos_existentes as $atributo) {
         $atributos[] = [$atributo["id"], $$atr_tot];
     } else {
         $_SESSION["alert"] = "El total de puntos de los atributos no es correcto.";
-        header("Location: /LogeVerse/nuevoPersonaje");
+        header("Location: " . url_init . "/LogeVerse/nuevoPersonaje");
         exit;
     }
     $pos++;
@@ -124,7 +124,7 @@ para ello vamos a restar al total de puntos disponibles la cantidad de puntos ut
 que los $ptos_habilidad restantes (que van a base de datos) coinciden con dicho valor*/
 if ($max_atr_points - $sumatorio_ptos_habilidad != $ptos_habilidad) {
     $_SESSION["alert"] = "El total de puntos de los atributos no está correctamente asignado.";
-    header("Location: /LogeVerse/nuevoPersonaje");
+    header("Location: " . url_init . "/LogeVerse/nuevoPersonaje");
     exit;
 }
 //Almacenamos los datos del personaje en la base de datos
@@ -165,13 +165,13 @@ if ($pj_id > 0) {
     unset($_SESSION["POST"]);
     $_SESSION["alert"] = "Personaje creado correctamente.";
     $conexion = null; //Cerramos la conexión a la base de datos
-    header("Location: /LogeVerse/perfil");
+    header("Location: " . url_init . "/LogeVerse/perfil");
     exit;
 } else {
     //Feedback al usuario en caso de error
     $_SESSION["alert"] = "Error al crear el personaje. Por favor, prueba otra vez.";
     $_SESSION["newChar"] = $_POST;
     $conexion = null; //Cerramos la conexión a la base de datos
-    header("Location: /LogeVerse/nuevoPersonaje");
+    header("Location: " . url_init . "/LogeVerse/nuevoPersonaje");
     exit;
 }
