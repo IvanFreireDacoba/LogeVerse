@@ -46,10 +46,12 @@ try {
 }
 
 /* ======================= FUNCIONES ======================== */
+/* ======================= FUNCIONES ======================== */
+
 function cargarEstructura($pdo, $script_estructura)
 {
     try {
-        $pdo->exec($script_estructura);
+        ejecutarPorBloques($pdo, $script_estructura);
         echo "Estructura cargada correctamente.<br>";
     } catch (\PDOException $e) {
         die("Error al cargar la estructura: " . $e->getMessage());
@@ -59,7 +61,7 @@ function cargarEstructura($pdo, $script_estructura)
 function cargarProcedumientos($pdo, $script_procedures)
 {
     try {
-        $pdo->exec($script_procedures);
+        ejecutarPorBloques($pdo, $script_procedures);
         echo "Procedimientos establecidos correctamente.<br>";
     } catch (\PDOException $e) {
         die("Error al establecer los procedimientos: " . $e->getMessage());
@@ -69,9 +71,22 @@ function cargarProcedumientos($pdo, $script_procedures)
 function cargarDatos($pdo, $script_inserciones)
 {
     try {
-        $pdo->exec($script_inserciones);
+        ejecutarPorBloques($pdo, $script_inserciones);
         echo "Datos insertados correctamente.<br>";
     } catch (\PDOException $e) {
         die("Error al insertar los datos: " . $e->getMessage());
     }
 }
+
+//Divide el contenido en bloques por punto y coma (;) que terminan una sentencia
+function ejecutarPorBloques($pdo, $script)
+{
+    $sentencias = explode(";", $script);
+    foreach ($sentencias as $sentencia) {
+        $sentencia = trim($sentencia);
+        if (!empty($sentencia)) {
+            $pdo->exec($sentencia);
+        }
+    }
+}
+
