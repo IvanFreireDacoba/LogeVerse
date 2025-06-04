@@ -1,6 +1,8 @@
 CREATE DATABASE IF NOT EXISTS `dndmanager`;
 USE `dndmanager`;
 
+SET foreign_key_checks = 0;
+
 CREATE TABLE IF NOT EXISTS `admins` (
   `id` mediumint(8) unsigned NOT NULL,
   PRIMARY KEY (`id`),
@@ -1572,3 +1574,5 @@ CREATE TRIGGER `updateAcepted` AFTER UPDATE ON `propuestas` FOR EACH ROW BEGIN
 END//
 DELIMITER ;
 SET SQL_MODE=@OLDTMP_SQL_MODE;
+
+SET foreign_key_checks = 1;
