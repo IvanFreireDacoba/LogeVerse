@@ -1,8 +1,8 @@
 #!/bin/bash
-set -e
 
 # ============================ Actualizar web ===========================
 echo "Borrando contenido anterior..."
+rm -rf /opt/lampp/htdocs/*
 rm -rf /opt/lampp/htdocs
 
 echo "Clonando repositorio..."
