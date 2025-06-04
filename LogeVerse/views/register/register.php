@@ -2,7 +2,7 @@
 //Control de acceso de seguridad
 if (!defined('IN_CONTROLLER')) {
     $_SESSION["Alert"] = "Acceso directo no permitido.";
-    header("/LogeVerse/inicio");
+    header("Location: " . url_init . "/LogeVerse/inicio");
     exit;
 }
 ?>
@@ -11,7 +11,7 @@ if (!defined('IN_CONTROLLER')) {
 
 <head>
     <?php
-    include_once 'LogeVerse/views/shared/head.php';
+    include_once root_dir . 'LogeVerse/views/shared/head.php';
     ?>
     <script type="module" src="/LogeVerse/views/register/scripts/mainScript.js"></script>
 </head>
@@ -20,10 +20,10 @@ if (!defined('IN_CONTROLLER')) {
     <?php
     //Añadimos la cabecera de la página comín al resto de páginas
     // y el menú de navegación
-    include_once 'LogeVerse/views/shared/header.php';
+    include_once root_dir . 'LogeVerse/views/shared/header.php';
     ?>
     <main id="formulario_login">
-        <form action="/LogeVerse/registrar" method="POST" id="form_login" aria-labelledby="form_login_heading">
+        <form action="<?php echo url_init ?>/LogeVerse/registrar" method="POST" id="form_login" aria-labelledby="form_login_heading">
             <h2 id="form_login_heading">Registar usuario</h2>
             <div>
                 <label for="username">Usuario</label>
@@ -52,14 +52,14 @@ if (!defined('IN_CONTROLLER')) {
             <br>
             <button type="submit" id="btn_submit" aria-label="Enviar formulario para registrarse">
                 Registrarse</button>
-            <button button id="btn_login" onclick="location.href='/LogeVerse/login'"
+            <button button id="btn_login" onclick="location.href='<?php echo url_init ?>/LogeVerse/login'"
                 aria-label="Ir a la página de login">
                 ¿Ya estás registrado?</button>
         </form>
     </main>
     <?php
     //Añadimos el pie de página común al resto de páginas
-    include 'LogeVerse/views/shared/footer.html';
+    include_once root_dir . 'LogeVerse/views/shared/footer.html';
     ?>
 </body>
 

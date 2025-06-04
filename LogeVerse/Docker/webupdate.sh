@@ -3,7 +3,7 @@ set -e
 
 # ============================ Actualizar web ===========================
 echo "Borrando contenido anterior..."
-rm -rf /opt/lampp/htdocs/*
+rm -rf /opt/lampp/htdocs
 
 echo "Clonando repositorio..."
 git clone https://github.com/IvanFreireDacoba/LogeVerse.git /opt/lampp/htdocs

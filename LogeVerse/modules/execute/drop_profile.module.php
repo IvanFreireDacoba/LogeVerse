@@ -2,7 +2,7 @@
 //Control de acceso de seguridad
 if (!defined('IN_CONTROLLER')) {
     $_SESSION["Alert"] = "Acceso directo no permitido.";
-    header("/LogeVerse/inicio");
+    header("Location: " . url_init . "/LogeVerse/inicio");
     exit;
 }
 /*  Este es el módulo para eliminar perfiles, por ello la condición de entrada al if es rigurosa
@@ -20,17 +20,17 @@ if (isset($_POST) && isset($_POST["confirmation"]) && $_POST["confirmation"] ===
         $conexion = null;
         $_SESSION = [];
         session_destroy();
-        header("Location: /LogeVerse/inicio");
+        header("Location: " . url_init . "/LogeVerse/inicio");
         exit;
         //Si ves esto has perdido el juego: https://es.wikipedia.org/wiki/El_Juego_(juego_mental)
     } catch (Error $e) {
         $_SESSION["alert"] = "Error intentando borrar el usuario de la base de datos";
-        header("Location: /LogeVerse/perfil/ajustes");
+        header("Location: " . url_init . "/LogeVerse/perfil/ajustes");
         exit;
     }
 } else {
     $_SESSION["alert"] = "Acceso ilegal.";
-    header("Location: /LogeVerse/perfil/ajustes");
+    header("Location: " . url_init . "/LogeVerse/perfil/ajustes");
     exit;
 }
 

@@ -2,7 +2,7 @@
 //Control de acceso de seguridad
 if (!defined('IN_CONTROLLER')) {
     $_SESSION["Alert"] = "Acceso directo no permitido.";
-    header("/LogeVerse/inicio");
+    header("Location: " . url_init . "/LogeVerse/inicio");
     exit;
 }
 if (isset($_POST)) {
@@ -18,5 +18,5 @@ if (isset($_POST)) {
         $_SESSION["alert"] = "No se ha podido aceptar la raza.\n" . $error->getMessage();
     }
 }
-header("Location /LogeVerse/portalAdmin");
+header("Location " . url_init . "/LogeVerse/portalAdmin");
 exit;

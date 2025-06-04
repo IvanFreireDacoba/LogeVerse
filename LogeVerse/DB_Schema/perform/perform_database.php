@@ -8,8 +8,8 @@ $charset = 'utf8mb4';
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
 
 //Scripts
-$script_estructura = file_get_contents("../scripts/structure.sql");
-$script_inserciones = file_get_contents("../scripts/datum.sql");
+$script_estructura = file_get_contents("/opt/lampp/htdocs/LogeVerse/DB_Schema/scripts/structure.sql");
+$script_inserciones = file_get_contents("/opt/lampp/htdocs/LogeVerse/DB_Schema/scripts/datum.sql");
 
 //Proceso 1 -> intentar conectarse a la base de datos.
 try {

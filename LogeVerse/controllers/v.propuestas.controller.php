@@ -71,6 +71,6 @@ if (isset($_SESSION["usuario"])) {
     require 'LogeVerse/views/propuestas/propuestas.php';
 } else {
     $_SESSION["alert"] = "No tienes permiso para acceder a esta página.";
-    header("Location: LogeVerse/inicio");
+    header("Location:  " . url_init . "/LogeVerse/inicio");
     exit;
 }

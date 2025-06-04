@@ -2,7 +2,7 @@
 //Control de acceso de seguridad
 if (!defined('IN_CONTROLLER')) {
     $_SESSION["Alert"] = "Acceso directo no permitido.";
-    header("/LogeVerse/inicio");
+    header("Location: " . url_init . "/LogeVerse/inicio");
     exit;
 }
 ?>
@@ -12,7 +12,7 @@ if (!defined('IN_CONTROLLER')) {
 <head>
     <?php
     //Añadimos el head de la página común al resto de páginas
-    include_once 'LogeVerse/views/shared/head.php';
+    include_once root_dir . 'LogeVerse/views/shared/head.php';
     ?>
     <link rel="stylesheet" href="/LogeVerse/views/admin/styles/admin.css" />
     <script type="module" src="/LogeVerse/views/admin/scripts/mainScript.js"></script>
@@ -22,11 +22,11 @@ if (!defined('IN_CONTROLLER')) {
     <?php
     //Añadimos la cabecera de la página comín al resto de páginas
     // y el menú de navegación
-    include_once 'LogeVerse/views/shared/header.php';
+    include_once root_dir . 'LogeVerse/views/shared/header.php';
     ?>
     <h1>Portal de Administración</h1>
     <div class="double_grid_column">
-        <form action="/LogeVerse/portalAdmin" method="POST">
+        <form action="<?php echo url_init ?>/LogeVerse/portalAdmin" method="POST">
             <label for="admin_section">Viaje rápido: </label>
             <select id="sel_selector" name="admin_section">
                 <?php
@@ -43,12 +43,12 @@ if (!defined('IN_CONTROLLER')) {
     <br>
     <main>
         <div id="cabecera_prop">
-            <form class="toRigth" action="/LogeVerse/portalAdmin" method="POST">
+            <form class="toRigth" action="<?php echo url_init ?>/LogeVerse/portalAdmin" method="POST">
                 <input name="admin_section" value=<?php echo $section == 0 ? (count($nombre_propuestas) - 1) : '"' . ($section - 1) . '"'; ?> hidden>
                 <button type="submit">PREV</button>
             </form>
             <h4 id="cabecera_centro"><?php echo $section_name ?></h4>
-            <form class="toLeft" action="/LogeVerse/portalAdmin" method="POST">
+            <form class="toLeft" action="<?php echo url_init ?>/LogeVerse/portalAdmin" method="POST">
                 <input name="admin_section" value=<?php echo $section == (count($nombre_propuestas) - 1) ? "0" : '"' . ($section + 1) . '"'; ?> hidden>
                 <button type="submit">NEXT</button>
             </form>
@@ -63,7 +63,7 @@ if (!defined('IN_CONTROLLER')) {
             case 4:
             case 5:
             case 6: {
-                include "LogeVerse/views/admin/sections/{$section_name}.php";
+                include root_dir . "LogeVerse/views/admin/sections/{$section_name}.php";
                 break;
             }
             default: {

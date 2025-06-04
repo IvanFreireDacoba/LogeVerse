@@ -2,7 +2,7 @@
 //Control de acceso de seguridad
 if (!defined('IN_CONTROLLER')) {
     $_SESSION["Alert"] = "Acceso directo no permitido.";
-    header("/LogeVerse/inicio");
+    header("Location " . url_init . "/LogeVerse/inicio");
     exit;
 }
 
@@ -33,28 +33,28 @@ if (isset($_SESSION["usuario"])) {
             } catch (PDOException $error) {
                 $pdo = null;
                 $_SESSION["alert"] = "Error al conectar con la base de datos.";
-                header("Location: /LogeVerse/perfil/personaje");
+                header("Location: " . url_init . "/LogeVerse/perfil/personaje");
                 exit;
             }
             if ($owner) {
-                include "/LogeVerse/modules/execute/updateCharacter.php";
+                include root_dir . "/LogeVerse/modules/execute/updateCharacter.php";
             } else {
                 $_SESSION["alert"] = "El personaje seleccionado no es de tu propiedad.";
-                header("Location: /LogeVerse/perfil");
+                header("Location: " . url_init . "/LogeVerse/perfil");
                 exit;
             }
         } else {
             $_SESSION["alert"] = "ID de personaje no válido.";
-            header("Location: /LogeVerse/perfil");
+            header("Location: " . url_init . "/LogeVerse/perfil");
             exit;
         }
     } else {
         $_SESSION["alert"] = "Acceso ilegal.";
-        header("Location: /LogeVerse/inicio");
+        header("Location: " . url_init . "/LogeVerse/inicio");
         exit;
     }
 } else {
     $_SESSION["alert"] = "No tienes permiso para acceder a esta página.";
-    header("Location: /LogeVerse/inicio");
+    header("Location: " . url_init . "/LogeVerse/inicio");
     exit;
 }

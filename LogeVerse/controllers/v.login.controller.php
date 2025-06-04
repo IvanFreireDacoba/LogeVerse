@@ -1,3 +1,3 @@
 <?php
 $title = "Login";
-require 'LogeVerse/views/login/login.php';
+require root_dir . "LogeVerse/views/login/login.php";

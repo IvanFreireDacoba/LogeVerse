@@ -2,13 +2,13 @@
 //Control de acceso de seguridad
 if (!defined('IN_CONTROLLER')) {
     $_SESSION["Alert"] = "Acceso directo no permitido.";
-    header("/LogeVerse/inicio");
+    header("Location: " . url_init . "/LogeVerse/inicio");
     exit;
 }
 ?>
 <section id="Habilidad" class="propuesta" hidden>
     <h4>Proponer Habilidad</h4>
-    <form action="/LogeVerse/proponer" method="POST">
+    <form action="<?php echo url_init ?>/LogeVerse/proponer" method="POST">
         <input id="proposal_type" name="proposal_type" value="habilidad" hidden required>
         <div>
             <label for="habilidad_nombre">Nombre: </label>
