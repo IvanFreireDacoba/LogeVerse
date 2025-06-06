@@ -26,52 +26,54 @@ if (!defined('IN_CONTROLLER')) {
     ?>
     <main>
         <form action="<?php echo url_init ?>/LogeVerse/crearPersonaje" method="POST" enctype="multipart/form-data">
-            <div id="newCharBasicInfo">
-                <section id="charFormName">
-                    <label for="nombre">Nombre: </label>
-                    <input id="nombre" name="nombre" type="text"
-                        value="<?php echo isset($_SESSION["newChar"]) && isset($_SESSION["newChar"]["nombre"]) ? $_SESSION["newChar"]["nombre"] : null ?>"
-                        placeholder="Drax el invisible" required>
-                </section>
+            <div id="newCharBasicInfo" class="double_col_grid no_border">
+                <div class="no_border">
+                    <section id="charFormName" class="no_border">
+                        <label for="nombre">Nombre: </label>
+                        <input id="nombre" name="nombre" type="text"
+                            value="<?php echo isset($_SESSION["newChar"]) && isset($_SESSION["newChar"]["nombre"]) ? $_SESSION["newChar"]["nombre"] : null ?>"
+                            placeholder="Drax el invisible" required>
+                    </section>
+                    <section id="charFormImage">
+                        <div class="drop-area" id="dropArea">
+                            <span class="placeholder-text" id="placeholder">Arrastra una imagen<br>o haz clic para
+                                seleccionar</span>
+                            <img id="preview" style="display: none;" />
+                            <input type="file" id="imagen" name="imagen" accept="image/*" />
+                        </div>
+                        <button type="reset" id="resetImage">Eliminar imagen</button>
+                    </section>
+                </div>
                 <section id="charFormHistory">
                     <label for="historia">Historia: </label>
                     <textarea id="historia" name="historia" rows="3" cols="30"
                         placeholder="Escribe una breve historia para desarrollar y contextualizar tu personaje."
                         required><?php echo isset($_SESSION["newChar"]) && isset($_SESSION["newChar"]["historia"]) ? $_SESSION["newChar"]["historia"] : null ?></textarea>
                 </section>
-                <section id="charFormImage">
-                    <div class="drop-area" id="dropArea">
-                        <span class="placeholder-text" id="placeholder">Arrastra una imagen<br>o haz clic para
-                            seleccionar</span>
-                        <img id="preview" style="display: none;" />
-                        <input type="file" id="imagen" name="imagen" accept="image/*" />
-                    </div>
-                    <button type="reset" id="resetImage">Eliminar imagen</button>
-                </section>
             </div>
-            <div id="selectoresMultiples">
+            <div id="selectoresMultiples" class="triple_col_grid no_border">
                 <section id="charFormRace">
-                    <h3>Raza</h3>
-                    <div>
-                        <button type="button" id="prevRace"></button>
-                        <div>
+                    <h2>Raza</h2>
+                    <div class="div_buttons_next_prev no_border">
+                        <button type="button" id="prevRace">&lt;</button>
+                        <div id="lista_clases" class="listado_newChar no_border">
                             <?php echo listarRazasSeleccion() ?>
                         </div>
-                        <button type="button" id="nextRace"></button>
+                        <button type="button" id="nextRace">&gt;</button>
                     </div>
                 </section>
                 <section id="charFormClass">
-                    <h3>Clase</h3>
-                    <div>
-                        <button type="button" id="prevClass"></button>
-                        <div>
+                    <h2>Clase</h2>
+                    <div class="div_buttons_next_prev no_border">
+                        <button type="button" id="prevClass">&lt;</button>
+                        <div id="lista_razas" class="listado_newChar no_border">
                             <?php echo listarClasesSeleccion() ?>
                         </div>
-                        <button type="button" id="nextClass"></button>
+                        <button type="button" id="nextClass">&gt;</button>
                     </div>
                 </section>
                 <section id="charFormAtributes">
-                    <h3>Atributos</h3>
+                    <h2>Atributos</h2>
                     <?php echo listarAtributosSeleccion() ?>
                 </section>
                 <button type="reset">Reiniciar</button>

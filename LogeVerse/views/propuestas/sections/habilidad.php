@@ -8,76 +8,82 @@ if (!defined('IN_CONTROLLER')) {
 ?>
 <section id="Habilidad" class="propuesta" hidden>
     <h4>Proponer Habilidad</h4>
-    <form action="<?php echo url_init ?>/LogeVerse/proponer" method="POST">
-        <input id="proposal_type" name="proposal_type" value="habilidad" hidden required>
-        <div>
-            <label for="habilidad_nombre">Nombre: </label>
-            <input id="habilidad_nombre" name="habilidad_nombre" type="text" placeholder="Nombre de la habilidad."
-                required>
-        </div>
-        <div>
-            <label for="habilidad_descripcion">Descripción: </label>
-            <textarea id="habilidad_descripcion" name="habilidad_descripcion" type="text"
-                placeholder="Breve descipción de la habilidad." required></textarea>
-        </div>
-        <div>
-            <label for="habilidad_tipo">Tipo: </label>
-            <select id="habilidad_tipo" name="habilidad_tipo" required>
-                <option value="fisico">Físico</option>
-                <option value="magico">Mágico</option>
-                <option value="estado">Estado</option>
-                <option value="campo">Campo</option>
-                <option value="aux">Auxiliar</option>
-                <option value="otro">Otro</option>
-            </select>
-            <details>
-                <summary>Contexto</summary>
-                <ul>
-                    <li>
-                        <h4>Físico</h4>
-                        <p>Habilidades de carácter físico: golpes, embestidas...</p>
-                    </li>
-                    <li>
-                        <h4>Mágico</h4>
-                        <p>Habilidades de carácter mágico: hechizos, invocaciones...</p>
-                    </li>
-                    <li>
-                        <h4>Estado</h4>
-                        <p>Habilidades de estado: quemaduras, parálisis, envenenamiento...</p>
-                    </li>
-                    <li>
-                        <h4>Campo</h4>
-                        <p>Habilidades de efectos sobre el entorno: clima, naturaleza...</p>
-                    </li>
-                    <li>
-                        <h4>Auxiliar</h4>
-                        <p>Habilidades de ayuda: potenciadores y debuffs.</p>
-                    </li>
-                    <li>
-                        <h4>Otro</h4>
-                        <p>Habilidades que no encajan con el resto de tipos.</p>
-                    </li>
-                </ul>
-            </details>
-        </div>
-        <div>
-            <label for="habilidad_nivel">Nivel: </label>
-            <input title="Nivel necesario para utilizar la habilidad." id="habilidad_nivel" name="habilidad_nivel"
-                type="number" required>
-        </div>
-        <div id="checkbox_habilidad_efectos">
+    <form action="<?php echo url_init ?>/LogeVerse/proponer" method="POST" id="form_habilidad">
+        <section class="double_col_grid no_border">
+            <div class="no_border">
+                <div id="nombre_habilidad_div" class="no_border">
+                    <input id="proposal_type" name="proposal_type" value="habilidad" hidden required>
+                    <div class="no_border">
+                        <label for="habilidad_nombre">Nombre: </label>
+                        <input id="habilidad_nombre" name="habilidad_nombre" type="text"
+                            placeholder="Nombre de la habilidad." required>
+                    </div>
+                </div>
+                <div class=" no_border">
+                    <label for="habilidad_tipo">Tipo: </label>
+                    <select id="habilidad_tipo" name="habilidad_tipo" required>
+                        <option value="fisico">Físico</option>
+                        <option value="magico">Mágico</option>
+                        <option value="estado">Estado</option>
+                        <option value="campo">Campo</option>
+                        <option value="aux">Auxiliar</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                    <details>
+                        <summary>Contexto</summary>
+                        <ul>
+                            <li>
+                                <h4>Físico</h4>
+                                <p>Habilidades de carácter físico: golpes, embestidas...</p>
+                            </li>
+                            <li>
+                                <h4>Mágico</h4>
+                                <p>Habilidades de carácter mágico: hechizos, invocaciones...</p>
+                            </li>
+                            <li>
+                                <h4>Estado</h4>
+                                <p>Habilidades de estado: quemaduras, parálisis, envenenamiento...</p>
+                            </li>
+                            <li>
+                                <h4>Campo</h4>
+                                <p>Habilidades de efectos sobre el entorno: clima, naturaleza...</p>
+                            </li>
+                            <li>
+                                <h4>Auxiliar</h4>
+                                <p>Habilidades de ayuda: potenciadores y debuffs.</p>
+                            </li>
+                            <li>
+                                <h4>Otro</h4>
+                                <p>Habilidades que no encajan con el resto de tipos.</p>
+                            </li>
+                        </ul>
+                    </details>
+                </div>
+                <div class="no_border">
+                    <label for="habilidad_nivel">Nivel: </label>
+                    <input title="Nivel necesario para utilizar la habilidad." id="habilidad_nivel"
+                        name="habilidad_nivel" type="number" min="1" value="1" required>
+                </div>
+            </div>
+            <div class="no_border">
+                <label for="habilidad_descripcion">Descripción: </label>
+                <textarea id="habilidad_descripcion" name="habilidad_descripcion" type="text"
+                    placeholder="Breve descipción de la habilidad." required></textarea>
+            </div>
+        </section>
+        <div id="checkbox_habilidad_efectos" class="no_border">
             <label for="has_effects">Efectos </label>
             <input id="has_effects" name="has_effects" type="checkbox">
         </div>
-        <div id="habilidad_efectos_select" class="habilidad_efectos_select_style" hidden>
+        <div id="habilidad_efectos_select" class="habilidad_efectos_select_style no_border" hidden>
             <div>
                 <h4>Efectos seleccionados</h4>
-                <div id="habilidad_selected_efects">
+                <div id="habilidad_selected_efects" class="no_border">
                 </div>
             </div>
             <div>
                 <h4>Efectos disponibles</h4>
-                <div id="habilidad_avaliable_efects">
+                <div id="habilidad_avaliable_efects" class="no_border">
                     <?php
                     if (!empty($efectos)) {
                         foreach ($efectos as $efecto) {

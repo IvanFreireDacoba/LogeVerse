@@ -8,30 +8,30 @@ if (!defined('IN_CONTROLLER')) {
 ?>
 <section id="Pasiva" class="propuesta" hidden>
     <h4>Proponer Pasiva</h4>
-    <form action="<?php echo url_init ?>/LogeVerse/proponer" method="POST">
+    <form action="<?php echo url_init ?>/LogeVerse/proponer" method="POST" id="form_pasiva">
         <input id="proposal_type" name="proposal_type" value="pasiva" hidden required>
-        <div>
+        <div class="no_border">
             <label for="pasiva_nombre">Nombre: </label>
             <input id="pasiva_nombre" name="pasiva_nombre" type="text" placeholder="Nombre de la pasiva." required>
         </div>
-        <div>
+        <div class="no_border">
             <label for="pasiva_descripcion">Descripción: </label>
             <textarea id="pasiva_descripcion" name="pasiva_descripcion" type="text"
                 placeholder="Breve descipción de la pasiva." required></textarea>
         </div>
-        <div id="checkbox_pasiva_efectos">
+        <div id="checkbox_pasiva_efectos" class="no_border">
             <label for="has_effects">Efectos </label>
             <input id="has_effects" name="has_effects" type="checkbox">
         </div>
-        <div id="pasiva_efectos_select" class="pasiva_efectos_select_style" hidden>
+        <div id="pasiva_efectos_select" class="pasiva_efectos_select_style no_border" hidden>
             <div>
                 <h4>Efectos seleccionados</h4>
-                <div id="pasiva_selected_efects">
+                <div id="pasiva_selected_efects" class="efectos_pasiva_div no_border">
                 </div>
             </div>
             <div>
                 <h4>Efectos disponibles</h4>
-                <div id="pasiva_avaliable_efects">
+                <div id="pasiva_avaliable_efects" class="efectos_pasiva_div no_border">
                     <?php
                     try {
                         foreach ($efectos as $efecto) {
