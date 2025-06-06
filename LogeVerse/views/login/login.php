@@ -27,14 +27,14 @@ if (!defined('IN_CONTROLLER')) {
     <main id="formulario_login" class="center_text">
         <form action="<?php echo url_init ?>/LogeVerse/logear" method="POST" id="form_login" aria-labelledby="form_login_heading">
             <h2 id="form_login_heading">Iniciar sesión</h2>
-            <div>
+            <div class="no_border">
                 <label for="username">Usuario / Correo</label>
                 <br>
                 <input id="username" type="text" name="username" required autocomplete="username"
                     placeholder="Ej. usuario@correo.com" aria-required="true">
             </div>
             <br>
-            <div>
+            <div class="no_border">
                 <label for="password">Contraseña</label>
                 <br>
                 <input type="password" name="password" id="password" required autocomplete="current-password"

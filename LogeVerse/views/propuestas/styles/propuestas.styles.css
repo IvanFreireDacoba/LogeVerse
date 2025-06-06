@@ -71,9 +71,105 @@
     max-width: 80%;
 }
 
-/* ============================ ESTILOS DE RAZAS =========================== */
-
-/*Estilos de idiomas*/
+/* ============================ ESTILOS COMPARTIDOS =========================== */
+/*Estilos de idiomas, habilidades, efectos, pasivas y equipación*/
 .selected {
-    background-color: green;
+    background-color: var(--color-shadow);
+    border: 2px solid var(--color-border);
+}
+
+/* ============================ ESTILOS DE CLASES =========================== */
+.tarjeta_objeto {
+    text-align: center;
+    font-weight: bold;
+}
+
+#class_items_selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.description_section {
+
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    #clase_descripcion {
+        flex: 1;
+        width: 100%;
+        height: 200%;
+        box-sizing: border-box;
+    }
+}
+
+.extra_sec_1 {
+    align-content: center;
+}
+
+.input_mod_atr {
+    width: 7%;
+}
+
+#clase_dado {
+    margin: 2%;;
+    width: 10%;
+}
+
+.select_class_atr {
+    margin-right: 2%;
+}
+
+/* ============================ ESTILOS DE RAZAS =========================== */
+.div_raza_pasivas {
+    padding: 0px;
+    margin: 0px;
+}
+
+#raza_velocidad_descripción {
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+#pasivas_razas_section {
+    padding: 0px;
+}
+
+
+/* ============================ ESTILOS DE EFECTOS =========================== */
+#section_last_efectos {
+    margin: 0px;
+    padding: 0px;
+}
+
+
+/* ============================ ESTILOS DE PASIVAS =========================== */
+#form_pasiva {
+    border: 1px solid var(--color-border);
+    padding: 5px;;
+}
+
+#pasiva_efectos_select {
+    padding: 0px;
+}
+
+.efectos_pasiva_div {
+    margin: 0px;
+}
+
+
+/* ============================ ESTILOS DE HABILIDADES =========================== */
+#form_habilidad {
+    border: 1px solid var(--color-border);
+    padding: 5px;;
+}
+
+#nombre_habilidad_div {
+    margin: 0px;
+    padding: 0px;
+}
+
+#habilidad_efectos_select {
+    margin: 0px;
+    padding: 0px;
 }
