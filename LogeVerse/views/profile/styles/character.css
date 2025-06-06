@@ -12,7 +12,6 @@ main {
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            border: none;
 
             & #nombre_personaje {
                 font-family: var(--font-title);
@@ -44,7 +43,6 @@ main {
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
-            border: none;
 
             & #atributos_personaje {
                 display: flex;
@@ -53,7 +51,6 @@ main {
                 align-items: center;
                 width: 100%;
                 margin-top: 20%;
-                border: none;
 
                 & table {
                     border-spacing: 0 75%;
@@ -82,7 +79,6 @@ main {
 
             & #datos_personaje {
                 width: 100%;
-                border: none;
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
@@ -101,7 +97,6 @@ main {
                 }
 
                 & #raza_clase_personaje {
-                    border: none;
                     display: flex;
                     flex-direction: row;
 
@@ -111,7 +106,6 @@ main {
                         font-family: var(--font-title-alt-2);
                         font-size: 1.2em;
                         color: var(--color-text);
-                        border: none;
                         margin: 0;
                         padding: 0;
 
@@ -134,7 +128,6 @@ main {
                         font-family: var(--font-title-alt-2);
                         font-size: 1.2em;
                         color: var(--color-text);
-                        border: none;
                         margin: 0;
                         padding: 0;
 
@@ -164,6 +157,11 @@ main {
             background-color: var(--color-hover);
             color: var(--color-border);
         }
+    }
+
+    & #invent_pj {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     }
 
 }

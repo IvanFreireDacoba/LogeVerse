@@ -25,13 +25,13 @@ if (!defined('IN_CONTROLLER')) {
     ?>
     <main id="ficha_personaje">
         <div id="header_pj">
-            <div class="col1">
+            <div class="col1 no_border">
                 <p id="nombre_personaje">Nombre: <?php echo $personaje->getNombre() ?></p>
                 <p id="lvl_personaje">Nv. <?php echo $personaje->getLvlNow() ?></p>
                 <img id="img_personaje" src="<?php echo $personaje->getImgData() ?>" alt="Imagen del personaje">
             </div>
-            <div class="col2">
-                <div id="atributos_personaje">
+            <div class="col2 no_border">
+                <div id="atributos_personaje" class="no_border">
                     <?php
                     $html = "";
                     if ($personaje->getPuntosHabilidad() > 0) {
@@ -64,14 +64,14 @@ if (!defined('IN_CONTROLLER')) {
                     echo $html;
                     ?>
                 </div>
-                <div id="datos_personaje">
-                    <div id="raza_clase_personaje">
-                        <div id="raza_pj_div">
+                <div id="datos_personaje" class="no_border">
+                    <div id="raza_clase_personaje" class="no_border">
+                        <div id="raza_pj_div" class="no_border">
                             <p id="raza_pj"><?php echo $personaje->getRaza()->getNombre() ?></p>
                             <img id="raza_img_pj"
                                 src="<?php echo $personaje->getRaza()->getImagen() ?>" alt="Imagen de la raza">
                         </div>
-                        <div id="clase_pj_div">
+                        <div id="clase_pj_div" class="no_border">
                             <p id="clase_pj"><?php echo $personaje->getClase()->getNombre() ?></p>
                             <img id="clase_img_pj"
                                 src="<?php echo $personaje->getClase()->getImagen() ?>" alt="Imagen de la clase">
@@ -157,9 +157,13 @@ if (!defined('IN_CONTROLLER')) {
         </div>
         <div id="inv_pj">
             <h2>Inventario</h2>
-            <div>
+            <div id="invent_pj" class="no_border">
                 <?php
                 foreach ($personaje->getInventario()->getObjetos() as $objeto) {
+                    if($objeto[0]->getId() == 1) {
+                        echo "<p class='empty'>El inventario está vacío.</p>";
+                        break;
+                    }
                     $html_objeto = "<div class='objeto ficha_objeto' id='{$objeto[0]->getId()}'>
                                             <img src='{$objeto[0]->getImagen()}' alt='Imagen del objeto'>
                                             <p>{$objeto[0]->getNombre()}</p>

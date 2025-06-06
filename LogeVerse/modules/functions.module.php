@@ -910,10 +910,10 @@ function propuestaEfecto(PDO $conexion, array $datos, string &$infoMsg, bool &$e
     if (empty($datos["efecto_descripcion"])) {
         $infoMsg .= "La descripción del efecto es obligatoria.\n";
     }
-    if (empty($datos["efecto_cantidad"])) {
+    if (isset($datos["efecto_cantidad"])) {
         $infoMsg .= "La cantidad del efecto es obligatoria.\n";
     }
-    if (empty($datos["efecto_duracion"])) {
+    if (isset($datos["efecto_duracion"])) {
         $infoMsg .= "La duración del efecto es obligatoria.\n";
     }
     if (empty($datos["efecto_tipo"])) {
@@ -932,6 +932,7 @@ function propuestaEfecto(PDO $conexion, array $datos, string &$infoMsg, bool &$e
             $stmt->execute();
             $id = $conexion->lastInsertId();
             $stmt->closeCursor();
+            $infoMsg = "Efecto registrado con éxito.";
             $exito = true;
         } catch (Exception $e) {
             $infoMsg = "Error al intentar insertar los datos.\nEfecto no registrado.";
